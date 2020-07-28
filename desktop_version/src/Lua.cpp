@@ -4,9 +4,7 @@
 #include <stdio.h>
 
 static int make_game(lua_State* L) {
-    Game** lua = (Game**) lua_newuserdata(L, sizeof(Game*));
-    *lua = &game;
-
+    lua_newuserdatauv(L, 0, 0);
     luaL_getmetatable(L, "v6.game");
     lua_setmetatable(L, -2);
 
@@ -14,34 +12,28 @@ static int make_game(lua_State* L) {
 }
 
 static int set_game_prop(lua_State* L) {
-    Game** game_ptr = (Game**) lua_touserdata(L, 1);
+    luaL_checkudata(L, 1, "v6.game");
     const char* name = luaL_checkstring(L, 2);
     int value = luaL_checkinteger(L, 3);
 
-    luaL_argcheck(L, game_ptr != NULL, 1, "`game` expected");
-    luaL_argcheck(L, name != NULL, 2, "string expected");
-
     if (strcmp(name, "gamestate") == 0) {
-        (*game_ptr)->gamestate = value;
+        game.gamestate = value;
     } else {
-        luaL_argcheck(L, false, 2, "invalid property");
+        luaL_argerror(L, 2, "invalid property");
     }
 
     return 0;
 }
 
 static int get_game_prop(lua_State* L) {
-    Game** game_ptr = (Game**) lua_touserdata(L, 1);
+    luaL_checkudata(L, 1, "v6.game");
     const char* name = luaL_checkstring(L, 2);
 
-    luaL_argcheck(L, game_ptr != NULL, 1, "`game` expected");
-    luaL_argcheck(L, name != NULL, 2, "string expected");
-
     if (strcmp(name, "gamestate") == 0) {
-        lua_pushinteger(L, (*game_ptr)->gamestate);
+        lua_pushinteger(L, game.gamestate);
         return 1;
     } else {
-        luaL_argcheck(L, false, 2, "invalid property");
+        luaL_argerror(L, 2, "invalid property");
         return 0;
     }
 }
