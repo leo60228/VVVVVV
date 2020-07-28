@@ -3,6 +3,15 @@
 #include <string.h>
 #include <stdio.h>
 
+#define push_lua_int lua_pushinteger
+#define pop_lua_int luaL_checkinteger
+
+#define V6LUA_PUSHTYPE(L, type, val) (push_lua_ ## type(L, val))
+#define V6LUA_POPTYPE(L, type, pos) (pop_lua_ ## type(L, pos))
+
+#define __V6LUA_STRINGIFY_INTERNAL(s) str(s)
+#define V6LUA_STRINGIFY(s) #s
+
 static int make_game(lua_State* L) {
     lua_newuserdatauv(L, 0, 0);
     luaL_getmetatable(L, "v6.game");
@@ -14,11 +23,14 @@ static int make_game(lua_State* L) {
 static int set_game_prop(lua_State* L) {
     luaL_checkudata(L, 1, "v6.game");
     const char* name = luaL_checkstring(L, 2);
-    int value = luaL_checkinteger(L, 3);
 
-    if (strcmp(name, "gamestate") == 0) {
-        game.gamestate = value;
-    } else {
+#define X(NAME, TYPE) if (strcmp(name, V6LUA_STRINGIFY(NAME)) == 0) { \
+    game.NAME = V6LUA_POPTYPE(L, TYPE, 3); \
+} else
+
+    V6LUA_GAMEPROPS
+#undef X
+    {
         luaL_argerror(L, 2, "invalid property");
     }
 
@@ -29,10 +41,14 @@ static int get_game_prop(lua_State* L) {
     luaL_checkudata(L, 1, "v6.game");
     const char* name = luaL_checkstring(L, 2);
 
-    if (strcmp(name, "gamestate") == 0) {
-        lua_pushinteger(L, game.gamestate);
-        return 1;
-    } else {
+#define X(NAME, TYPE) if (strcmp(name, V6LUA_STRINGIFY(NAME)) == 0) { \
+    V6LUA_PUSHTYPE(L, TYPE, game.NAME); \
+    return 1; \
+} else
+
+    V6LUA_GAMEPROPS
+#undef X
+    {
         luaL_argerror(L, 2, "invalid property");
         return 0;
     }
