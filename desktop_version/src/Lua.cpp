@@ -1,10 +1,33 @@
 #include "Lua.h"
 #include "Game.h"
+#include <string>
 #include <string.h>
 #include <stdio.h>
 
 #define push_lua_int lua_pushinteger
 #define pop_lua_int luaL_checkinteger
+
+#define push_lua_bool lua_pushboolean
+#define pop_lua_bool lua_toboolean
+
+#define push_lua_float lua_pushnumber
+#define pop_lua_float lua_tonumber
+
+#define push_lua_uint32 lua_pushinteger
+#define pop_lua_uint32 luaL_checkinteger
+
+#define push_lua_MenuName(L, val) lua_pushinteger(L, (Menu::MenuName) val)
+#define pop_lua_MenuName(L, pos) ((Menu::MenuName) luaL_checkinteger(L, pos))
+
+static void push_lua_stdstring(lua_State* L, std::string s) {
+    lua_pushstring(L, s.c_str());
+}
+
+static std::string pop_lua_stdstring(lua_State* L, int pos) {
+    const char* cstr = luaL_checkstring(L, pos);
+    std::string str = cstr;
+    return str;
+}
 
 #define V6LUA_PUSHTYPE(L, type, val) (push_lua_ ## type(L, val))
 #define V6LUA_POPTYPE(L, type, pos) (pop_lua_ ## type(L, pos))
