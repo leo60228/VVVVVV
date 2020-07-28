@@ -8,6 +8,7 @@
 #include "Map.h"
 #include "Music.h"
 #include "UtilityClass.h"
+#include "Lua.h"
 
 scriptclass::scriptclass()
 {
@@ -415,6 +416,23 @@ void scriptclass::run()
 						txt.push_back(commands[position]);
 					}
 				}
+			}
+			else if (words[0] == "lua")
+			{
+				std::string code;
+				for (int i = 0; i < ss_toi(words[1]); i++)
+				{
+					position++;
+					if (position < (int) commands.size())
+					{
+						code += '\n';
+						code += commands[position];
+					}
+				}
+				lua_State* L = make_lua();
+				exec_lua(L, code.c_str());
+				lua_close(L);
+				// TODO: make lua_State long-living
 			}
 			else if (words[0] == "position")
 			{

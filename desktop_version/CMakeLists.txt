@@ -108,6 +108,7 @@ SET(VVV_SRC
 	src/WarpClass.cpp
 	src/main.cpp
 	src/Network.c
+	src/Lua.cpp
 )
 IF(NOT CUSTOM_LEVEL_SUPPORT STREQUAL "DISABLED")
 	LIST(APPEND VVV_SRC src/editor.cpp)
