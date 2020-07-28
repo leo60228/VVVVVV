@@ -72,6 +72,7 @@ INCLUDE_DIRECTORIES(
 	../third_party/physfs
 	../third_party/lodepng
 	../third_party/utfcpp/source
+	../third_party/lua/src
 )
 
 # Source Lists
@@ -140,6 +141,40 @@ IF(APPLE)
 	SET(PFS_SRC ${PFS_SRC} ../third_party/physfs/physfs_platform_apple.m)
 ENDIF()
 SET(PNG_SRC ../third_party/lodepng/lodepng.c)
+SET(LUA_SRC
+	../third_party/lua/src/lapi.c
+	../third_party/lua/src/lauxlib.c
+	../third_party/lua/src/lbaselib.c
+	../third_party/lua/src/lcode.c
+	../third_party/lua/src/lcorolib.c
+	../third_party/lua/src/lctype.c
+	../third_party/lua/src/ldblib.c
+	../third_party/lua/src/ldebug.c
+	../third_party/lua/src/ldo.c
+	../third_party/lua/src/ldump.c
+	../third_party/lua/src/lfunc.c
+	../third_party/lua/src/lgc.c
+	../third_party/lua/src/linit.c
+	../third_party/lua/src/liolib.c
+	../third_party/lua/src/llex.c
+	../third_party/lua/src/lmathlib.c
+	../third_party/lua/src/lmem.c
+	../third_party/lua/src/loadlib.c
+	../third_party/lua/src/lobject.c
+	../third_party/lua/src/lopcodes.c
+	../third_party/lua/src/loslib.c
+	../third_party/lua/src/lparser.c
+	../third_party/lua/src/lstate.c
+	../third_party/lua/src/lstring.c
+	../third_party/lua/src/lstrlib.c
+	../third_party/lua/src/ltable.c
+	../third_party/lua/src/ltablib.c
+	../third_party/lua/src/ltm.c
+	../third_party/lua/src/lundump.c
+	../third_party/lua/src/lutf8lib.c
+	../third_party/lua/src/lvm.c
+	../third_party/lua/src/lzio.c
+)
 
 # Executable information
 IF(WIN32)
@@ -189,9 +224,10 @@ SET_PROPERTY(TARGET VVVVVV PROPERTY CXX_EXTENSIONS FALSE)
 ADD_LIBRARY(tinyxml2-static STATIC ${XML2_SRC})
 ADD_LIBRARY(physfs-static STATIC ${PFS_SRC} ${PFSP_SRC})
 ADD_LIBRARY(lodepng-static STATIC ${PNG_SRC})
+ADD_LIBRARY(lua-static STATIC ${LUA_SRC})
 
 # Static Dependencies
-TARGET_LINK_LIBRARIES(VVVVVV physfs-static tinyxml2-static lodepng-static)
+TARGET_LINK_LIBRARIES(VVVVVV physfs-static tinyxml2-static lodepng-static lua-static)
 
 # SDL2 Dependency (Detection pulled from FAudio)
 if (DEFINED SDL2_INCLUDE_DIRS AND DEFINED SDL2_LIBRARIES)
