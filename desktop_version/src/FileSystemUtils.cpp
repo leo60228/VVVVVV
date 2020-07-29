@@ -17,7 +17,7 @@
 #include <windows.h>
 #include <shlobj.h>
 #include <shellapi.h>
-#elif defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__HAIKU__) || defined(__DragonFly__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__HAIKU__) || defined(__DragonFly__) || defined(__unix__)
 #include <unistd.h>
 #include <dirent.h>
 #include <limits.h>
