@@ -358,6 +358,7 @@ void PLATFORM_getOSDirectory(char* output)
 
 void PLATFORM_migrateSaveData(char* output)
 {
+#ifndef SKIP_SAVE_MIGRATION
 	char oldLocation[MAX_PATH];
 	char newLocation[MAX_PATH];
 	char oldDirectory[MAX_PATH];
@@ -516,6 +517,7 @@ void PLATFORM_migrateSaveData(char* output)
 	} while (FindNextFile(hFind, &findHandle));
 #else
 #error See PLATFORM_migrateSaveData
+#endif
 #endif
 }
 
