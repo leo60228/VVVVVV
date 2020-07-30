@@ -134,6 +134,7 @@ SET(PFS_SRC
 	../third_party/physfs/physfs_platform_unix.c
 	../third_party/physfs/physfs_platform_windows.c
 	../third_party/physfs/physfs_platform_haiku.cpp
+	../third_party/physfs/physfsrwops.c
 )
 IF(APPLE)
 	# Are you noticing a pattern with this Apple crap yet?
