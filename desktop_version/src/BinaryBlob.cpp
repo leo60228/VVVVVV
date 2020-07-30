@@ -171,7 +171,7 @@ std::vector<int> binaryBlob::getExtra()
 	for (size_t i = 0; i < SDL_arraysize(m_headers); i += 1)
 	{
 		if (m_headers[i].valid
-#define FOREACH_TRACK(track_name) && strcmp(m_headers[i].name, track_name) != 0
+#define FOREACH_TRACK(track_name) && strcmp(m_headers[i].name, "data/" track_name) != 0
 		TRACK_NAMES
 #undef FOREACH_TRACK
 		) {

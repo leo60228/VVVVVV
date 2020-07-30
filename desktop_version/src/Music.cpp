@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <stdio.h>
+#include <physfsrwops.h>
 
 #include "BinaryBlob.h"
 #include "Map.h"
@@ -53,7 +54,7 @@ void musicclass::init()
 
 #ifdef VVV_COMPILEMUSIC
 	binaryBlob musicWriteBlob;
-#define FOREACH_TRACK(track_name) musicWriteBlob.AddFileToBinaryBlob(track_name);
+#define FOREACH_TRACK(track_name) musicWriteBlob.AddFileToBinaryBlob("data/" track_name);
 	TRACK_NAMES
 #undef FOREACH_TRACK
 
@@ -65,20 +66,47 @@ void musicclass::init()
 
 	if (!musicReadBlob.unPackBinary("mmmmmm.vvv"))
 	{
-		mmmmmm = false;
-		usingmmmmmm=false;
-		bool ohCrap = musicReadBlob.unPackBinary("vvvvvvmusic.vvv");
-		SDL_assert(ohCrap && "Music not found!");
+		if (musicReadBlob.unPackBinary("vvvvvvmusic.vvv")) {
+			puts("Loading music from PPPPPP blob...");
+
+			mmmmmm = false;
+			usingmmmmmm=false;
+
+			int index;
+			SDL_RWops* rw;
+
+#define FOREACH_TRACK(track_name) \
+	index = musicReadBlob.getIndex("data/" track_name); \
+	rw = SDL_RWFromMem(musicReadBlob.getAddress(index), musicReadBlob.getSize(index)); \
+	musicTracks.push_back(MusicTrack( rw ));
+
+			TRACK_NAMES
+
+#undef FOREACH_TRACK
+		} else {
+			puts("Loading music from loose files...");
+
+			SDL_RWops* rw;
+#define FOREACH_TRACK(track_name) \
+	rw = PHYSFSRWOPS_openRead(track_name); \
+	musicTracks.push_back(MusicTrack( rw ));
+
+			TRACK_NAMES
+
+#undef FOREACH_TRACK
+		}
 	}
 	else
 	{
+		puts("Loading PPPPPP and MMMMMM blobs...");
+
 		mmmmmm = true;
 		usingmmmmmm = true;
 		int index;
 		SDL_RWops *rw;
 
 #define FOREACH_TRACK(track_name) \
-	index = musicReadBlob.getIndex(track_name); \
+	index = musicReadBlob.getIndex("data/" track_name); \
 	rw = SDL_RWFromMem(musicReadBlob.getAddress(index), musicReadBlob.getSize(index)); \
 	musicTracks.push_back(MusicTrack( rw ));
 
@@ -98,17 +126,15 @@ void musicclass::init()
 
 		bool ohCrap = musicReadBlob.unPackBinary("vvvvvvmusic.vvv");
 		SDL_assert(ohCrap && "Music not found!");
-	}
 
-	int index;
-	SDL_RWops *rw;
-
-	TRACK_NAMES
+		TRACK_NAMES
 
 #undef FOREACH_TRACK
+	}
 
 	num_pppppp_tracks += 16;
 
+	SDL_RWops* rw;
 	const std::vector<int> extra = musicReadBlob.getExtra();
 	for (size_t i = 0; i < extra.size(); i++)
 	{
