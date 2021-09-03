@@ -108,7 +108,7 @@ jobs:
       run: make -j $(nproc) -C ${SRC_DIR_PATH}/build
 
   build-win:
-    name: Build (windows-latest)
+    name: Build (Visual Studio 2010)
 
     runs-on: windows-latest
 
@@ -117,53 +117,56 @@ jobs:
 
     - name: Install dependencies (Windows)
       run: |
-        vcpkg install sdl2 sdl2-mixer
+        cd third_party
+        Invoke-WebRequest -OutFile sdl2.zip https://www.libsdl.org/release/SDL2-devel-2.0.16-VC.zip
+        Invoke-WebRequest -OutFile sdl2_mixer.zip https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.4-VC.zip
+        Expand-Archive sdl2.zip -DestinationPath .
+        Expand-Archive sdl2_mixer.zip -DestinationPath .
+        $env:LDFLAGS =  "/LIBPATH:C:\workspace\third_party\SDL2-2.0.16\lib\x86 "
+        $env:LDFLAGS +=  "/LIBPATH:C:\workspace\third_party\SDL2_mixer-2.0.4\lib\x86"
+
+    - name: Start container
+      shell: cmd
+      run: |
+        docker run ^
+              --rm --name builder -d -it ^
+              --workdir "C:\workspace\desktop_version" -v "${{ github.workspace }}:C:\workspace" ^
+              -e "LDFLAGS=%LDFLAGS%" --entrypoint C:\Windows\System32\cmd.exe ^
+              cwuensch/vs2010:vcexpress
 
     - name: CMake configure (default version)
       run: |
-        cd $env:SRC_DIR_PATH
-        $env:LDFLAGS =  "/LIBPATH:$env:VCPKG_INSTALLATION_ROOT\installed\x86-windows\lib "
-        $env:LDFLAGS += "/LIBPATH:$env:VCPKG_INSTALLATION_ROOT\installed\x86-windows\lib\manual-link"
-        cmake -G "Visual Studio 16 2019" -A Win32 `
-              -DSDL2_INCLUDE_DIRS="$env:VCPKG_INSTALLATION_ROOT\installed\x86-windows\include\SDL2" `
+        docker exec builder cmake -G "Visual Studio 10 2010" -A Win32 `
+              -DSDL2_INCLUDE_DIRS="C:\workspace\third_party\SDL2-2.0.16\include C:\workspace\third_party\SDL2_mixer-2.0.4\include" `
               -DSDL2_LIBRARIES="SDL2;SDL2main;SDL2_mixer" .
     - name: Build (default version)
       run: |
-        cd $env:SRC_DIR_PATH
-        cmake --build .
+        docker exec builder cmake --build .
 
     - name: CMake configure (official)
       run: |
-        cd $env:SRC_DIR_PATH
-        cmake -DOFFICIAL_BUILD=ON .
+        docker exec builder cmake -DOFFICIAL_BUILD=ON .
     - name: Build (official)
       run: |
-        cd $env:SRC_DIR_PATH
-        cmake --build .
+        docker exec builder cmake --build .
 
     - name: CMake configure (M&P)
       run: |
-        cd $env:SRC_DIR_PATH
-        cmake -DOFFICIAL_BUILD=OFF -DMAKEANDPLAY=ON .
+        docker exec builder cmake -DOFFICIAL_BUILD=OFF -DMAKEANDPLAY=ON .
     - name: Build (M&P)
       run: |
-        cd $env:SRC_DIR_PATH
-        cmake --build .
+        docker exec builder cmake --build .
 
     - name: CMake configure (no custom levels)
       run: |
-        cd $env:SRC_DIR_PATH
-        cmake -DMAKEANDPLAY=OFF -DCUSTOM_LEVEL_SUPPORT=DISABLED .
+        docker exec builder cmake -DMAKEANDPLAY=OFF -DCUSTOM_LEVEL_SUPPORT=DISABLED .
     - name: Build (no custom levels)
       run: |
-        cd $env:SRC_DIR_PATH
-        cmake --build .
+        docker exec builder cmake --build .
 
     - name: CMake configure (no editor)
       run: |
-        cd $env:SRC_DIR_PATH
-        cmake -DCUSTOM_LEVEL_SUPPORT=NO_EDITOR .
+        docker exec builder cmake -DCUSTOM_LEVEL_SUPPORT=NO_EDITOR .
     - name: Build (no editor)
       run: |
-        cd $env:SRC_DIR_PATH
-        cmake --build .
+        docker exec builder cmake --build .
