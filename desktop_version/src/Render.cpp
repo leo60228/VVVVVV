@@ -2,6 +2,7 @@
 
 #include "ActionSets.h"
 #include "ButtonGlyphs.h"
+#include "Chaos.h"
 #include "Constants.h"
 #include "Credits.h"
 #include "CustomLevels.h"
@@ -2719,7 +2720,7 @@ void maprender(void)
     case 0:
         rendermap();
 
-        if (map.finalmode || (map.custommode&&!map.customshowmm))
+        if (map.finalmode || (map.custommode&&!map.customshowmm) || Chaos::IsActive(NO_MAP))
         {
             // Cover the whole map
             for (int j = 0; j < 20; j++)

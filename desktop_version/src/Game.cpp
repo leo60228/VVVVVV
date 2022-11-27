@@ -7,6 +7,7 @@
 #include <tinyxml2.h>
 
 #include "ButtonGlyphs.h"
+#include "Chaos.h"
 #include "Constants.h"
 #include "CustomLevels.h"
 #include "DeferCallbacks.h"
@@ -361,6 +362,8 @@ void Game::init(void)
     skip_message_timer = 0;
 
     setdefaultcontrollerbuttons();
+
+    Chaos::Initialize();
 }
 
 void Game::setdefaultcontrollerbuttons(void)

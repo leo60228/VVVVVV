@@ -5,6 +5,7 @@
 #endif
 
 #include "ButtonGlyphs.h"
+#include "Chaos.h"
 #include "CustomLevels.h"
 #include "DeferCallbacks.h"
 #include "Editor.h"
@@ -967,6 +968,8 @@ static void focused_end(void)
 static enum LoopCode loop_end(void)
 {
     ++game.framecounter;
+
+    Chaos::ProcessEffects();
 
     //We did editorinput, now it's safe to turn this off
     key.linealreadyemptykludge = false;

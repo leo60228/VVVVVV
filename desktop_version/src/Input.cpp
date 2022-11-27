@@ -1,7 +1,11 @@
 #include <tinyxml2.h>
 #include <vector>
 
+<<<<<<< HEAD
 #include "ButtonGlyphs.h"
+=======
+#include "Chaos.h"
+>>>>>>> 107210f6 (initial effects!)
 #include "Credits.h"
 #include "CustomLevels.h"
 #include "Editor.h"
@@ -2437,6 +2441,30 @@ void gameinput(void)
         }
     }
 
+    if (key.isDown(SDLK_h) && !Chaos::IsActive(RANDOM_BLOCK))
+    {
+        Chaos::AddEffect(WARP_DIR);
+    }
+
+    if (key.isDown(SDLK_SEMICOLON))
+    {
+        graphics.textboxremove();
+        game.hascontrol = true;
+        game.advancetext = false;
+    }
+
+    if (Chaos::IsActive(REVERSE_CONTROLS))
+    {
+        bool temp = game.press_left;
+        game.press_left = game.press_right;
+        game.press_right = temp;
+    }
+
+    if (Chaos::IsActive(HOLDING_RIGHT))
+    {
+        game.press_right = true;
+    }
+
     game.press_map = false;
     if (key.isDown(KEYBOARD_ENTER) || key.isDown(SDLK_KP_ENTER) || key.isDown(game.controllerButton_map)  )
     {
@@ -2636,12 +2664,12 @@ void gameinput(void)
                     }
                 }
 
-                if(game.press_left)
+                if(game.press_left && !Chaos::IsActive(NO_LEFT))
                 {
                     obj.entities[ie].ax = -3;
                     obj.entities[ie].dir = 0;
                 }
-                else if (game.press_right)
+                else if (game.press_right && !Chaos::IsActive(NO_RIGHT))
                 {
                     obj.entities[ie].ax = 3;
                     obj.entities[ie].dir = 1;
@@ -2652,7 +2680,7 @@ void gameinput(void)
 
     if (has_control)
     {
-        if (game.press_left)
+        if (game.press_left && !Chaos::IsActive(NO_LEFT))
         {
             game.tapleft++;
         }
@@ -2673,7 +2701,7 @@ void gameinput(void)
             }
             game.tapleft = 0;
         }
-        if (game.press_right)
+        if (game.press_right && !Chaos::IsActive(NO_RIGHT))
         {
             game.tapright++;
         }
@@ -2701,6 +2729,11 @@ void gameinput(void)
             game.jumpheld = false;
         }
 
+        if (Chaos::IsActive(RANDOM_FLIPPING) && (fRandom() < 0.05))
+        {
+            game.press_action = true;
+        }
+
         if (game.press_action && !game.jumpheld)
         {
             game.jumppressed = 5;
@@ -2725,33 +2758,55 @@ void gameinput(void)
                 continue;
             }
 
+            bool infiniflip_kludge = false;
+
             game.jumppressed--;
-            if (obj.entities[ie].onground > 0 && game.gravitycontrol == 0)
+            if ((obj.entities[ie].onground > 0 || Chaos::IsActive(INFINIFLIP)) && game.gravitycontrol == 0 && !Chaos::IsActive(NO_FLIPPING))
             {
                 game.gravitycontrol = 1;
+                if (Chaos::IsActive(JUMPING))
+                {
+                    game.gravitycontrol = 0;
+                }
+                if (Chaos::IsActive(GRAVITATION_POTION))
+                {
+                    graphics.flipmode = true;
+                }
                 for (size_t j = 0; j < player_entities.size(); j++)
                 {
                     const size_t e = player_entities[j];
                     if (obj.entities[e].onground > 0 || obj.entities[e].onroof > 0)
                     {
-                        obj.entities[e].vy = -4;
-                        obj.entities[e].ay = -3;
+                        obj.entities[e].vy = Chaos::IsActive(JUMPING) ? -12 : -4;
+                        obj.entities[e].ay = Chaos::IsActive(JUMPING) ? -8 : -3;
                     }
                 }
                 music.playef(Sound_FLIP);
                 game.jumppressed = 0;
                 game.totalflips++;
+                if (Chaos::IsActive(INFINIFLIP))
+                {
+                    infiniflip_kludge = true;
+                }
             }
-            if (obj.entities[ie].onroof > 0 && game.gravitycontrol == 1)
+            if ((obj.entities[ie].onroof > 0 || Chaos::IsActive(INFINIFLIP)) && game.gravitycontrol == 1 && !Chaos::IsActive(NO_FLIPPING) && !infiniflip_kludge)
             {
                 game.gravitycontrol = 0;
+                if (Chaos::IsActive(JUMPING))
+                {
+                    game.gravitycontrol = 0;
+                }
+                if (Chaos::IsActive(GRAVITATION_POTION))
+                {
+                    graphics.flipmode = false;
+                }
                 for (size_t j = 0; j < player_entities.size(); j++)
                 {
                     const size_t e = player_entities[j];
                     if (obj.entities[e].onground > 0 || obj.entities[e].onroof > 0)
                     {
-                        obj.entities[e].vy = 4;
-                        obj.entities[e].ay = 3;
+                        obj.entities[e].vy = Chaos::IsActive(JUMPING) ? 16 : 4;
+                        obj.entities[e].ay = Chaos::IsActive(JUMPING) ? 12 : 3;
                     }
                 }
                 music.playef(Sound_UNFLIP);

@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 
+#include "Chaos.h"
 #include "CustomLevels.h"
 #include "Font.h"
 #include "Game.h"
@@ -2509,6 +2510,31 @@ bool entityclass::updateentities( int i )
                         entities[i].yp = 24;
                         entities[i].lerpoldyp = 24;
                     }
+                    if (Chaos::IsActive(BUS))
+                    {
+                        int y = entities[i].yp;
+
+                        int j = getplayer();
+                        if (INBOUNDS_VEC(j, entities))
+                        {
+                            y = entities[j].yp;
+                        }
+
+                        if (game.gravitycontrol == 0)
+                        {
+                            entities[i].tile = 120;
+                            y -= 24;
+                        }
+                        else
+                        {
+                            entities[i].tile = 96;
+                        }
+
+                        y += 1;
+
+                        entities[i].yp = y;
+                        entities[i].lerpoldyp = y;
+                    }
                     //now, x position
                     if (INBOUNDS_VEC(player, entities) && entities[player].xp > 20 * 8)
                     {
@@ -2532,7 +2558,7 @@ bool entityclass::updateentities( int i )
                 }
                 else if (entities[i].state == 1)
                 {
-                    if (entities[i].outside()) entities[i].state = entities[i].onwall;
+                    if (entities[i].outside() && !Chaos::IsActive(BUS)) entities[i].state = entities[i].onwall;
                 }
                 else if (entities[i].state == 2)
                 {
@@ -4540,8 +4566,9 @@ void entityclass::applyfriction( int t, float xrate, float yrate )
     if (entities[t].vx < 0.00f) entities[t].vx += xrate;
     if (entities[t].vy > 0.00f) entities[t].vy -= yrate;
     if (entities[t].vy < 0.00f) entities[t].vy += yrate;
-    if (entities[t].vy > 10.00f) entities[t].vy = 10.0f;
-    if (entities[t].vy < -10.00f) entities[t].vy = -10.0f;
+    int limit = Chaos::IsActive(JUMPING) ? 12.0f : 10.0f;
+    if (entities[t].vy > limit) entities[t].vy = limit;
+    if (entities[t].vy < -limit) entities[t].vy = -limit;
     if (entities[t].vx > 6.00f) entities[t].vx = 6.0f;
     if (entities[t].vx < -6.00f) entities[t].vx = -6.0f;
 
@@ -4597,6 +4624,13 @@ void entityclass::entitymapcollision( int t )
     if (!INBOUNDS_VEC(t, entities))
     {
         vlog_error("entitymapcollision() out-of-bounds!");
+        return;
+    }
+
+    if (entities[t].behave == 16 && Chaos::IsActive(BUS))
+    {
+        entities[t].xp = entities[t].newxp;
+        entities[t].yp = entities[t].newyp;
         return;
     }
 
