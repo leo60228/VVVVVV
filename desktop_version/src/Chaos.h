@@ -49,6 +49,7 @@ enum Effects
     TORNADO,            // Entity tornado
     SHAKING,            // Shake the player
     FLAG,               // Change a random flag
+    RANDOM_SIZE,        // Randomly change player size
 
 
     // Mario?

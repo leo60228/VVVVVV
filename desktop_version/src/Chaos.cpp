@@ -194,6 +194,21 @@ void Chaos::ApplyEffect(ActiveEffect effect)
         }
         break;
     }
+    case RANDOM_SIZE:
+    {
+        int i = obj.getplayer();
+        if (INBOUNDS_VEC(i, obj.entities))
+        {
+            obj.entities[i].size = 14;
+            obj.entities[i].w = 21 * (fRandom() * 5);
+            obj.entities[i].h = 12 * (fRandom() * 7);
+            obj.entities[i].cx = 6 * ((float)obj.entities[i].w / 12);
+            obj.entities[i].cy = 2 * ((float)obj.entities[i].h / 21);
+            obj.entities[i].yp += 21 - obj.entities[i].h;
+            obj.entities[i].xp += 12 - obj.entities[i].w;
+        }
+        break;
+    }
     case SIDEWAYS_FLIPPING:
     {
         int i = obj.getplayer();
@@ -464,16 +479,17 @@ void Chaos::RemoveEffect(ActiveEffect effect)
         break;
     }
     case VVVVVVMAN:
+    case RANDOM_SIZE:
     {
         int i = obj.getplayer();
         if (INBOUNDS_VEC(i, obj.entities))
         {
-            obj.entities[i].xp = 100;
             obj.entities[i].size = 0;
             obj.entities[i].colour = 0;
             obj.entities[i].cx = 6;
             obj.entities[i].cy = 2;
             obj.entities[i].h = 21;
+            obj.entities[i].w = 12;
         }
         break;
     }

@@ -2441,9 +2441,9 @@ void gameinput(void)
         }
     }
 
-    if (key.isDown(SDLK_g) && !Chaos::IsActive(FLAG))
+    if (key.isDown(SDLK_g) && !Chaos::IsActive(RANDOM_SIZE))
     {
-        Chaos::AddEffect(FLAG);
+        Chaos::AddEffect(RANDOM_SIZE);
     }
 
     if (key.isDown(SDLK_h) && !Chaos::IsActive(MODIFY_ENTITIES))
