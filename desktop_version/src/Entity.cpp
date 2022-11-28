@@ -4384,8 +4384,15 @@ float entityclass::entitycollideplatformroof( int t )
     }
 
     SDL_Rect temprect;
-    temprect.x = entities[t].xp + entities[t].cx;
-    temprect.y = entities[t].yp + entities[t].cy -1;
+    if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
+    {
+        temprect.x = entities[t].xp + entities[t].cx - 1;
+        temprect.y = entities[t].yp + entities[t].cy;
+    }
+    else {
+        temprect.x = entities[t].xp + entities[t].cx;
+        temprect.y = entities[t].yp + entities[t].cy - 1;
+    }
     temprect.w = entities[t].w;
     temprect.h = entities[t].h;
 
@@ -4407,8 +4414,15 @@ float entityclass::entitycollideplatformfloor( int t )
     }
 
     SDL_Rect temprect;
-    temprect.x = entities[t].xp + entities[t].cx;
-    temprect.y = entities[t].yp + entities[t].cy + 1;
+    if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
+    {
+        temprect.x = entities[t].xp + entities[t].cx + 1;
+        temprect.y = entities[t].yp + entities[t].cy;
+    }
+    else {
+        temprect.x = entities[t].xp + entities[t].cx;
+        temprect.y = entities[t].yp + entities[t].cy + 1;
+    }
     temprect.w = entities[t].w;
     temprect.h = entities[t].h;
 
@@ -4430,8 +4444,15 @@ bool entityclass::entitycollidefloor( int t )
     }
 
     SDL_Rect temprect;
-    temprect.x = entities[t].xp + entities[t].cx;
-    temprect.y = entities[t].yp + entities[t].cy + 1;
+    if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
+    {
+        temprect.x = entities[t].xp + entities[t].cx + 1;
+        temprect.y = entities[t].yp + entities[t].cy;
+    }
+    else {
+        temprect.x = entities[t].xp + entities[t].cx;
+        temprect.y = entities[t].yp + entities[t].cy + 1;
+    }
     temprect.w = entities[t].w;
     temprect.h = entities[t].h;
 
@@ -4450,8 +4471,15 @@ bool entityclass::entitycollideroof( int t )
     }
 
     SDL_Rect temprect;
-    temprect.x = entities[t].xp + entities[t].cx;
-    temprect.y = entities[t].yp + entities[t].cy - 1;
+    if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
+    {
+        temprect.x = entities[t].xp + entities[t].cx - 1;
+        temprect.y = entities[t].yp + entities[t].cy;
+    }
+    else {
+        temprect.x = entities[t].xp + entities[t].cx;
+        temprect.y = entities[t].yp + entities[t].cy - 1;
+    }
     temprect.w = entities[t].w;
     temprect.h = entities[t].h;
 
@@ -4562,6 +4590,18 @@ void entityclass::applyfriction( int t, float xrate, float yrate )
         return;
     }
 
+    if (entities[t].rule == 0 && Chaos::IsActive(ICE))
+    {
+        xrate /= 2.5;
+    }
+
+    if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
+    {
+        int temp2 = xrate;
+        xrate = yrate;
+        yrate = temp2;
+    }
+
     if (entities[t].vx > 0.00f) entities[t].vx -= xrate;
     if (entities[t].vx < 0.00f) entities[t].vx += xrate;
     if (entities[t].vy > 0.00f) entities[t].vy -= yrate;
@@ -4569,8 +4609,8 @@ void entityclass::applyfriction( int t, float xrate, float yrate )
     int limit = Chaos::IsActive(JUMPING) ? 12.0f : 10.0f;
     if (entities[t].vy > limit) entities[t].vy = limit;
     if (entities[t].vy < -limit) entities[t].vy = -limit;
-    if (entities[t].vx > 6.00f) entities[t].vx = 6.0f;
-    if (entities[t].vx < -6.00f) entities[t].vx = -6.0f;
+    if (!(Chaos::IsActive(UNCAPPED_SPEED)) && entities[t].vx > 6.00f) entities[t].vx = 6.0f;
+    if (!(Chaos::IsActive(UNCAPPED_SPEED)) && entities[t].vx < -6.00f) entities[t].vx = -6.0f;
 
     if (SDL_fabsf(entities[t].vx) < xrate) entities[t].vx = 0.0f;
     if (SDL_fabsf(entities[t].vy) < yrate) entities[t].vy = 0.0f;
@@ -4615,8 +4655,15 @@ void entityclass::updateentitylogic( int t )
         applyfriction(t, game.inertia, 0.25f);
     }
 
-    entities[t].newxp = entities[t].xp + entities[t].vx;
-    entities[t].newyp = entities[t].yp + entities[t].vy;
+    if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
+    {
+        entities[t].newxp = entities[t].xp + entities[t].vy;
+        entities[t].newyp = entities[t].yp + entities[t].vx;
+    }
+    else {
+        entities[t].newxp = entities[t].xp + entities[t].vx;
+        entities[t].newyp = entities[t].yp + entities[t].vy;
+    }
 }
 
 void entityclass::entitymapcollision( int t )
@@ -4634,6 +4681,12 @@ void entityclass::entitymapcollision( int t )
         return;
     }
 
+    if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
+    {
+        int temp = entities[t].vx;
+        entities[t].vx = entities[t].vy;
+        entities[t].vy = temp;
+    }
     if (testwallsx(t, entities[t].newxp, entities[t].yp, false))
     {
         entities[t].xp = entities[t].newxp;
@@ -4651,6 +4704,13 @@ void entityclass::entitymapcollision( int t )
     {
         if (entities[t].onwall > 0) entities[t].state = entities[t].onwall;
         if (entities[t].onywall > 0) entities[t].state = entities[t].onywall;
+    }
+
+    if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
+    {
+        int temp = entities[t].vx;
+        entities[t].vx = entities[t].vy;
+        entities[t].vy = temp;
     }
 }
 

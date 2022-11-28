@@ -398,7 +398,9 @@ void GraphicsResources::init(void)
     LoadVariants("graphics/tiles2.png", &im_tiles2, NULL, &im_tiles2_tint);
     LoadVariants("graphics/entcolours.png", &im_entcolours, NULL, &im_entcolours_tint);
 
-    LoadSprites("graphics/sprites.png", &im_sprites, &im_sprites_surf);
+    SDL_Texture* temp_sprites;
+
+    LoadSprites("graphics/sprites.png", &temp_sprites, &im_sprites_surf);
     LoadSprites("graphics/flipsprites.png", &im_flipsprites, &im_flipsprites_surf);
 
     im_tiles3 = LoadImage("graphics/tiles3.png");
@@ -430,6 +432,29 @@ void GraphicsResources::init(void)
         SDL_assert(0 && "Failed to create minimap texture! See stderr.");
         return;
     }
+
+    SDL_Texture* temp_sprites_chaos;
+    LoadSprites("graphics/flipsprites.png", &temp_sprites_chaos, &im_sprites_chaos_surf);
+
+    int w, h;
+    SDL_QueryTexture(temp_sprites, NULL, NULL, &w, &h);
+    int w2, h2;
+    SDL_QueryTexture(temp_sprites_chaos, NULL, NULL, &w2, &h2);
+
+    im_sprites = SDL_CreateTexture(gameScreen.m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, SDL_max(w, w2), h + h2);
+    // Draw the sprites on top of each other
+    SDL_SetRenderTarget(gameScreen.m_renderer, im_sprites);
+    SDL_RenderCopy(gameScreen.m_renderer, temp_sprites, NULL, NULL);
+    SDL_Rect r;
+    r.x = 0;
+    r.y = h;
+    r.w = w2;
+    r.h = h2;
+    SDL_RenderCopy(gameScreen.m_renderer, temp_sprites_chaos, NULL, &r);
+    SDL_SetRenderTarget(gameScreen.m_renderer, NULL);
+
+    SDL_DestroyTexture(temp_sprites);
+    SDL_DestroyTexture(temp_sprites_chaos);
 }
 
 
@@ -468,4 +493,5 @@ void GraphicsResources::destroy(void)
 
     VVV_freefunc(SDL_FreeSurface, im_sprites_surf);
     VVV_freefunc(SDL_FreeSurface, im_flipsprites_surf);
+    VVV_freefunc(SDL_FreeSurface, im_sprites_chaos_surf);
 }

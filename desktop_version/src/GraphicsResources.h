@@ -20,6 +20,7 @@ public:
 
     SDL_Surface* im_sprites_surf;
     SDL_Surface* im_flipsprites_surf;
+    SDL_Surface* im_sprites_chaos_surf;
 
     SDL_Texture* im_tiles;
     SDL_Texture* im_tiles_white;

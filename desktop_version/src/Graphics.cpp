@@ -4,6 +4,7 @@
 #include <SDL.h>
 
 #include "Alloc.h"
+#include "Chaos.h"
 #include "Constants.h"
 #include "CustomLevels.h"
 #include "Editor.h"
@@ -240,7 +241,6 @@ void Graphics::updatetitlecolours(void)
     col_clock = getcol(18);
     col_trinket = getcol(18);
 }
-
 
 void Graphics::map_tab(int opt, const char* text, bool selected /*= false*/)
 {
@@ -2268,6 +2268,12 @@ void Graphics::drawentity(const int i, const int yoff)
 
 void Graphics::drawbackground( int t )
 {
+
+    if (Chaos::IsActive(SOLITAIRE))
+    {
+        return;
+    }
+
     switch(t)
     {
     case 1:
@@ -3516,6 +3522,7 @@ bool Graphics::reloadresources(void)
 
     make_array(&grphx.im_sprites_surf, sprites_surf, 32);
     make_array(&grphx.im_flipsprites_surf, flipsprites_surf, 32);
+    make_array(&grphx.im_sprites_chaos_surf, sprites_surf, 32);
 
     images[IMAGE_LEVELCOMPLETE] = grphx.im_image0;
     images[IMAGE_MINIMAP] = grphx.im_image1;

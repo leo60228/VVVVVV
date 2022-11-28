@@ -291,6 +291,22 @@ int FILESYSTEM_init(char *argvZero, char* baseDir, char *assetsPath, char* langD
 
     doesFontsDirExist = mount_pre_datazip(NULL, "fonts", "graphics/", fontsDir);
 
+    SDL_snprintf(output, sizeof(output), "%s%s",
+        basePath,
+        "chaos.zip"
+    );
+
+    /* Mount our chaos directory */
+    if (!PHYSFS_mount(output, NULL, 0))
+    {
+        vlog_error(
+            "Could not mount %s: %s",
+            output,
+            PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())
+        );
+        return 0;
+    }
+
     /* Mount the stock content last */
     if (assetsPath)
     {

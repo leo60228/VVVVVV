@@ -2441,9 +2441,14 @@ void gameinput(void)
         }
     }
 
-    if (key.isDown(SDLK_h) && !Chaos::IsActive(RANDOM_BLOCK))
+    if (key.isDown(SDLK_h) && !Chaos::IsActive(MODIFY_ENTITIES))
     {
-        Chaos::AddEffect(WARP_DIR);
+        Chaos::AddEffect(MODIFY_ENTITIES);
+    }
+
+    if (key.isDown(SDLK_j) && !Chaos::IsActive(BURST_ENTITIES))
+    {
+        Chaos::AddEffect(BURST_ENTITIES);
     }
 
     if (key.isDown(SDLK_SEMICOLON))
@@ -2666,13 +2671,17 @@ void gameinput(void)
 
                 if(game.press_left && !Chaos::IsActive(NO_LEFT))
                 {
-                    obj.entities[ie].ax = -3;
+                    obj.entities[ie].ax = Chaos::IsActive(ICE) ? -1 : -3;
                     obj.entities[ie].dir = 0;
                 }
                 else if (game.press_right && !Chaos::IsActive(NO_RIGHT))
                 {
-                    obj.entities[ie].ax = 3;
+                    obj.entities[ie].ax = Chaos::IsActive(ICE) ? 1 : 3;
                     obj.entities[ie].dir = 1;
+                }
+                if (Chaos::IsActive(RANDOM_ACCEL))
+                {
+                    obj.entities[ie].ax *= (fRandom() * 1) + 0.5;
                 }
             }
         }
@@ -2690,7 +2699,7 @@ void gameinput(void)
             {
                 for (size_t ie = 0; ie < obj.entities.size(); ++ie)
                 {
-                    if (obj.entities[ie].rule == 0)
+                    if (obj.entities[ie].rule == 0 && !Chaos::IsActive(ICE))
                     {
                         if (obj.entities[ie].vx < 0.0f)
                         {
@@ -2711,7 +2720,7 @@ void gameinput(void)
             {
                 for (size_t ie = 0; ie < obj.entities.size(); ++ie)
                 {
-                    if (obj.entities[ie].rule == 0)
+                    if (obj.entities[ie].rule == 0 && !Chaos::IsActive(ICE))
                     {
                         if (obj.entities[ie].vx > 0.0f)
                         {
