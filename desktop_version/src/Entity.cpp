@@ -2138,6 +2138,25 @@ void entityclass::createentity(int xp, int yp, int t, int meta1, int meta2, int 
 
         entityclonefix(&entity);
         break;
+
+      case 200: // Cosmic clone
+          entity.rule = 10;
+          entity.type = 200; //A special case!
+          entity.tile = 144;
+          entity.size = 0;
+          entity.colour = 8;
+          entity.cx = 6;
+          entity.cy = 2;
+          entity.w = 12;
+          entity.h = 21;
+          entity.dir = 0;
+          entity.harmful = true;
+
+          entity.para = meta1;
+          entity.behave = 10;
+
+          entity.gravity = false;
+          break;
     }
 
     entity.lerpoldxp = entity.xp;
@@ -2206,6 +2225,27 @@ bool entityclass::updateentities( int i )
     {
         switch(entities[i].type)
         {
+        case 200: // Cosmic clone
+            if (entities[i].para * CLONE_OFFSET >= Chaos::cloneInfo.size())
+            {
+                entities[i].xp = -100;
+                entities[i].yp = -100;
+                break;
+            }
+
+            CloneInfo info = Chaos::cloneInfo[entities[i].para * CLONE_OFFSET];
+            if (info.rx == (game.roomx - 100) && info.ry == (game.roomy - 100))
+            {
+                entities[i].xp = info.x;
+                entities[i].yp = info.y;
+                entities[i].tile = info.frame;
+            }
+            else
+            {
+                entities[i].xp = -100;
+                entities[i].yp = -100;
+            }
+            break;
         case 0:  //Player
             break;
         case 1:  //Movement behaviors
@@ -4867,6 +4907,7 @@ void entityclass::collisioncheck(int i, int j, bool scm /*= false*/)
     switch (entities[j].rule)
     {
     case 1:
+    case 10:
         if (!entities[j].harmful)
         {
             break;
@@ -4875,7 +4916,7 @@ void entityclass::collisioncheck(int i, int j, bool scm /*= false*/)
         //person i hits enemy or enemy bullet j
         if (entitycollide(i, j) && !map.invincibility)
         {
-            if (entities[i].size == 0 && (entities[j].size == 0 || entities[j].size == 12))
+            if (entities[i].size == 0 && (entities[j].size == 0 || entities[j].size == 12) && entities[j].rule != 10)
             {
                 //They're both sprites, so do a per pixel collision
                 SDL_Point colpoint1;

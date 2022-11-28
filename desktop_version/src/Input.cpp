@@ -2441,9 +2441,9 @@ void gameinput(void)
         }
     }
 
-    if (key.isDown(SDLK_g) && !Chaos::IsActive(RANDOM_SIZE))
+    /*if (key.isDown(SDLK_g) && !Chaos::IsActive(COSMIC_CLONES))
     {
-        Chaos::AddEffect(RANDOM_SIZE);
+        Chaos::AddEffect(COSMIC_CLONES);
     }
 
     if (key.isDown(SDLK_h) && !Chaos::IsActive(MODIFY_ENTITIES))
@@ -2454,7 +2454,7 @@ void gameinput(void)
     if (key.isDown(SDLK_j) && !Chaos::IsActive(BURST_ENTITIES))
     {
         Chaos::AddEffect(BURST_ENTITIES);
-    }
+    }*/
 
     if (key.isDown(SDLK_SEMICOLON))
     {

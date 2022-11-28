@@ -11,6 +11,18 @@
 
 #define INITIAL_WAIT_TIME 30 * 5
 
+#define CLONE_COUNT 5
+#define CLONE_OFFSET 16
+
+struct CloneInfo {
+    int rx; // game.roomx-100
+    int ry; // game.roomy-100
+    int x; // .xp
+    int y; // .yp
+    int frame; // .drawframe
+    int visible;
+};
+
 enum Effects
 {
     NO_FLIPPING = -1,   // [DISABLED] Can't flip!
@@ -50,18 +62,17 @@ enum Effects
     SHAKING,            // Shake the player
     FLAG,               // Change a random flag
     RANDOM_SIZE,        // Randomly change player size
+    COSMIC_CLONES,      // Cosmic clones!
 
 
     // Mario?
     // Music speed up?
     // Portal gun?
-    // Squished?
     // Invincibility star?
     // Explode a part of the room?
     // Turn into random sprites (without animation other than flipped grav)
     // Flying and noclip
     // Viridian has a gun
-    // Cosmic clones
     // Viridian ignores spikes
     // Flipping teleports Viridian upwards a bit
     // Press down or die
@@ -81,6 +92,11 @@ namespace Chaos
     };
 
     extern std::vector<ActiveEffect> activeEffects;
+
+    extern std::vector<CloneInfo> cloneInfo;
+
+    extern int cloneTimer;
+    extern int cloneCount;
 
     void Initialize();
 

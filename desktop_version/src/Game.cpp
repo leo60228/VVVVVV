@@ -5075,6 +5075,22 @@ void Game::deathsequence(void)
         if (deathseq == 12) obj.entities[i].invis = true;
         if (deathseq < 10) obj.entities[i].invis = true;
     }
+    if (Chaos::IsActive(COSMIC_CLONES))
+    {
+        for (int j = 0; j < obj.entities.size(); j++)
+        {
+            if (obj.entities[j].rule == 10)
+            {
+                obj.entities[j].invis = false;
+                if (deathseq == 25) obj.entities[j].invis = true;
+                if (deathseq == 20) obj.entities[j].invis = true;
+                if (deathseq == 16) obj.entities[j].invis = true;
+                if (deathseq == 14) obj.entities[j].invis = true;
+                if (deathseq == 12) obj.entities[j].invis = true;
+                if (deathseq <  10) obj.entities[j].invis = true;
+            }
+        }
+    }
     if (!nodeathmode)
     {
         if (INBOUNDS_VEC(i, obj.entities) && deathseq <= 1) obj.entities[i].invis = false;

@@ -1,3 +1,4 @@
+#include "Chaos.h"
 #include "Credits.h"
 #include "Entity.h"
 #include "Enums.h"
@@ -498,6 +499,18 @@ void gamelogic(void)
                 game.gravitycontrol = game.savegc;
                 graphics.textboxremove();
                 map.resetplayer(true);
+                if (Chaos::IsActive(COSMIC_CLONES))
+                {
+                    Chaos::cloneCount = 0;
+                    Chaos::cloneTimer = 30;
+                    for (size_t i = 0; i < obj.entities.size(); i++)
+                    {
+                        if (obj.entities[i].rule == 10)
+                        {
+                            obj.disableentity(i);
+                        }
+                    }
+                }
             }
         }
     }

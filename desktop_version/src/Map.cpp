@@ -2,6 +2,7 @@
 #include "Map.h"
 
 #include "Alloc.h"
+#include "Chaos.h"
 #include "Constants.h"
 #include "CustomLevels.h"
 #include "Entity.h"
@@ -901,7 +902,7 @@ void mapclass::gotoroom(int rx, int ry)
     for (int i = obj.entities.size() - 1; i >= 0; --i)
     {
         /* Iterate in reverse order to prevent unnecessary indice shifting */
-        if (obj.entities[i].rule == 0)
+        if (obj.entities[i].rule == 0 || (obj.entities[i].rule == 10 && Chaos::IsActive(COSMIC_CLONES)))
         {
             player_found = true;
             continue;
@@ -1058,6 +1059,15 @@ void mapclass::gotoroom(int rx, int ry)
     {
         //We've changed room? Let's bring our companion along!
         spawncompanion();
+    }
+
+    // Kludge for making clones update immediately
+    for (size_t i = 0; i < obj.entities.size(); i++)
+    {
+        if (obj.entities[i].type == 10)
+        {
+            obj.updateentities(i);
+        }
     }
 }
 

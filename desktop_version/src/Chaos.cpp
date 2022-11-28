@@ -19,6 +19,9 @@ namespace Chaos
 {
     int waitTime;
     std::vector<ActiveEffect> activeEffects;
+    std::vector<CloneInfo> cloneInfo;
+    int cloneTimer;
+    int cloneCount;
 }
 
 void Chaos::Initialize()
@@ -46,7 +49,6 @@ void Chaos::ProcessEffects()
 
     if (waitTime == -1)
     {
-        Chaos::AddEffect(SHAKING);
         Chaos::waitTime = INITIAL_WAIT_TIME;
     }
 
@@ -233,6 +235,12 @@ void Chaos::ApplyEffect(ActiveEffect effect)
 
         break;
     }
+    case COSMIC_CLONES:
+    {
+        cloneInfo.clear();
+        cloneTimer = 30;
+        cloneCount = 0;
+    }
     }
 }
 
@@ -240,6 +248,17 @@ void Chaos::UpdateEffect(ActiveEffect effect)
 {
     switch (effect.effect)
     {
+    case SIDEWAYS_FLIPPING:
+    {
+        int i = obj.getplayer();
+        if (INBOUNDS_VEC(i, obj.entities))
+        {
+            obj.entities[i].w = 21;
+            obj.entities[i].h = 12;
+            obj.entities[i].tile = 192;
+        }
+        break;
+    }
     case GRAVITATION_POTION:
         graphics.flipmode = (game.gravitycontrol == 1);
         break;
@@ -381,6 +400,55 @@ void Chaos::UpdateEffect(ActiveEffect effect)
         {
             obj.entities[i].xp += (game.framecounter % 2 == 0) ? -1 : 1;
         }
+    }
+    case COSMIC_CLONES:
+    {
+        int i = obj.getplayer();
+        if (INBOUNDS_VEC(i, obj.entities))
+        {
+            CloneInfo clone;
+            clone.rx = game.roomx - 100;
+            clone.ry = game.roomy - 100;
+            clone.x = obj.entities[i].xp;
+            clone.y = obj.entities[i].yp;
+            clone.frame = obj.entities[i].drawframe;
+            clone.visible = !obj.entities[i].invis;
+            cloneInfo.insert(cloneInfo.begin(), clone);
+        }
+
+        cloneTimer--;
+        if (cloneTimer <= 0)
+        {
+            cloneTimer += 30;
+            cloneCount++;
+            if (cloneCount <= CLONE_COUNT) {
+                obj.createentity(-100, -100, 200, cloneCount);
+            }
+        }
+
+        while (cloneInfo.size() > (CLONE_COUNT * CLONE_OFFSET) + 2) // 2 for leniency
+        {
+            cloneInfo.pop_back();
+        }
+
+        for (int i = 0; i < obj.entities.size(); i++)
+        {
+            if (obj.entities[i].behave > 0 && obj.entities[i].rule == 10)
+            {
+                obj.entities[i].invis = false;
+                if (obj.entities[i].behave == 2) obj.entities[i].invis = true;
+                if (obj.entities[i].behave == 6) obj.entities[i].invis = true;
+                if (obj.entities[i].behave >= 8) obj.entities[i].invis = true;
+
+                obj.entities[i].behave--;
+                if (obj.entities[i].behave <= 0)
+                {
+                    obj.entities[i].invis = false;
+                }
+            }
+        }
+
+
     }
     }
 }
