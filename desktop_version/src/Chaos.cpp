@@ -205,6 +205,19 @@ void Chaos::ApplyEffect(ActiveEffect effect)
         }
         break;
     }
+    case FLAG:
+    {
+        // Pick a random flag to turn on or off
+        int flag = (int)round(fRandom() * 99);
+        bool on = (int)round(fRandom()) == 1;
+
+        obj.flags[flag] = on;
+
+        graphics.createtextbox(" Flag " + std::to_string(flag) + (on ? " ON " : " OFF "), -1, 3, 192, 100, 255);
+        graphics.textboxtimer(45);
+
+        break;
+    }
     }
 }
 

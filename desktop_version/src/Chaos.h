@@ -48,6 +48,7 @@ enum Effects
     SIDEWAYS_FLIPPING,  // Sideways gravity (??)
     TORNADO,            // Entity tornado
     SHAKING,            // Shake the player
+    FLAG,               // Change a random flag
 
 
     // Mario?

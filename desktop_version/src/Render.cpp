@@ -213,8 +213,9 @@ static void menurender(void)
         graphics.draw_sprite((160 - 96) + 4 * 32, temp, 23, tr, tg, tb);
         graphics.draw_sprite((160 - 96) + 5 * 32, temp, 23, tr, tg, tb);
 #if defined(MAKEANDPLAY)
-        font::print(PR_RIGHT, 264, temp+35, loc::gettext("MAKE AND PLAY EDITION"), tr, tg, tb);
+        font::print(PR_RIGHT, 264, temp+35, loc::gettext("MAKE AND PLAY + CHAOS"), tr, tg, tb);
 #endif
+        font::print(PR_RIGHT, 264, temp + 35, loc::gettext("CHAOS EDITION"), tr, tg, tb);
 #ifdef INTERIM_VERSION_EXISTS
         font::print(PR_RIGHT | PR_FONT_8X8, 310, 200, COMMIT_DATE, tr/2, tg/2, tb/2);
         font::print(PR_RIGHT | PR_FONT_8X8, 310, 210, INTERIM_COMMIT, tr/2, tg/2, tb/2);
@@ -248,6 +249,9 @@ static void menurender(void)
         {
             font::print(0, 10, 230, left_msg, tr/2, tg/2, tb/2);
         }
+
+        font::print(PR_FONT_8X8, 10, 230, "https://ally.moe/", tr / 2, tg / 2, tb / 2);
+        font::print(PR_FONT_8X8, 10, 220, "Chaos v0.1-dev", tr / 2, tg / 2, tb / 2);
         break;
     }
     case Menu::levellist:
@@ -1794,8 +1798,9 @@ void titlerender(void)
         graphics.draw_sprite((160 - 96) + 4 * 32, temp, 23, tr, tg, tb);
         graphics.draw_sprite((160 - 96) + 5 * 32, temp, 23, tr, tg, tb);
 #if defined(MAKEANDPLAY)
-        font::print(PR_RIGHT, 264, temp+35, loc::gettext("MAKE AND PLAY EDITION"), tr, tg, tb);
+        font::print(PR_RIGHT, 264, temp+35, loc::gettext("MAKE AND PLAY + CHAOS"), tr, tg, tb);
 #endif
+        font::print(PR_RIGHT, 264, temp + 35, loc::gettext("CHAOS EDITION"), tr, tg, tb);
 
         char buffer[SCREEN_WIDTH_CHARS*2 + 1];
         vformat_buf(
