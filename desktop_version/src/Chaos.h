@@ -63,20 +63,34 @@ enum Effects
     FLAG,               // Change a random flag
     RANDOM_SIZE,        // Randomly change player size
     COSMIC_CLONES,      // Cosmic clones!
+    RANDOM_SPRITE,      // Make Viridian look like something else, but not in a glitchy way
+    FLIP_TELEPORT,      // Teleport a little on flip
+    BLINKING_VIRIDIAN,  // <blink></blink>
+    BLINKING_ENEMIES,   // <blink>enemy</blink>
+    INVINCIBILITY,      // invincible player & spikes arent solid like built-in invincibility
+    TRINKETS_KILL,      // trinkets kill!
+    TRANSLUCENT_WINDOW, // 50% translucent window lol
+    ROOM_EXPLODE,       // Explode a part of the room
 
 
     // Mario?
     // Music speed up?
     // Portal gun?
     // Invincibility star?
-    // Explode a part of the room?
-    // Turn into random sprites (without animation other than flipped grav)
     // Flying and noclip
     // Viridian has a gun
-    // Viridian ignores spikes
-    // Flipping teleports Viridian upwards a bit
     // Press down or die
     // Press down to die
+    // ddr but you gotta be off beat
+    // minecraft mode
+    // vignette around the player
+    // green demon (Green coin chases you)
+    // you get hurt and drop coins
+    // random entity turns into hammer bro
+    // spawn another viridian with inverted controls, if one dies both die
+    // zero gravity. aka no grav for viridian, and no friction
+    // add input lag!
+    // don't stop moving (pressing left makes you go left until you go right, etc)
     
 
     EFFECT_AMOUNT
@@ -90,6 +104,10 @@ namespace Chaos
         int timeRemaining;
         Effects effect;
     };
+
+    extern bool reloading;
+
+    extern int randomSprite;
 
     extern std::vector<ActiveEffect> activeEffects;
 

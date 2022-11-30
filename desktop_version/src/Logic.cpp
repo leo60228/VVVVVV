@@ -919,7 +919,7 @@ void gamelogic(void)
             if(map.towermode && game.lifeseq==0)
             {
                 int player = obj.getplayer();
-                if(!map.invincibility && INBOUNDS_VEC(player, obj.entities))
+                if(!map.invincibility && INBOUNDS_VEC(player, obj.entities) && !Chaos::IsActive(INVINCIBILITY))
                 {
                     if (obj.entities[player].yp-map.ypos <= 0)
                     {

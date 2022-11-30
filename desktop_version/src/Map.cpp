@@ -778,8 +778,9 @@ void mapclass::resetplayer(void)
 void mapclass::resetplayer(const bool player_died)
 {
     bool was_in_tower = towermode;
-    if (game.roomx != game.saverx || game.roomy != game.savery)
+    if (game.roomx != game.saverx || game.roomy != game.savery || Chaos::reloading)
     {
+        Chaos::reloading = false;
         gotoroom(game.saverx, game.savery);
     }
 
@@ -1064,7 +1065,7 @@ void mapclass::gotoroom(int rx, int ry)
     // Kludge for making clones update immediately
     for (size_t i = 0; i < obj.entities.size(); i++)
     {
-        if (obj.entities[i].type == 10)
+        if (obj.entities[i].rule == 10)
         {
             obj.updateentities(i);
         }

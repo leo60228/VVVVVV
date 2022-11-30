@@ -2441,20 +2441,10 @@ void gameinput(void)
         }
     }
 
-    /*if (key.isDown(SDLK_g) && !Chaos::IsActive(COSMIC_CLONES))
+    if (key.isDown(SDLK_g) && !Chaos::IsActive(ROOM_EXPLODE))
     {
-        Chaos::AddEffect(COSMIC_CLONES);
+        Chaos::AddEffect(ROOM_EXPLODE);
     }
-
-    if (key.isDown(SDLK_h) && !Chaos::IsActive(MODIFY_ENTITIES))
-    {
-        Chaos::AddEffect(MODIFY_ENTITIES);
-    }
-
-    if (key.isDown(SDLK_j) && !Chaos::IsActive(BURST_ENTITIES))
-    {
-        Chaos::AddEffect(BURST_ENTITIES);
-    }*/
 
     if (key.isDown(SDLK_SEMICOLON))
     {
@@ -2793,6 +2783,10 @@ void gameinput(void)
                     {
                         obj.entities[e].vy = Chaos::IsActive(JUMPING) ? -12 : -4;
                         obj.entities[e].ay = Chaos::IsActive(JUMPING) ? -8 : -3;
+                        if (Chaos::IsActive(FLIP_TELEPORT))
+                        {
+                            obj.entities[e].yp -= 16;
+                        }
                     }
                 }
                 music.playef(Sound_FLIP);
@@ -2821,6 +2815,10 @@ void gameinput(void)
                     {
                         obj.entities[e].vy = Chaos::IsActive(JUMPING) ? 16 : 4;
                         obj.entities[e].ay = Chaos::IsActive(JUMPING) ? 12 : 3;
+                        if (Chaos::IsActive(FLIP_TELEPORT))
+                        {
+                            obj.entities[e].yp += 16;
+                        }
                     }
                 }
                 music.playef(Sound_UNFLIP);
@@ -2915,6 +2913,12 @@ void gameinput(void)
     if (game.deathseq == -1 && (key.isDown(SDLK_r) || key.isDown(game.controllerButton_restart)) && !game.nodeathmode)// && map.custommode) //Have fun glitchrunners!
     {
         game.deathseq = 30;
+    }
+
+    if (!Chaos::reloading && key.isDown(SDLK_t))
+    {
+        game.deathseq = 30;
+        Chaos::reloading = true;
     }
 }
 

@@ -6,14 +6,15 @@
 #include <exception>
 
 #include "Chaos.h"
-#include "Screen.h"
 #include "Entity.h"
-#include "Maths.h"
 #include "Game.h"
 #include "Graphics.h"
+#include "Map.h"
+#include "Maths.h"
+#include "Music.h"
+#include "Screen.h"
 #include "UtilityClass.h"
 #include "Vlogging.h"
-#include "Map.h"
 
 namespace Chaos
 {
@@ -22,15 +23,18 @@ namespace Chaos
     std::vector<CloneInfo> cloneInfo;
     int cloneTimer;
     int cloneCount;
+    int randomSprite;
+    bool reloading;
 }
 
 void Chaos::Initialize()
 {
-    Chaos::waitTime = -1;
+    waitTime = -1;
     gameScreen.badSignalEffect = false;
     gameScreen.isFiltered = true;
     gameScreen.toggleLinearFilter();
     graphics.flipmode = false;
+    reloading = false;
 }
 
 void Chaos::AddEffect(Effects effect)
@@ -40,7 +44,6 @@ void Chaos::AddEffect(Effects effect)
     newEffect.effect = effect;
     activeEffects.push_back(newEffect);
     ApplyEffect(newEffect);
-    vlog_info("Effect %i applied", (int) effect);
 }
 
 void Chaos::ProcessEffects()
@@ -49,7 +52,8 @@ void Chaos::ProcessEffects()
 
     if (waitTime == -1)
     {
-        Chaos::waitTime = INITIAL_WAIT_TIME;
+        //AddEffect(BLINKING_ENEMIES);
+        waitTime = INITIAL_WAIT_TIME;
     }
 
 
@@ -77,6 +81,60 @@ void Chaos::ApplyEffect(ActiveEffect effect)
 {
     switch (effect.effect)
     {
+    case ROOM_EXPLODE:
+    {
+        int x = (int)round(fRandom() * 39);
+        int y = (int)round(fRandom() * 29);
+
+        int r = (int)round(fRandom() * 6) + 6;
+
+        music.playef(23);
+        game.screenshake = r;
+
+        // Around X and Y, use settile to place a filled circle of tile 0.
+
+        std::vector<point> positions;
+
+        for (int i = 0; i < 360; i++)
+        {
+            for (int j = 0; j < r; j++)
+            {
+                int x2 = (int)round(x + j * cos(i * M_PI / 180));
+                int y2 = (int)round(y + j * sin(i * M_PI / 180));
+
+                bool include = true;
+                for (int k = 0; k < positions.size(); k++)
+                {
+                    if (positions[k].x == x2 && positions[k].y == y2) include = false;
+                }
+
+                if (!include) continue;
+
+                if ((j == r - 5) && (fRandom() < 0.25)) include = false;
+                if ((j == r - 4) && (fRandom() < 0.50)) include = false;
+                if ((j == r - 3) && (fRandom() < 0.50)) include = false;
+                if ((j == r - 2) && (fRandom() < 0.75)) include = false;
+                if ((j == r - 1) && (fRandom() < 0.75)) include = false;
+
+                point p;
+                p.x = x2;
+                p.y = y2;
+                positions.push_back(p);
+
+                if (include)
+                {
+                    map.settile(x2, y2, 0);
+                }
+            }
+        }
+        graphics.foregrounddrawn = false;
+        break;
+
+    }
+    case TRANSLUCENT_WINDOW:
+    {
+        SDL_SetWindowOpacity(gameScreen.m_window, 0.5f);
+    }
     case RANDOM_COLOR:
     {
         // 0-23, 30-40, 100, 101, 102
@@ -172,13 +230,11 @@ void Chaos::ApplyEffect(ActiveEffect effect)
 
         // Pick a state
         game.state = validStates[(int)round(fRandom() * (validStates.size() - 1))];
-        vlog_info("Entering gamestate %i", (int)game.state);
         break;
     }
     case FAKE_TRINKET:
     {
         game.state = 1000;
-        vlog_info("Entering gamestate %i", (int)game.state);
         break;
     }
     case VVVVVVMAN:
@@ -241,6 +297,10 @@ void Chaos::ApplyEffect(ActiveEffect effect)
         cloneTimer = 30;
         cloneCount = 0;
     }
+    case RANDOM_SPRITE:
+    {
+        randomSprite = (int)round(fRandom() * 3);
+    }
     }
 }
 
@@ -248,6 +308,36 @@ void Chaos::UpdateEffect(ActiveEffect effect)
 {
     switch (effect.effect)
     {
+    case TRINKETS_KILL:
+    {
+        for (size_t i = 0; i < obj.entities.size(); i++)
+        {
+            if (obj.entities[i].type == 7)
+            {
+                obj.entities[i].harmful = true;
+            }
+        }
+    }
+    case BLINKING_VIRIDIAN:
+    {
+        int i = obj.getplayer();
+        if (INBOUNDS_VEC(i, obj.entities))
+        {
+            obj.entities[i].invis = ((game.framecounter % 30) < 15);
+        }
+        break;
+    }
+    case BLINKING_ENEMIES:
+    {
+        for (size_t i = 0; i < obj.entities.size(); i++)
+        {
+            if (obj.entities[i].harmful)
+            {
+                obj.entities[i].invis = ((game.framecounter % 30) < 15);
+            }
+        }
+        break;
+    }
     case SIDEWAYS_FLIPPING:
     {
         int i = obj.getplayer();
@@ -380,7 +470,7 @@ void Chaos::UpdateEffect(ActiveEffect effect)
         int i = obj.getplayer();
         if (INBOUNDS_VEC(i, obj.entities))
         {
-            obj.entities[i].xp--;
+            (Chaos::IsActive(SIDEWAYS_FLIPPING) ? obj.entities[i].yp : obj.entities[i].xp)--;
         }
         break;
     }
@@ -389,7 +479,7 @@ void Chaos::UpdateEffect(ActiveEffect effect)
         int i = obj.getplayer();
         if (INBOUNDS_VEC(i, obj.entities))
         {
-            obj.entities[i].xp++;
+            (Chaos::IsActive(SIDEWAYS_FLIPPING) ? obj.entities[i].yp : obj.entities[i].xp)++;
         }
         break;
     }
@@ -398,7 +488,7 @@ void Chaos::UpdateEffect(ActiveEffect effect)
         int i = obj.getplayer();
         if (INBOUNDS_VEC(i, obj.entities))
         {
-            obj.entities[i].xp += (game.framecounter % 2 == 0) ? -1 : 1;
+            (Chaos::IsActive(SIDEWAYS_FLIPPING) ? obj.entities[i].yp : obj.entities[i].xp) += (game.framecounter % 2 == 0) ? -1 : 1;
         }
     }
     case COSMIC_CLONES:
@@ -511,6 +601,10 @@ void Chaos::RemoveEffect(ActiveEffect effect)
 {
     switch (effect.effect)
     {
+    case TRANSLUCENT_WINDOW:
+    {
+        SDL_SetWindowOpacity(gameScreen.m_window, 1.0f);
+    }
     case RANDOM_COLOR:
         game.savecolour = 0;
         break;

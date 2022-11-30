@@ -25,7 +25,7 @@ static int getgridpoint( int t )
 
 bool entityclass::checktowerspikes(int t)
 {
-    if (map.invincibility)
+    if (map.invincibility || Chaos::IsActive(INVINCIBILITY))
     {
         return false;
     }
@@ -3496,6 +3496,53 @@ void entityclass::animateentities( int _i )
         switch(entities[_i].type)
         {
         case 0:
+            if (Chaos::IsActive(RANDOM_SPRITE))
+            {
+                int floor = 0;
+                int ceil = 0;
+
+                switch (Chaos::randomSprite)
+                {
+                case 0:
+                    floor = 17;
+                    ceil = 16;
+                    break;
+                case 1:
+                    floor = 21;
+                    ceil = 20;
+                    break;
+                case 2:
+                    floor = 184;
+                    ceil = 185;
+                    break;
+                case 3:
+                    floor = 188;
+                    ceil = 189;
+                    break;
+                }
+
+                entities[_i].drawframe = floor;
+
+                if (entities[_i].visualonground > 0 || entities[_i].visualonroof > 0)
+                {
+                    if (entities[_i].visualonground > 0) entities[_i].drawframe = floor;
+                    if (entities[_i].visualonroof > 0)   entities[_i].drawframe = ceil;
+                    if ((entities[_i].visualonground > 0) && ((entities[_i].visualonroof > 0)))
+                    {
+                        entities[_i].drawframe = (game.gravitycontrol == 0) ? floor : ceil;
+                    }
+                }
+                else
+                {
+                    entities[_i].drawframe = (game.gravitycontrol == 0) ? floor : ceil;
+                }
+
+                if (Chaos::randomSprite == 2 && game.deathseq > -1)
+                {
+                    entities[_i].drawframe = (game.gravitycontrol == 0) ? 186 : 187;
+                }
+                break;
+            }
             entities[_i].framedelay--;
             if(entities[_i].dir==1)
             {
@@ -4858,7 +4905,7 @@ void entityclass::entitycollisioncheck(void)
     }
 
     //Is the player colliding with any damageblocks?
-    if (checkdamage() && !map.invincibility)
+    if (checkdamage() && !map.invincibility && !Chaos::IsActive(INVINCIBILITY))
     {
         //usual player dead stuff
         game.deathseq = 30;
@@ -4867,7 +4914,7 @@ void entityclass::entitycollisioncheck(void)
     //how about the supercrewmate?
     if (game.supercrewmate)
     {
-        if (checkdamage(true) && !map.invincibility)
+        if (checkdamage(true) && !map.invincibility && !Chaos::IsActive(INVINCIBILITY))
         {
             //usual player dead stuff
             game.scmhurt = true;
@@ -4914,7 +4961,7 @@ void entityclass::collisioncheck(int i, int j, bool scm /*= false*/)
         }
 
         //person i hits enemy or enemy bullet j
-        if (entitycollide(i, j) && !map.invincibility)
+        if (entitycollide(i, j) && !map.invincibility && !Chaos::IsActive(INVINCIBILITY))
         {
             if (entities[i].size == 0 && (entities[j].size == 0 || entities[j].size == 12) && entities[j].rule != 10)
             {
@@ -4962,7 +5009,18 @@ void entityclass::collisioncheck(int i, int j, bool scm /*= false*/)
     case 3:   //Entity to entity
         if(entities[j].onentity>0)
         {
-            if (entitycollide(i, j)) entities[j].state = entities[j].onentity;
+            if (entitycollide(i, j))
+            {
+                if (!Chaos::IsActive(INVINCIBILITY) && Chaos::IsActive(TRINKETS_KILL) && (entities[j].type == 7))
+                {
+                    game.deathseq = 30;
+                    game.scmhurt = scm;
+                }
+                else
+                {
+                    entities[j].state = entities[j].onentity;
+                }
+            }
         }
         break;
     case 4:   //Person vs horizontal line!
