@@ -71,6 +71,8 @@ enum Effects
     TRINKETS_KILL,      // trinkets kill!
     TRANSLUCENT_WINDOW, // 50% translucent window lol
     ROOM_EXPLODE,       // Explode a part of the room
+    RANDOM_MUSIC,       // Random music
+    GOOFY_AAH,          // goofy ahh sounds
 
 
     // Mario?
@@ -91,6 +93,10 @@ enum Effects
     // zero gravity. aka no grav for viridian, and no friction
     // add input lag!
     // don't stop moving (pressing left makes you go left until you go right, etc)
+
+    // goofy ahh mode - stock sound effects
+
+    // squeaks are replaced with quacks
     
 
     EFFECT_AMOUNT

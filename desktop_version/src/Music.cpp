@@ -7,6 +7,7 @@
 
 #include "Alloc.h"
 #include "BinaryBlob.h"
+#include "Chaos.h"
 #include "FileSystemUtils.h"
 #include "Game.h"
 #include "Graphics.h"
@@ -17,6 +18,7 @@
 #include "Vlogging.h"
 
 #include <vector>
+#include <map>
 
 /* stb_vorbis */
 
@@ -86,6 +88,8 @@ class SoundTrack;
 class MusicTrack;
 static std::vector<SoundTrack> soundTracks;
 static std::vector<MusicTrack> musicTracks;
+
+static std::map<std::string, SoundTrack> goofySoundTracks;
 
 static FAudio* faudioctx = NULL;
 static FAudioMasteringVoice* masteringvoice = NULL;
@@ -773,6 +777,12 @@ void musicclass::init(void)
     soundTracks.push_back(SoundTrack( "sounds/trophy.wav" ));
     soundTracks.push_back(SoundTrack( "sounds/rescue.wav" ));
 
+    std::vector<std::string> customSounds = FILESYSTEM_enumerateAssets("sounds/goofy/");
+    for (int i = 0; i < customSounds.size(); i++)
+    {
+        goofySoundTracks.insert(std::make_pair(customSounds[i], SoundTrack(("sounds/goofy/" + customSounds[i]).c_str())));
+    }
+
 #ifdef VVV_COMPILEMUSIC
     binaryBlob musicWriteBlob;
 #define FOREACH_TRACK(blob, track_name) blob.AddFileToBinaryBlob("data/" track_name);
@@ -895,6 +905,14 @@ void musicclass::destroy(void)
         soundTracks[i].Dispose();
     }
     soundTracks.clear();
+
+    for (auto& track : goofySoundTracks)
+    {
+        track.second.Dispose();
+    }
+
+    goofySoundTracks.clear();
+
     SoundTrack::Destroy();
 
     for (size_t i = 0; i < musicTracks.size(); ++i)
@@ -1237,6 +1255,14 @@ void musicclass::changemusicarea(int x, int y)
         return;
     }
 
+    if (Chaos::IsActive(RANDOM_MUSIC))
+    {
+        track = -1 + floor(fRandom() * 14);
+        if (track >= 13) track = 12; // i dont want to think
+        if (track >= 0) play(track);
+        return;
+    }
+
     track = areamap[room];
 
     switch (track)
@@ -1271,8 +1297,153 @@ void musicclass::changemusicarea(int x, int y)
     niceplay(track);
 }
 
+void musicclass::goofySound(std::string sound)
+{
+    if (goofySoundTracks.count(sound + ".wav") > 0)
+    {
+        goofySoundTracks.find(sound + ".wav")->second.Play();
+    }
+}
+
+void musicclass::goofySound(std::vector<std::string> sounds)
+{
+    int limit = sounds.size();
+    int index = floor(fRandom() * limit);
+    if (index >= limit) index = limit - 1;
+
+    goofySound(sounds[index]);
+}
+
 void musicclass::playef(int t)
 {
+    // IDEAS: geometry dash death sound
+    if (Chaos::IsActive(GOOFY_AAH))
+    {
+        switch (t)
+        {
+        case 0:
+        case 1:
+        {
+            std::vector<std::string> sounds = { "boing", "boing_2", "boing_3", "boing_4", "boing_5", "boing_6", "boing_7", "boing_8", "boing_9", "boing_10", "drop", "dash", "mario_jump", "mario_paint_meow", "facebook", "one_hop_this_time", "slide_whistle", "slip", "slip_reverse" };
+            goofySound(sounds);
+            break;
+        }
+        case 2:
+        {
+            std::vector<std::string> sounds = { "among_us_kill", "bite", "body_reported", "bonk", "boum", "bouwomp", "bowling", "bruh", "buzzer", "error", "explosion", "fnaf", "goofy_bonk", "gaster", "isaac_death", "leave_vc", "minecraft_death", "minecraft_eat", "no_god", "oh_my_god", "oh_my_god_bro", "oh_my_god_what_the_hell", "oh_no", "on_sight", "oof", "pan_hit", "pan_hit_and_impact", "poke", "poke_2", "poke_3", "punch", "reverb_fart", "samsung", "scott", "scream", "smw_death", "splat", "sussy", "taco_bell", "undertale_hurt", "vine_boom", "waitwaitwaitwaitwait", "who_invited_this_dude_1", "who_invited_this_dude_2", "yoda_death", "you_stupid", "oh_hell_naw" };
+            goofySound(sounds);
+            break;
+        }
+        case 3:
+        case 25:
+        case 26:
+        case 27:
+        {
+            std::vector<std::string> sounds = { "cave_story_victory", "cha_ching", "coin", "facebook", "mario_paint_meow", "nice", "pvz", "were_finally_landing", "yippee" };
+            goofySound(sounds);
+            break;
+        }
+        case 4:
+        {
+            std::vector<std::string> sounds = { "cha_ching", "coin", "facebook" };
+            goofySound(sounds);
+            break;
+        }
+        case 5:
+        {
+            std::vector<std::string> sounds = { "21", "awww", "bite", "cha_ching", "coin", "discord_message", "drop", "mario_paint_meow", "nice", ""};
+            goofySound(sounds);
+            break;
+        }
+        case 6:
+        case 7:
+        {
+            std::vector<std::string> sounds = { "slip", "slipping", "gone", "gaster", "21"};
+            goofySound(sounds);
+            break;
+        }
+        case 8:
+        {
+            std::vector<std::string> sounds = { "boing", "boing_2", "boing_3", "boing_4", "boing_5", "boing_6", "boing_7", "boing_8", "boing_9", "boing_10", "drop", "dash", "mario_jump", "mario_paint_meow", "facebook", "one_hop_this_time", "slide_whistle", "slip", "slip_reverse", "oh_my_god", "oh_my_god_bro", "squeak", "who_invited_this_dude_1", "who_invited_this_dude_2"};
+            goofySound(sounds);
+            break;
+        }
+        case 9:
+        {
+            std::vector<std::string> sounds = { "vine_boom", "oh_my_god", "oh_my_god_bro", "oh_hell_naw"};
+            goofySound(sounds);
+            break;
+        }
+        case 10:
+        {
+            std::vector<std::string> sounds = { "slip", "slipping", "gone", "gaster", "21", "vine_boom", "on_sight"};
+            goofySound(sounds);
+            break;
+        }
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+        {
+            std::vector<std::string> sounds = { "21", "avocados_from_mexico", "awww", "baba_booey", "bruh", "discord_message", "facebook", "hello_hi", "mario_paint_meow", "mario_paint_baby", "nice", "oh_no", "oof", "reverb_fart", "samsung", "shut_up", "some", "vine_boom", "what", "you_stupid", "squeak", "oh_hell_naw" };
+            goofySound(sounds);
+            break;
+        }
+        case 17:
+        {
+            std::vector<std::string> sounds = { "poke", "poke_2", "poke_3" };
+            goofySound(sounds);
+            break;
+        }
+        case 18:
+        {
+            std::vector<std::string> sounds = { "windows_startup", "windows_startup_2" };
+            goofySound(sounds);
+            break;
+        }
+        case 19:
+        {
+            std::vector<std::string> sounds = { "taco_bell", "vine_boom" };
+            goofySound(sounds);
+            break;
+        }
+        case 20:
+        {
+            std::vector<std::string> sounds = { "you_got_mail" };
+            goofySound(sounds);
+            break;
+        }
+        case 21:
+        {
+            goofySound("taco_bell");
+            break;
+        }
+        case 22:
+        {
+            goofySound("vine_boom");
+            break;
+        }
+        case 23:
+        {
+            goofySound("vine_boom");
+            break;
+        }
+        case 24:
+        {
+            std::vector<std::string> sounds = { "tiptoes", "slip_reverse", "leave_vc" };
+            goofySound(sounds);
+            break;
+        }
+        default:
+            break;
+        }
+
+        return;
+    }
+
+
     if (!INBOUNDS_VEC(t, soundTracks))
     {
         return;

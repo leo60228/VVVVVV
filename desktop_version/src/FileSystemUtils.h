@@ -5,6 +5,8 @@
 class binaryBlob;
 
 #include <stddef.h>
+#include <string>
+#include <vector>
 
 // Forward declaration, including the entirety of tinyxml2.h across all files this file is included in is unnecessary
 namespace tinyxml2 { class XMLDocument; }
@@ -47,6 +49,7 @@ bool FILESYSTEM_loadTiXml2Document(const char *name, tinyxml2::XMLDocument& doc)
 bool FILESYSTEM_loadAssetTiXml2Document(const char *name, tinyxml2::XMLDocument& doc);
 
 void FILESYSTEM_enumerateLevelDirFileNames(void (*callback)(const char* filename));
+std::vector<std::string> FILESYSTEM_enumerateAssets(const char* folder);
 
 struct EnumHandle
 {

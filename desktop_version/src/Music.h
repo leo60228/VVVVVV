@@ -2,6 +2,8 @@
 #define MUSIC_H
 
 #include "BinaryBlob.h"
+#include <string>
+#include <vector>
 
 #define musicroom(rx, ry) ((rx) + ((ry) * 20))
 
@@ -90,6 +92,9 @@ public:
 
     int currentsong;
     int haltedsong;
+
+    void goofySound(std::string sound);
+    void goofySound(std::vector<std::string> sounds);
 
     void playef(int t);
     void pauseef(void);
