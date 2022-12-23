@@ -122,9 +122,11 @@ namespace Chaos
     extern int cloneTimer;
     extern int cloneCount;
 
+    extern bool randomEffects;
+
     void Initialize();
 
-    void AddEffect(Effects effect);
+    void AddEffect(Effects effect, bool infinite);
 
     void ProcessEffects();
 

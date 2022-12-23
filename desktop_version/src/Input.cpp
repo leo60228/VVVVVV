@@ -2441,11 +2441,6 @@ void gameinput(void)
         }
     }
 
-    if (key.isDown(SDLK_g) && !Chaos::IsActive(ROOM_EXPLODE))
-    {
-        Chaos::AddEffect(ROOM_EXPLODE);
-    }
-
     if (key.isDown(SDLK_SEMICOLON))
     {
         graphics.textboxremove();

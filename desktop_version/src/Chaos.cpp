@@ -25,6 +25,7 @@ namespace Chaos
     int cloneCount;
     int randomSprite;
     bool reloading;
+    bool randomEffects;
 }
 
 void Chaos::Initialize()
@@ -35,12 +36,22 @@ void Chaos::Initialize()
     gameScreen.toggleLinearFilter();
     graphics.flipmode = false;
     reloading = false;
+    randomEffects = true;
+
+    // goofy ahh mode:
+
+    //randomEffects = false;
+    //Chaos::AddEffect(GOOFY_AAH, true);
 }
 
-void Chaos::AddEffect(Effects effect)
+void Chaos::AddEffect(Effects effect, bool infinite)
 {
     ActiveEffect newEffect;
     newEffect.timeRemaining = (int) round(fRandom() * (MAX_EFFECT_TIME - MIN_EFFECT_TIME) + MIN_EFFECT_TIME);
+    if (infinite)
+    {
+        newEffect.timeRemaining = SDL_MAX_SINT32;
+    }
     newEffect.effect = effect;
     activeEffects.push_back(newEffect);
     ApplyEffect(newEffect);
@@ -52,7 +63,7 @@ void Chaos::ProcessEffects()
 
     if (waitTime == -1)
     {
-        AddEffect(GOOFY_AAH);
+        //AddEffect(GOOFY_AAH);
         waitTime = INITIAL_WAIT_TIME;
     }
 
@@ -60,17 +71,23 @@ void Chaos::ProcessEffects()
     if (waitTime <= 0)
     {
         waitTime = (int) round(fRandom() * (MAX_WAIT_TIME - MIN_WAIT_TIME) + MIN_WAIT_TIME);
-        //AddEffect((Effects) (int) round(fRandom() * (EFFECT_AMOUNT - 1)));
+        if (randomEffects)
+        {
+            AddEffect((Effects)(int)round(fRandom() * (EFFECT_AMOUNT - 1)), false);
+        }
     }
     for (int i = 0; i < activeEffects.size(); i++)
     {
         UpdateEffect(activeEffects[i]);
-        activeEffects[i].timeRemaining--;
+        if (activeEffects[i].timeRemaining != SDL_MAX_SINT32)
+        {
+            activeEffects[i].timeRemaining--;
+        }
         if (activeEffects[i].timeRemaining <= 0)
         {
-            //RemoveEffect(activeEffects[i]);
-            //activeEffects.erase(activeEffects.begin() + i);
-            //i--;
+            RemoveEffect(activeEffects[i]);
+            activeEffects.erase(activeEffects.begin() + i);
+            i--;
         }
     }
 }
@@ -82,6 +99,8 @@ void Chaos::ApplyEffect(ActiveEffect effect)
     {
     case ROOM_EXPLODE:
     {
+        waitTime = SDL_max(waitTime - 15, MIN_WAIT_TIME);
+        effect.timeRemaining = 0;
         int x = (int)round(fRandom() * 39);
         int y = (int)round(fRandom() * 29);
 
@@ -160,6 +179,8 @@ void Chaos::ApplyEffect(ActiveEffect effect)
     break;
     case BUS:
     {
+        waitTime = SDL_max(waitTime - 15, MIN_WAIT_TIME);
+        effect.timeRemaining = 0;
         obj.createentity(0, -200, 1, 16, 12, -64, -500, 320 + 64, 340);
         for (int i = 0; i < obj.entities.size(); i++)
         {
@@ -233,6 +254,8 @@ void Chaos::ApplyEffect(ActiveEffect effect)
     }
     case FAKE_TRINKET:
     {
+        waitTime = SDL_max(waitTime - 15, MIN_WAIT_TIME);
+        effect.timeRemaining = 0;
         game.state = 1000;
         break;
     }
@@ -253,6 +276,7 @@ void Chaos::ApplyEffect(ActiveEffect effect)
     }
     case RANDOM_SIZE:
     {
+        effect.timeRemaining = SDL_min(effect.timeRemaining + (30 * 30), SDL_MAX_SINT32);
         int i = obj.getplayer();
         if (INBOUNDS_VEC(i, obj.entities))
         {
@@ -279,6 +303,8 @@ void Chaos::ApplyEffect(ActiveEffect effect)
     }
     case FLAG:
     {
+        waitTime = SDL_max(waitTime - 15, MIN_WAIT_TIME);
+        effect.timeRemaining = 0;
         // Pick a random flag to turn on or off
         int flag = (int)round(fRandom() * 99);
         bool on = (int)round(fRandom()) == 1;

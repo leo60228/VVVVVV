@@ -1303,6 +1303,10 @@ void musicclass::goofySound(std::string sound)
     {
         goofySoundTracks.find(sound + ".wav")->second.Play();
     }
+    else
+    {
+        vlog_error("Unable to play file %s", sound);
+    }
 }
 
 void musicclass::goofySound(std::vector<std::string> sounds)
@@ -1338,7 +1342,7 @@ void musicclass::playef(int t)
         case 26:
         case 27:
         {
-            std::vector<std::string> sounds = { "cave_story_victory", "cha_ching", "coin", "facebook", "mario_paint_meow", "nice", "pvz", "were_finally_landing", "yippee", "xenogenesis", "want_a_break_from_the_ads", ""};
+            std::vector<std::string> sounds = { "cave_story_victory", "cha_ching", "coin", "facebook", "mario_paint_meow", "nice", "pvz", "were_finally_landing", "yippee", "xenogenesis", "want_a_break_from_the_ads"};
             goofySound(sounds);
             break;
         }
@@ -1410,7 +1414,7 @@ void musicclass::playef(int t)
         }
         case 20:
         {
-            std::vector<std::string> sounds = { "you_got_mail", "discord", "facebook" };
+            std::vector<std::string> sounds = { "you_got_mail", "discord_message", "facebook" };
             goofySound(sounds);
             break;
         }
