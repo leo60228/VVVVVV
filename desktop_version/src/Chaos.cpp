@@ -52,16 +52,15 @@ void Chaos::ProcessEffects()
 
     if (waitTime == -1)
     {
-        //AddEffect(BLINKING_ENEMIES);
+        AddEffect(GOOFY_AAH);
         waitTime = INITIAL_WAIT_TIME;
     }
-
 
     waitTime--;
     if (waitTime <= 0)
     {
         waitTime = (int) round(fRandom() * (MAX_WAIT_TIME - MIN_WAIT_TIME) + MIN_WAIT_TIME);
-        AddEffect((Effects) (int) round(fRandom() * (EFFECT_AMOUNT - 1)));
+        //AddEffect((Effects) (int) round(fRandom() * (EFFECT_AMOUNT - 1)));
     }
     for (int i = 0; i < activeEffects.size(); i++)
     {
@@ -69,9 +68,9 @@ void Chaos::ProcessEffects()
         activeEffects[i].timeRemaining--;
         if (activeEffects[i].timeRemaining <= 0)
         {
-            RemoveEffect(activeEffects[i]);
-            activeEffects.erase(activeEffects.begin() + i);
-            i--;
+            //RemoveEffect(activeEffects[i]);
+            //activeEffects.erase(activeEffects.begin() + i);
+            //i--;
         }
     }
 }

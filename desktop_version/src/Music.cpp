@@ -1316,7 +1316,6 @@ void musicclass::goofySound(std::vector<std::string> sounds)
 
 void musicclass::playef(int t)
 {
-    // IDEAS: geometry dash death sound
     if (Chaos::IsActive(GOOFY_AAH))
     {
         switch (t)
@@ -1330,7 +1329,7 @@ void musicclass::playef(int t)
         }
         case 2:
         {
-            std::vector<std::string> sounds = { "among_us_kill", "bite", "body_reported", "bonk", "boum", "bouwomp", "bowling", "bruh", "buzzer", "error", "explosion", "fnaf", "goofy_bonk", "gaster", "isaac_death", "leave_vc", "minecraft_death", "minecraft_eat", "no_god", "oh_my_god", "oh_my_god_bro", "oh_my_god_what_the_hell", "oh_no", "on_sight", "oof", "pan_hit", "pan_hit_and_impact", "poke", "poke_2", "poke_3", "punch", "reverb_fart", "samsung", "scott", "scream", "smw_death", "splat", "sussy", "taco_bell", "undertale_hurt", "vine_boom", "waitwaitwaitwaitwait", "who_invited_this_dude_1", "who_invited_this_dude_2", "yoda_death", "you_stupid", "oh_hell_naw" };
+            std::vector<std::string> sounds = { "among_us_kill", "bite", "body_reported", "bonk", "boum", "bouwomp", "bowling", "bruh", "buzzer", "error", "explosion", "fnaf", "goofy_bonk", "gaster", "isaac_death", "leave_vc", "minecraft_death", "minecraft_eat", "no_god", "oh_my_god", "oh_my_god_bro", "oh_my_god_what_the_hell", "oh_no", "on_sight", "oof", "pan_hit", "pan_hit_and_impact", "poke", "poke_2", "poke_3", "punch", "reverb_fart", "samsung", "scott", "scream", "smw_death", "splat", "sussy", "taco_bell", "undertale_hurt", "vine_boom", "waitwaitwaitwaitwait", "who_invited_this_dude_1", "who_invited_this_dude_2", "yoda_death", "you_stupid", "oh_hell_naw", "gangstas", "gd_death", "hells_kitchen", "moai", "my_life_be_like", "sicko_mode", "surprise", "the_price_is_wrong", "you_didnt_have_to", "bad_to_the_bone" };
             goofySound(sounds);
             break;
         }
@@ -1339,32 +1338,32 @@ void musicclass::playef(int t)
         case 26:
         case 27:
         {
-            std::vector<std::string> sounds = { "cave_story_victory", "cha_ching", "coin", "facebook", "mario_paint_meow", "nice", "pvz", "were_finally_landing", "yippee" };
+            std::vector<std::string> sounds = { "cave_story_victory", "cha_ching", "coin", "facebook", "mario_paint_meow", "nice", "pvz", "were_finally_landing", "yippee", "xenogenesis", "want_a_break_from_the_ads", ""};
             goofySound(sounds);
             break;
         }
         case 4:
         {
-            std::vector<std::string> sounds = { "cha_ching", "coin", "facebook" };
+            std::vector<std::string> sounds = { "cha_ching", "coin", "facebook", "correct", "ding" };
             goofySound(sounds);
             break;
         }
         case 5:
         {
-            std::vector<std::string> sounds = { "21", "awww", "bite", "cha_ching", "coin", "discord_message", "drop", "mario_paint_meow", "nice", ""};
+            std::vector<std::string> sounds = { "21", "awww", "bite", "cha_ching", "coin", "discord_message", "drop", "mario_paint_meow", "nice", "correct", "ding"};
             goofySound(sounds);
             break;
         }
         case 6:
         case 7:
         {
-            std::vector<std::string> sounds = { "slip", "slipping", "gone", "gaster", "21"};
+            std::vector<std::string> sounds = { "slip", "slipping", "gone", "gaster", "21", "ayo_the_pizza_here", "moai", "only_a_spoonful", "skibbity_bap_m_dada", "what_the_dog_doin" };
             goofySound(sounds);
             break;
         }
         case 8:
         {
-            std::vector<std::string> sounds = { "boing", "boing_2", "boing_3", "boing_4", "boing_5", "boing_6", "boing_7", "boing_8", "boing_9", "boing_10", "drop", "dash", "mario_jump", "mario_paint_meow", "facebook", "one_hop_this_time", "slide_whistle", "slip", "slip_reverse", "oh_my_god", "oh_my_god_bro", "squeak", "who_invited_this_dude_1", "who_invited_this_dude_2"};
+            std::vector<std::string> sounds = { "boing", "boing_2", "boing_3", "boing_4", "boing_5", "boing_6", "boing_7", "boing_8", "boing_9", "boing_10", "drop", "dash", "mario_jump", "mario_paint_meow", "facebook", "one_hop_this_time", "slide_whistle", "slip", "slip_reverse", "oh_my_god", "oh_my_god_bro", "squeak", "who_invited_this_dude_1", "who_invited_this_dude_2", "what_the_dog_doin", "surprise", "ayo_the_pizza_here"};
             goofySound(sounds);
             break;
         }
@@ -1376,7 +1375,7 @@ void musicclass::playef(int t)
         }
         case 10:
         {
-            std::vector<std::string> sounds = { "slip", "slipping", "gone", "gaster", "21", "vine_boom", "on_sight"};
+            std::vector<std::string> sounds = { "slip", "slipping", "gone", "gaster", "21", "vine_boom", "on_sight", "leave_vc" };
             goofySound(sounds);
             break;
         }
@@ -1387,13 +1386,13 @@ void musicclass::playef(int t)
         case 15:
         case 16:
         {
-            std::vector<std::string> sounds = { "21", "avocados_from_mexico", "awww", "baba_booey", "bruh", "discord_message", "facebook", "hello_hi", "mario_paint_meow", "mario_paint_baby", "nice", "oh_no", "oof", "reverb_fart", "samsung", "shut_up", "some", "vine_boom", "what", "you_stupid", "squeak", "oh_hell_naw" };
+            std::vector<std::string> sounds = { "21", "avocados_from_mexico", "awww", "baba_booey", "bruh", "discord_message", "facebook", "hello_hi", "mario_paint_meow", "mario_paint_baby", "nice", "oh_no", "oof", "reverb_fart", "samsung", "shut_up", "some", "vine_boom", "what", "you_stupid", "squeak", "oh_hell_naw", "ayo_the_pizza_here", "my_life_be_like", "nanananana", "nokia", "only_a_spoonful", "sicko_mode", "skibbity_bap_m_dada", "what_the_dog_doin"};
             goofySound(sounds);
             break;
         }
         case 17:
         {
-            std::vector<std::string> sounds = { "poke", "poke_2", "poke_3" };
+            std::vector<std::string> sounds = { "poke", "poke_2", "poke_3", "ding", "correct" };
             goofySound(sounds);
             break;
         }
@@ -1411,7 +1410,7 @@ void musicclass::playef(int t)
         }
         case 20:
         {
-            std::vector<std::string> sounds = { "you_got_mail" };
+            std::vector<std::string> sounds = { "you_got_mail", "discord", "facebook" };
             goofySound(sounds);
             break;
         }
