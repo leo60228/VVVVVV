@@ -1091,6 +1091,10 @@ void Game::updatestate(void)
             if(INBOUNDS_VEC(i, obj.entities) && obj.entities[i].tile == 0)
             {
                 obj.entities[i].tile = 144;
+                if (Chaos::IsActive(SIDEWAYS_FLIPPING))
+                {
+                    obj.entities[i].tile = 216;
+                }
                 music.playef(Sound_CRY);
             }
             setstate(0);

@@ -6,6 +6,7 @@
 
 #include "Alloc.h"
 #include "Constants.h"
+#include "Chaos.h"
 #include "CustomLevels.h"
 #include "Editor.h"
 #include "Entity.h"
@@ -964,6 +965,13 @@ void scriptclass::run(void)
                 else if (INBOUNDS_VEC(i, obj.entities))
                 {
                     obj.entities[i].tile = 144;
+                    if (i == obj.getplayer())
+                    {
+                        if (Chaos::IsActive(SIDEWAYS_FLIPPING))
+                        {
+                            obj.entities[i].tile = 216;
+                        }
+                    }
                 }
             }
             else if (words[0] == "changecustommood")
@@ -1021,6 +1029,20 @@ void scriptclass::run(void)
                 else if (INBOUNDS_VEC(i, obj.entities))
                 {
                     obj.entities[i].tile = 144;
+                    if (i == obj.getplayer())
+                    {
+                        if (Chaos::IsActive(SIDEWAYS_FLIPPING))
+                        {
+                            if (ss_toi(words[2]) == 0)
+                            {
+                                obj.entities[i].tile = 192;
+                            }
+                            else
+                            {
+                                obj.entities[i].tile = 216;
+                            }
+                        }
+                    }
                 }
             }
             else if (words[0] == "changetile")
@@ -1908,6 +1930,13 @@ void scriptclass::run(void)
                     if (obj.entities[i].rule == 6 || obj.entities[i].rule == 0)
                     {
                         obj.entities[i].tile = 144;
+                        if (i == obj.getplayer())
+                        {
+                            if (Chaos::IsActive(SIDEWAYS_FLIPPING))
+                            {
+                                obj.entities[i].tile = 216;
+                            }
+                        }
                     }
                 }
             }

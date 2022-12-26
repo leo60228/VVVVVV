@@ -3586,9 +3586,18 @@ void entityclass::animateentities( int _i )
 
             if (game.deathseq > -1)
             {
-                entities[_i].drawframe=13;
-                if (entities[_i].dir == 1) entities[_i].drawframe = 12;
-                if (game.gravitycontrol == 1) entities[_i].drawframe += 2;
+                if (Chaos::IsActive(SIDEWAYS_FLIPPING))
+                {
+                    entities[_i].drawframe = 204;
+                    if (entities[_i].dir == 0) entities[_i].drawframe++;
+                    if (game.gravitycontrol == 1) entities[_i].drawframe += 2;
+                }
+                else
+                {
+                    entities[_i].drawframe = 13;
+                    if (entities[_i].dir == 1) entities[_i].drawframe = 12;
+                    if (game.gravitycontrol == 1) entities[_i].drawframe += 2;
+                }
             }
             break;
         case 1:
@@ -4722,13 +4731,16 @@ void entityclass::updateentitylogic( int t )
     {
         if (entities[t].rule == 0)
         {
-            if(game.gravitycontrol==0)
+            if (!Chaos::IsActive(NOCLIP))
             {
-                entities[t].ay = 3;
-            }
-            else
-            {
-                entities[t].ay = -3;
+                if (game.gravitycontrol == 0)
+                {
+                    entities[t].ay = 3;
+                }
+                else
+                {
+                    entities[t].ay = -3;
+                }
             }
         }
         else if (entities[t].rule == 7)
@@ -5099,7 +5111,7 @@ void entityclass::stuckprevention(int t)
     }
 
     // Can't have this entity (player or supercrewmate) being stuck...
-    if (!testwallsx(t, entities[t].xp, entities[t].yp, true))
+    if (!testwallsx(t, entities[t].xp, entities[t].yp, true) && !Chaos::IsActive(NOCLIP))
     {
         // Let's try to get out...
         if (game.gravitycontrol == 0)

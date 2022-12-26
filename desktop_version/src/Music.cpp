@@ -1390,7 +1390,7 @@ void musicclass::playef(int t)
         case 15:
         case 16:
         {
-            std::vector<std::string> sounds = { "21", "avocados_from_mexico", "awww", "baba_booey", "bruh", "discord_message", "facebook", "hello_hi", "mario_paint_meow", "mario_paint_baby", "nice", "oh_no", "oof", "reverb_fart", "samsung", "shut_up", "some", "vine_boom", "what", "you_stupid", "squeak", "oh_hell_naw", "ayo_the_pizza_here", "my_life_be_like", "nanananana", "nokia", "only_a_spoonful", "sicko_mode", "skibbity_bap_m_dada", "what_the_dog_doin"};
+            std::vector<std::string> sounds = { "21", "avocados_from_mexico", "awww", "baba_booey", "bruh", "discord_message", "facebook", "hello_hi", "mario_paint_meow", "mario_paint_baby", "nice", "oh_no", "oof", "reverb_fart", "samsung", "shut_up", "some", "vine_boom", "what", "you_stupid", "squeak", "oh_hell_naw", "ayo_the_pizza_here", "my_life_be_like", "nanananana", "nokia", "only_a_spoonful", "sicko_mode", "skibbity_bap_m_dada", "what_the_dog_doin", "ah_shit" };
             goofySound(sounds);
             break;
         }

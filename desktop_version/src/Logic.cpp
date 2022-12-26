@@ -206,6 +206,10 @@ void gamelogic(void)
             if (INBOUNDS_VEC(i, obj.entities))
             {
                 obj.entities[i].tile = 144;
+                if (Chaos::IsActive(SIDEWAYS_FLIPPING))
+                {
+                    obj.entities[i].tile = 216;
+                }
             }
             music.playef(Sound_CRY);
         }
@@ -810,6 +814,10 @@ void gamelogic(void)
                     if (INBOUNDS_VEC(i, obj.entities))
                     {
                         obj.entities[i].tile = 144;
+                        if (Chaos::IsActive(SIDEWAYS_FLIPPING))
+                        {
+                            obj.entities[i].tile = 216;
+                        }
                     }
                     music.playef(Sound_CRY);
                 }

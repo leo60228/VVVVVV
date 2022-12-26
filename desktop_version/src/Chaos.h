@@ -73,10 +73,10 @@ enum Effects
     ROOM_EXPLODE,       // Explode a part of the room
     RANDOM_MUSIC,       // Random music
     GOOFY_AAH,          // goofy ahh sounds
+    NOCLIP,             // noclip
 
 
     // Mario?
-    // Music speed up?
     // Portal gun?
     // Invincibility star?
     // Flying and noclip
@@ -88,13 +88,8 @@ enum Effects
     // vignette around the player
     // green demon (Green coin chases you)
     // you get hurt and drop coins
-    // random entity turns into hammer bro
-    // spawn another viridian with inverted controls, if one dies both die
-    // zero gravity. aka no grav for viridian, and no friction
     // add input lag!
     // don't stop moving (pressing left makes you go left until you go right, etc)
-
-    // goofy ahh mode - stock sound effects
 
     // squeaks are replaced with quacks
     

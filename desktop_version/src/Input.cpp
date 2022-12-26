@@ -2659,17 +2659,17 @@ void gameinput(void)
                     }
                 }
 
-                if(game.press_left && !Chaos::IsActive(NO_LEFT))
+                if(game.press_left && !Chaos::IsActive(NO_LEFT) && !Chaos::IsActive(NOCLIP))
                 {
                     obj.entities[ie].ax = Chaos::IsActive(ICE) ? -1 : -3;
                     obj.entities[ie].dir = 0;
                 }
-                else if (game.press_right && !Chaos::IsActive(NO_RIGHT))
+                else if (game.press_right && !Chaos::IsActive(NO_RIGHT) && !Chaos::IsActive(NOCLIP))
                 {
                     obj.entities[ie].ax = Chaos::IsActive(ICE) ? 1 : 3;
                     obj.entities[ie].dir = 1;
                 }
-                if (Chaos::IsActive(RANDOM_ACCEL))
+                if (Chaos::IsActive(RANDOM_ACCEL) && !Chaos::IsActive(NOCLIP))
                 {
                     obj.entities[ie].ax *= (fRandom() * 1) + 0.5;
                 }
@@ -2677,9 +2677,38 @@ void gameinput(void)
         }
     }
 
+    if (Chaos::IsActive(NOCLIP))
+    {
+        for (size_t ie = 0; ie < obj.entities.size(); ++ie)
+        {
+            if (obj.entities[ie].rule == 0) {
+                if (key.isDown(KEYBOARD_LEFT))
+                {
+                    obj.entities[ie].xp -= 6;
+                    obj.entities[ie].dir = 0;
+                }
+                if (key.isDown(KEYBOARD_RIGHT))
+                {
+                    obj.entities[ie].xp += 6;
+                    obj.entities[ie].dir = 1;
+                }
+                if (key.isDown(KEYBOARD_UP))
+                {
+                    obj.entities[ie].yp -= 6;
+                    game.gravitycontrol = 0;
+                }
+                if (key.isDown(KEYBOARD_DOWN))
+                {
+                    obj.entities[ie].yp += 6;
+                    game.gravitycontrol = 1;
+                }
+            }
+        }
+    }
+
     if (has_control)
     {
-        if (game.press_left && !Chaos::IsActive(NO_LEFT))
+        if (game.press_left && !Chaos::IsActive(NO_LEFT) && !Chaos::IsActive(NOCLIP))
         {
             game.tapleft++;
         }
@@ -2700,7 +2729,7 @@ void gameinput(void)
             }
             game.tapleft = 0;
         }
-        if (game.press_right && !Chaos::IsActive(NO_RIGHT))
+        if (game.press_right && !Chaos::IsActive(NO_RIGHT) && !Chaos::IsActive(NOCLIP))
         {
             game.tapright++;
         }
@@ -2760,7 +2789,7 @@ void gameinput(void)
             bool infiniflip_kludge = false;
 
             game.jumppressed--;
-            if ((obj.entities[ie].onground > 0 || Chaos::IsActive(INFINIFLIP)) && game.gravitycontrol == 0 && !Chaos::IsActive(NO_FLIPPING))
+            if ((obj.entities[ie].onground > 0 || Chaos::IsActive(INFINIFLIP)) && game.gravitycontrol == 0 && !Chaos::IsActive(NO_FLIPPING) && !Chaos::IsActive(NOCLIP))
             {
                 game.gravitycontrol = 1;
                 if (Chaos::IsActive(JUMPING))
@@ -2792,7 +2821,7 @@ void gameinput(void)
                     infiniflip_kludge = true;
                 }
             }
-            if ((obj.entities[ie].onroof > 0 || Chaos::IsActive(INFINIFLIP)) && game.gravitycontrol == 1 && !Chaos::IsActive(NO_FLIPPING) && !infiniflip_kludge)
+            if ((obj.entities[ie].onroof > 0 || Chaos::IsActive(INFINIFLIP)) && game.gravitycontrol == 1 && !Chaos::IsActive(NO_FLIPPING) && !infiniflip_kludge && !Chaos::IsActive(NOCLIP))
             {
                 game.gravitycontrol = 0;
                 if (Chaos::IsActive(JUMPING))

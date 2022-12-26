@@ -38,10 +38,9 @@ void Chaos::Initialize()
     reloading = false;
     randomEffects = true;
 
-    // goofy ahh mode:
 
-    //randomEffects = false;
-    //Chaos::AddEffect(GOOFY_AAH, true);
+    randomEffects = false;
+    Chaos::AddEffect(GOOFY_AAH, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)
@@ -297,7 +296,14 @@ void Chaos::ApplyEffect(ActiveEffect effect)
         {
             obj.entities[i].w = 21;
             obj.entities[i].h = 12;
-            obj.entities[i].tile = 192;
+            if (obj.entities[i].tile == 0)
+            {
+                obj.entities[i].tile = 192;
+            }
+            else if (obj.entities[i].tile == 144)
+            {
+                obj.entities[i].tile = 228;
+            }
         }
         break;
     }
@@ -370,7 +376,14 @@ void Chaos::UpdateEffect(ActiveEffect effect)
         {
             obj.entities[i].w = 21;
             obj.entities[i].h = 12;
-            obj.entities[i].tile = 192;
+            if (obj.entities[i].tile == 0)
+            {
+                obj.entities[i].tile = 192;
+            }
+            else if (obj.entities[i].tile == 144)
+            {
+                obj.entities[i].tile = 216;
+            }
         }
         break;
     }
