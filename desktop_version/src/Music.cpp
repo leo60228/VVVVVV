@@ -1333,7 +1333,7 @@ void musicclass::playef(int t)
         }
         case 2:
         {
-            std::vector<std::string> sounds = { "among_us_kill", "bite", "body_reported", "bonk", "boum", "bouwomp", "bowling", "bruh", "buzzer", "error", "explosion", "fnaf", "goofy_bonk", "gaster", "isaac_death", "leave_vc", "minecraft_death", "minecraft_eat", "no_god", "oh_my_god", "oh_my_god_bro", "oh_my_god_what_the_hell", "oh_no", "on_sight", "oof", "pan_hit", "pan_hit_and_impact", "poke", "poke_2", "poke_3", "punch", "reverb_fart", "samsung", "scott", "scream", "smw_death", "splat", "sussy", "taco_bell", "undertale_hurt", "vine_boom", "waitwaitwaitwaitwait", "who_invited_this_dude_1", "who_invited_this_dude_2", "yoda_death", "you_stupid", "oh_hell_naw", "gangstas", "gd_death", "hells_kitchen", "moai", "my_life_be_like", "sicko_mode", "surprise", "the_price_is_wrong", "you_didnt_have_to", "bad_to_the_bone" };
+            std::vector<std::string> sounds = { "among_us_kill", "bite", "body_reported", "bonk", "boum", "bouwomp", "bowling", "bruh", "buzzer", "carhorn", "error", "explosion", "fnaf", "goofy_bonk", "gaster", "isaac_death", "leave_vc", "minecraft_death", "minecraft_eat", "no_god", "oh_my_god", "oh_my_god_bro", "oh_my_god_what_the_hell", "oh_no", "on_sight", "oof", "pan_hit", "pan_hit_and_impact", "poke", "poke_2", "poke_3", "punch", "reverb_fart", "samsung", "scott", "scream", "smw_death", "splat", "sussy", "taco_bell", "undertale_hurt", "vine_boom", "waitwaitwaitwaitwait", "who_invited_this_dude_1", "who_invited_this_dude_2", "yoda_death", "you_stupid", "oh_hell_naw", "gangstas", "gd_death", "hells_kitchen", "moai", "my_life_be_like", "sicko_mode", "surprise", "the_price_is_wrong", "you_didnt_have_to", "bad_to_the_bone" };
             goofySound(sounds);
             break;
         }
@@ -1390,7 +1390,7 @@ void musicclass::playef(int t)
         case 15:
         case 16:
         {
-            std::vector<std::string> sounds = { "21", "avocados_from_mexico", "awww", "baba_booey", "bruh", "discord_message", "facebook", "hello_hi", "mario_paint_meow", "mario_paint_baby", "nice", "oh_no", "oof", "reverb_fart", "samsung", "shut_up", "some", "vine_boom", "what", "you_stupid", "squeak", "oh_hell_naw", "ayo_the_pizza_here", "my_life_be_like", "nanananana", "nokia", "only_a_spoonful", "sicko_mode", "skibbity_bap_m_dada", "what_the_dog_doin", "ah_shit" };
+            std::vector<std::string> sounds = { "21", "avocados_from_mexico", "awww", "baba_booey", "bruh", "carhorn", "discord_message", "facebook", "hello_hi", "mario_paint_meow", "mario_paint_baby", "nice", "oh_no", "oof", "reverb_fart", "samsung", "shut_up", "some", "vine_boom", "what", "you_stupid", "squeak", "oh_hell_naw", "ayo_the_pizza_here", "my_life_be_like", "nanananana", "nokia", "only_a_spoonful", "sicko_mode", "skibbity_bap_m_dada", "what_the_dog_doin", "ah_shit" };
             goofySound(sounds);
             break;
         }

@@ -38,9 +38,8 @@ void Chaos::Initialize()
     reloading = false;
     randomEffects = true;
 
-
-    randomEffects = false;
-    Chaos::AddEffect(GOOFY_AAH, true);
+    //randomEffects = false;
+    //Chaos::AddEffect(GOOFY_AAH, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)
@@ -62,7 +61,6 @@ void Chaos::ProcessEffects()
 
     if (waitTime == -1)
     {
-        //AddEffect(GOOFY_AAH);
         waitTime = INITIAL_WAIT_TIME;
     }
 
