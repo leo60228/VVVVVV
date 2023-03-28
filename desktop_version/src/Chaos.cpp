@@ -38,8 +38,8 @@ void Chaos::Initialize()
     reloading = false;
     randomEffects = true;
 
-    //randomEffects = false;
-    //Chaos::AddEffect(GOOFY_AAH, true);
+    // randomEffects = false;
+    // Chaos::AddEffect(GOOFY_AAH, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)

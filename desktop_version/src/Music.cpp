@@ -780,7 +780,7 @@ void musicclass::init(void)
 
     EnumHandle handle = {};
     const char* item;
-    while ((item = FILESYSTEM_enumerateAssets("sounds/goofy/", &handle)) != NULL)
+    while ((item = FILESYSTEM_enumerate("sounds/goofy", &handle)) != NULL)
     {
         goofySoundTracks.insert(std::make_pair(item, SoundTrack(("sounds/goofy/" + std::string(item)).c_str())));
     }
