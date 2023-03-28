@@ -1,11 +1,8 @@
 #include <tinyxml2.h>
 #include <vector>
 
-<<<<<<< HEAD
 #include "ButtonGlyphs.h"
-=======
 #include "Chaos.h"
->>>>>>> 107210f6 (initial effects!)
 #include "Credits.h"
 #include "CustomLevels.h"
 #include "Editor.h"

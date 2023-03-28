@@ -2266,27 +2266,13 @@ void Graphics::drawentity(const int i, const int yoff)
     case 14:
     {
         // Variable size Viridian for chaos!
-        if (!INBOUNDS_VEC(obj.entities[i].drawframe, spritesvec))
-        {
-            return;
-        }
-
-        tpoint.x = xp; tpoint.y = yp - yoff;
-        setcolreal(obj.entities[i].realcol);
-
         float widthMult = 1.0f;
         float heightMult = 1.0f;
 
         widthMult = (float)obj.entities[i].w / 12;
         heightMult = (float)obj.entities[i].h / 21;
 
-        setRect(drawRect, xp, yp - yoff, sprites_rect.x * widthMult, sprites_rect.y * heightMult);
-        SDL_Surface* TempSurface = ScaleSurface(spritesvec[obj.entities[i].drawframe], widthMult * sprites_rect.w, heightMult * sprites_rect.h);
-        BlitSurfaceColoured(TempSurface, NULL, backBuffer, &drawRect, ct);
-        SDL_FreeSurface(TempSurface);
-
-
-
+        draw_grid_tile(grphx.im_sprites, obj.entities[i].drawframe, xp, yp - yoff, sprites_rect.w, sprites_rect.h, obj.entities[i].realcol, widthMult, heightMult);
         break;
     }
     }

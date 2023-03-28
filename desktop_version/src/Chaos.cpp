@@ -108,7 +108,7 @@ void Chaos::ApplyEffect(ActiveEffect effect)
 
         // Around X and Y, use settile to place a filled circle of tile 0.
 
-        std::vector<point> positions;
+        std::vector<SDL_Point> positions;
 
         for (int i = 0; i < 360; i++)
         {
@@ -131,7 +131,7 @@ void Chaos::ApplyEffect(ActiveEffect effect)
                 if ((j == r - 2) && (fRandom() < 0.75)) include = false;
                 if ((j == r - 1) && (fRandom() < 0.75)) include = false;
 
-                point p;
+                SDL_Point p;
                 p.x = x2;
                 p.y = y2;
                 positions.push_back(p);
@@ -210,7 +210,7 @@ void Chaos::ApplyEffect(ActiveEffect effect)
         int i = obj.getplayer();
         if (INBOUNDS_VEC(i, obj.entities))
         {
-            obj.entities[i].tile = (int)round(fRandom() * (graphics.sprites.size() - 1));
+            obj.entities[i].tile = (int)round(fRandom() * (graphics.sprites_surf.size() - 1));
         }
         break;
     }
@@ -467,7 +467,7 @@ void Chaos::UpdateEffect(ActiveEffect effect)
         if (INBOUNDS_VEC(i, obj.entities))
         {
             obj.entities[i].tile++;
-            if (obj.entities[i].tile >= graphics.sprites.size())
+            if (obj.entities[i].tile >= graphics.sprites_surf.size())
             {
                 obj.entities[i].tile = 0;
             }
@@ -480,7 +480,7 @@ void Chaos::UpdateEffect(ActiveEffect effect)
         {
             for (int i = 0; i < obj.entities.size(); i++)
             {
-                obj.entities[i].tile = (int)round(fRandom() * (graphics.sprites.size() - 1));
+                obj.entities[i].tile = (int)round(fRandom() * (graphics.sprites_surf.size() - 1));
             }
         }
         break;
@@ -621,7 +621,7 @@ void Chaos::ModifyRandomEntity()
     case 18: entity.onxwall = (int)round(fRandom() * 100); break;
     case 19: entity.onywall = (int)round(fRandom() * 100); break;
     case 20: entity.para = (int)round(fRandom() * 100); break;
-    case 21: entity.realcol = (int)round(fRandom() * 10000); break;
+    case 21: entity.realcol = { (unsigned char)round(fRandom() * 255), (unsigned char)round(fRandom() * 255), (unsigned char)round(fRandom() * 255) }; break;
     case 22: entity.rule = (int)round(fRandom() * 7)+1; break;
     case 23: entity.size = (int)round(fRandom() * 7); break;
     case 24: entity.type = (int)round(fRandom() * 26); break;

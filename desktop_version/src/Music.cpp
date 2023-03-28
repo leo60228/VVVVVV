@@ -12,6 +12,7 @@
 #include "Game.h"
 #include "Graphics.h"
 #include "Map.h"
+#include "Maths.h"
 #include "Script.h"
 #include "Unused.h"
 #include "UtilityClass.h"
@@ -777,11 +778,13 @@ void musicclass::init(void)
     soundTracks.push_back(SoundTrack( "sounds/trophy.wav" ));
     soundTracks.push_back(SoundTrack( "sounds/rescue.wav" ));
 
-    std::vector<std::string> customSounds = FILESYSTEM_enumerateAssets("sounds/goofy/");
-    for (int i = 0; i < customSounds.size(); i++)
+    EnumHandle handle = {};
+    const char* item;
+    while ((item = FILESYSTEM_enumerateAssets("sounds/goofy/", &handle)) != NULL)
     {
-        goofySoundTracks.insert(std::make_pair(customSounds[i], SoundTrack(("sounds/goofy/" + customSounds[i]).c_str())));
+        goofySoundTracks.insert(std::make_pair(item, SoundTrack(("sounds/goofy/" + std::string(item)).c_str())));
     }
+    FILESYSTEM_freeEnumerate(&handle);
 
 #ifdef VVV_COMPILEMUSIC
     binaryBlob musicWriteBlob;

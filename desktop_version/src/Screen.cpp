@@ -374,6 +374,38 @@ void Screen::recacheTextures(void)
         gamerender();
         graphics.alpha = oldAlpha;
     }
+
+    refresh_sprites();
+}
+
+void Screen::refresh_sprites(void)
+{
+    // Draw the sprites on top of each other
+    SDL_SetRenderTarget(m_renderer, graphics.grphx.im_sprites);
+    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureBlendMode(graphics.grphx.im_sprites, SDL_BLENDMODE_BLEND);
+    SDL_RenderClear(m_renderer);
+
+
+    int w, h;
+    SDL_QueryTexture(graphics.grphx.original_sprites, NULL, NULL, &w, &h);
+    int w2, h2;
+    SDL_QueryTexture(graphics.grphx.original_sprites_chaos, NULL, NULL, &w2, &h2);
+
+    SDL_Rect r;
+    r.x = 0;
+    r.y = 0;
+    r.w = w;
+    r.h = h;
+    SDL_RenderCopy(m_renderer, graphics.grphx.original_sprites, NULL, &r);
+
+    r.x = 0;
+    r.y = h;
+    r.w = w2;
+    r.h = h2;
+    SDL_RenderCopy(m_renderer, graphics.grphx.original_sprites_chaos, NULL, &r);
+    SDL_SetRenderTarget(m_renderer, NULL);
 }
 
 bool Screen::isForcedFullscreen(void)

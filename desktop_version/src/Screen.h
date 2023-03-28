@@ -28,6 +28,7 @@ public:
     void toggleVSync(void);
 
     void recacheTextures(void);
+    void refresh_sprites(void);
 
     bool isForcedFullscreen(void);
 

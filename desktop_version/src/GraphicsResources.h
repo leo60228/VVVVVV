@@ -47,8 +47,13 @@ public:
     SDL_Texture* im_image11;
     SDL_Texture* im_image12;
 
+<<<<<<< HEAD
     SDL_Texture* im_sprites_translated;
     SDL_Texture* im_flipsprites_translated;
+=======
+    SDL_Texture* original_sprites;
+    SDL_Texture* original_sprites_chaos;
+>>>>>>> f5fb64f8 (fixes after rebase)
 };
 
 #endif /* GRAPHICSRESOURCES_H */

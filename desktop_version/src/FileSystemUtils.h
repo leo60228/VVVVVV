@@ -49,7 +49,6 @@ bool FILESYSTEM_loadTiXml2Document(const char *name, tinyxml2::XMLDocument& doc)
 bool FILESYSTEM_loadAssetTiXml2Document(const char *name, tinyxml2::XMLDocument& doc);
 
 void FILESYSTEM_enumerateLevelDirFileNames(void (*callback)(const char* filename));
-std::vector<std::string> FILESYSTEM_enumerateAssets(const char* folder);
 
 struct EnumHandle
 {

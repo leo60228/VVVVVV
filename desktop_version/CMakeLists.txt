@@ -69,11 +69,8 @@ set(VVV_SRC
     src/BinaryBlob.cpp
     src/BlockV.cpp
     src/ButtonGlyphs.cpp
-<<<<<<< HEAD
     src/CustomLevels.cpp
-=======
     src/Chaos.cpp
->>>>>>> 107210f6 (initial effects!)
     src/CWrappers.cpp
     src/Editor.cpp
     src/Ent.cpp
