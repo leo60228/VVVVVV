@@ -38,8 +38,8 @@ void Chaos::Initialize()
     reloading = false;
     randomEffects = true;
 
-    // randomEffects = false;
-    // Chaos::AddEffect(GOOFY_AAH, true);
+    //randomEffects = false;
+    //Chaos::AddEffect(ROOM_EXPLODE, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)
@@ -51,6 +51,7 @@ void Chaos::AddEffect(Effects effect, bool infinite)
         newEffect.timeRemaining = SDL_MAX_SINT32;
     }
     newEffect.effect = effect;
+    newEffect.timer = 0;
     activeEffects.push_back(newEffect);
     ApplyEffect(newEffect);
 }
@@ -76,6 +77,7 @@ void Chaos::ProcessEffects()
     for (int i = 0; i < activeEffects.size(); i++)
     {
         UpdateEffect(activeEffects[i]);
+        activeEffects[i].timer--;
         if (activeEffects[i].timeRemaining != SDL_MAX_SINT32)
         {
             activeEffects[i].timeRemaining--;
@@ -90,62 +92,10 @@ void Chaos::ProcessEffects()
 }
 
 
-void Chaos::ApplyEffect(ActiveEffect effect)
+void Chaos::ApplyEffect(ActiveEffect& effect)
 {
     switch (effect.effect)
     {
-    case ROOM_EXPLODE:
-    {
-        waitTime = SDL_max(waitTime - 15, MIN_WAIT_TIME);
-        effect.timeRemaining = 0;
-        int x = (int)round(fRandom() * 39);
-        int y = (int)round(fRandom() * 29);
-
-        int r = (int)round(fRandom() * 6) + 6;
-
-        music.playef(23);
-        game.screenshake = r;
-
-        // Around X and Y, use settile to place a filled circle of tile 0.
-
-        std::vector<SDL_Point> positions;
-
-        for (int i = 0; i < 360; i++)
-        {
-            for (int j = 0; j < r; j++)
-            {
-                int x2 = (int)round(x + j * cos(i * M_PI / 180));
-                int y2 = (int)round(y + j * sin(i * M_PI / 180));
-
-                bool include = true;
-                for (int k = 0; k < positions.size(); k++)
-                {
-                    if (positions[k].x == x2 && positions[k].y == y2) include = false;
-                }
-
-                if (!include) continue;
-
-                if ((j == r - 5) && (fRandom() < 0.25)) include = false;
-                if ((j == r - 4) && (fRandom() < 0.50)) include = false;
-                if ((j == r - 3) && (fRandom() < 0.50)) include = false;
-                if ((j == r - 2) && (fRandom() < 0.75)) include = false;
-                if ((j == r - 1) && (fRandom() < 0.75)) include = false;
-
-                SDL_Point p;
-                p.x = x2;
-                p.y = y2;
-                positions.push_back(p);
-
-                if (include)
-                {
-                    map.settile(x2, y2, 0);
-                }
-            }
-        }
-        graphics.foregrounddrawn = false;
-        break;
-
-    }
     case TRANSLUCENT_WINDOW:
     {
         SDL_SetWindowOpacity(gameScreen.m_window, 0.5f);
@@ -333,10 +283,65 @@ void Chaos::ApplyEffect(ActiveEffect effect)
     }
 }
 
-void Chaos::UpdateEffect(ActiveEffect effect)
+void Chaos::UpdateEffect(ActiveEffect& effect)
 {
     switch (effect.effect)
     {
+
+    case ROOM_EXPLODE:
+    {
+        if ((effect.timer < 0) && (fRandom() < 0.5))
+        {
+            effect.timer = (int)round(fRandom() * 60) + 30;
+            int x = (int)round(fRandom() * 39);
+            int y = (int)round(fRandom() * 29);
+
+            int r = (int)round(fRandom() * 6) + 6;
+
+            music.playef(23);
+            game.screenshake = r;
+
+            // Around X and Y, use settile to place a filled circle of tile 0.
+
+            std::vector<SDL_Point> positions;
+
+            for (int i = 0; i < 360; i++)
+            {
+                for (int j = 0; j < r; j++)
+                {
+                    int x2 = (int)round(x + j * cos(i * M_PI / 180));
+                    int y2 = (int)round(y + j * sin(i * M_PI / 180));
+
+                    bool include = true;
+                    for (int k = 0; k < positions.size(); k++)
+                    {
+                        if (positions[k].x == x2 && positions[k].y == y2) include = false;
+                    }
+
+                    if (!include) continue;
+
+                    if ((j == r - 5) && (fRandom() < 0.25)) include = false;
+                    if ((j == r - 4) && (fRandom() < 0.50)) include = false;
+                    if ((j == r - 3) && (fRandom() < 0.50)) include = false;
+                    if ((j == r - 2) && (fRandom() < 0.75)) include = false;
+                    if ((j == r - 1) && (fRandom() < 0.75)) include = false;
+
+                    SDL_Point p;
+                    p.x = x2;
+                    p.y = y2;
+                    positions.push_back(p);
+
+                    if (include)
+                    {
+                        map.settile(x2, y2, 0);
+                    }
+                }
+            }
+            graphics.foregrounddrawn = false;
+        }
+        break;
+    }
+
     case TRINKETS_KILL:
     {
         for (size_t i = 0; i < obj.entities.size(); i++)
@@ -633,7 +638,7 @@ void Chaos::ModifyRandomEntity()
     }
 }
 
-void Chaos::RemoveEffect(ActiveEffect effect)
+void Chaos::RemoveEffect(ActiveEffect& effect)
 {
     switch (effect.effect)
     {

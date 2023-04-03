@@ -104,6 +104,7 @@ namespace Chaos
     {
         int timeRemaining;
         Effects effect;
+        int timer;
     };
 
     extern bool reloading;
@@ -125,11 +126,11 @@ namespace Chaos
 
     void ProcessEffects();
 
-    void ApplyEffect(ActiveEffect effect);
+    void ApplyEffect(ActiveEffect& effect);
 
-    void UpdateEffect(ActiveEffect effect);
+    void UpdateEffect(ActiveEffect& effect);
 
-    void RemoveEffect(ActiveEffect effect);
+    void RemoveEffect(ActiveEffect& effect);
 
     void ModifyRandomEntity();
 
