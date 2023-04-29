@@ -39,13 +39,21 @@ void Chaos::Initialize()
     randomEffects = true;
 
     //randomEffects = false;
-    //Chaos::AddEffect(ROOM_EXPLODE, true);
+    //Chaos::AddEffect(COSMIC_CLONES, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)
 {
     ActiveEffect newEffect;
-    newEffect.timeRemaining = (int) round(fRandom() * (MAX_EFFECT_TIME - MIN_EFFECT_TIME) + MIN_EFFECT_TIME);
+    if (effect == GOOFY_AAH)
+    {
+        // goofy ahh is long
+        newEffect.timeRemaining = MAX_EFFECT_TIME;
+    }
+    else
+    {
+        newEffect.timeRemaining = (int)round(fRandom() * (MAX_EFFECT_TIME - MIN_EFFECT_TIME) + MIN_EFFECT_TIME);
+    }
     if (infinite)
     {
         newEffect.timeRemaining = SDL_MAX_SINT32;
@@ -124,24 +132,6 @@ void Chaos::ApplyEffect(ActiveEffect& effect)
         }
     }
     break;
-    case BUS:
-    {
-        waitTime = SDL_max(waitTime - 15, MIN_WAIT_TIME);
-        effect.timeRemaining = 0;
-        obj.createentity(0, -200, 1, 16, 12, -64, -500, 320 + 64, 340);
-        for (int i = 0; i < obj.entities.size(); i++)
-        {
-            if (obj.entities[i].behave == 16)
-            {
-                obj.entities[i].colour = 6;
-                obj.entities[i].size = 9;
-                obj.entities[i].w = 64;
-                obj.entities[i].h = 44;
-                obj.entities[i].animate = 4;
-            }
-        }
-        break;
-    }
     case FLIP_MODE:
         graphics.flipmode = true;
         break;
@@ -287,6 +277,37 @@ void Chaos::UpdateEffect(ActiveEffect& effect)
 {
     switch (effect.effect)
     {
+
+    case BUS:
+    {
+        if ((effect.timer < 0) && (fRandom() < 0.5))
+        {
+            effect.timer = (int)round(fRandom() * 60) + 30;
+            //waitTime = SDL_max(waitTime - 15, MIN_WAIT_TIME);
+            // Check if there's already one in the room
+            for (int i = 0; i < obj.entities.size(); i++)
+            {
+                if (obj.entities[i].behave == 16)
+                {
+                    return;
+                }
+            }
+
+            obj.createentity(0, -200, 1, 16, 12, -64, -500, 320 + 64, 340);
+            for (int i = 0; i < obj.entities.size(); i++)
+            {
+                if (obj.entities[i].behave == 16)
+                {
+                    obj.entities[i].colour = 6;
+                    obj.entities[i].size = 9;
+                    obj.entities[i].w = 64;
+                    obj.entities[i].h = 44;
+                    obj.entities[i].animate = 4;
+                }
+            }
+        }
+        break;
+    }
 
     case ROOM_EXPLODE:
     {

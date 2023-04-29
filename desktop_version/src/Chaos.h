@@ -69,7 +69,7 @@ enum Effects
     BLINKING_ENEMIES,   // <blink>enemy</blink>
     INVINCIBILITY,      // invincible player & spikes arent solid like built-in invincibility
     TRINKETS_KILL,      // trinkets kill!
-    TRANSLUCENT_WINDOW, // 50% translucent window lol
+    TRANSLUCENT_WINDOW = -1, // 50% translucent window lol
     ROOM_EXPLODE,       // Explode a part of the room
     RANDOM_MUSIC,       // Random music
     GOOFY_AAH,          // goofy ahh sounds
