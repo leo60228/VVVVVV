@@ -2226,6 +2226,7 @@ bool entityclass::updateentities( int i )
         switch(entities[i].type)
         {
         case 200: // Cosmic clone
+        {
             if (entities[i].para * CLONE_OFFSET >= Chaos::cloneInfo.size())
             {
                 entities[i].xp = -100;
@@ -2246,6 +2247,7 @@ bool entityclass::updateentities( int i )
                 entities[i].yp = -100;
             }
             break;
+        }
         case 0:  //Player
             break;
         case 1:  //Movement behaviors
