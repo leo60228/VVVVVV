@@ -2791,7 +2791,7 @@ void gameinput(void)
                 game.gravitycontrol = 1;
                 if (Chaos::IsActive(JUMPING))
                 {
-                    game.gravitycontrol = 0;
+                    game.gravitycontrol = 1;
                 }
                 if (Chaos::IsActive(GRAVITATION_POTION))
                 {
@@ -2802,8 +2802,8 @@ void gameinput(void)
                     const size_t e = player_entities[j];
                     if (obj.entities[e].onground > 0 || obj.entities[e].onroof > 0)
                     {
-                        obj.entities[e].vy = Chaos::IsActive(JUMPING) ? -12 : -4;
-                        obj.entities[e].ay = Chaos::IsActive(JUMPING) ? -8 : -3;
+                        obj.entities[e].vy = Chaos::IsActive(JUMPING) ? -16 : -4;
+                        obj.entities[e].ay = Chaos::IsActive(JUMPING) ? -12 : -3;
                         if (Chaos::IsActive(FLIP_TELEPORT))
                         {
                             obj.entities[e].yp -= 16;

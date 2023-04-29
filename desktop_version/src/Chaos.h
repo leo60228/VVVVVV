@@ -25,55 +25,55 @@ struct CloneInfo {
 
 enum Effects
 {
-    NO_FLIPPING = -1,   // [DISABLED] Can't flip!
-    NO_LEFT = -1,       // [DISABLED] Can't walk left!
-    NO_RIGHT = -1,      // [DISABLED] Can't move right!
-    NO_MAP = 0,         // Can't view map (if you were able to)
-    RANDOM_COLOR,       // Change to a random color, reset respawn color afterwards
-    JUMPING,            // Jumping instead of flipping
-    BUS,                // Spawn a bus that tries to fucking run you over
-    FLIP_MODE,          // Enter flip mode for a little bit
-    RANDOM_BLOCK,       // Add a random tile to the room
-    WARP_DIR,           // Change the room's warp direction
-    GAMESTATE,          // Change to a random gamestate
-    PLAYER_SPRITE,      // Change the player sprites
-    REVERSE_CONTROLS,   // Reverse the controls
-    INFINIFLIP,         // Can flip in air
-    GRAVITATION_POTION, // Flip mode depending on the players gravity control
-    RANDOM_FLIPPING,    // Flip randomly
-    ANALOGUE,           // Analogue mode on for a bit
-    BILINEAR,           // Make the game blurry because fuck you
-    HOLDING_RIGHT,      // Force the player to hold right constantly (holding left overrides)
-    FAKE_TRINKET,       // "You got a shiny trinket!" dialogue without getting a trinket
-    PUSH_AWAY,          // Entities get pushed away by Viridian
-    VVVVVVMAN,          // vvvvvvman() lol
-    ICE,                // Ice physics
-    SOLITAIRE,          // Solitaire effect
-    RANDOM_ACCEL,       // Random horizontal accel
-    UNCAPPED_SPEED,     // Uncapped player speed
-    CYCLING_SPRITES,    // Cycle through sprites
-    SHUFFLE_ENTITIES,   // Shuffle entity sprites
-    MODIFY_ENTITIES,    // Do random things to entities
-    BURST_ENTITIES,     // Random bursts
-    MOVE_LEFT,          // Slowly move left
-    MOVE_RIGHT,         // Slowly move right
-    SIDEWAYS_FLIPPING,  // Sideways gravity (??)
-    TORNADO,            // Entity tornado
-    SHAKING,            // Shake the player
-    FLAG,               // Change a random flag
-    RANDOM_SIZE,        // Randomly change player size
-    COSMIC_CLONES,      // Cosmic clones!
-    RANDOM_SPRITE,      // Make Viridian look like something else, but not in a glitchy way
-    FLIP_TELEPORT,      // Teleport a little on flip
-    BLINKING_VIRIDIAN,  // <blink></blink>
-    BLINKING_ENEMIES,   // <blink>enemy</blink>
-    INVINCIBILITY,      // invincible player & spikes arent solid like built-in invincibility
-    TRINKETS_KILL,      // trinkets kill!
+    NO_FLIPPING = -1,        // [DISABLED] Can't flip!
+    NO_LEFT = -1,            // [DISABLED] Can't walk left!
+    NO_RIGHT = -1,           // [DISABLED] Can't move right!
     TRANSLUCENT_WINDOW = -1, // 50% translucent window lol
-    ROOM_EXPLODE,       // Explode a part of the room
-    RANDOM_MUSIC,       // Random music
-    GOOFY_AAH,          // goofy ahh sounds
-    NOCLIP,             // noclip
+    NO_MAP = 0,              // Can't view map (if you were able to)
+    RANDOM_COLOR,            // Change to a random color, reset respawn color afterwards
+    JUMPING,                 // Jumping instead of flipping
+    BUS,                     // Spawn a bus that tries to fucking run you over
+    FLIP_MODE,               // Enter flip mode for a little bit
+    RANDOM_BLOCK,            // Add a random tile to the room
+    WARP_DIR,                // Change the room's warp direction
+    GAMESTATE,               // Change to a random gamestate
+    PLAYER_SPRITE,           // Change the player sprites
+    REVERSE_CONTROLS,        // Reverse the controls
+    INFINIFLIP,              // Can flip in air
+    GRAVITATION_POTION,      // Flip mode depending on the players gravity control
+    RANDOM_FLIPPING,         // Flip randomly
+    ANALOGUE,                // Analogue mode on for a bit
+    BILINEAR,                // Make the game blurry because fuck you
+    HOLDING_RIGHT,           // Force the player to hold right constantly (holding left overrides)
+    FAKE_TRINKET,            // "You got a shiny trinket!" dialogue without getting a trinket
+    PUSH_AWAY,               // Entities get pushed away by Viridian
+    VVVVVVMAN,               // vvvvvvman() lol
+    ICE,                     // Ice physics
+    SOLITAIRE,               // Solitaire effect
+    RANDOM_ACCEL,            // Random horizontal accel
+    UNCAPPED_SPEED,          // Uncapped player speed
+    CYCLING_SPRITES,         // Cycle through sprites
+    SHUFFLE_ENTITIES,        // Shuffle entity sprites
+    MODIFY_ENTITIES,         // Do random things to entities
+    BURST_ENTITIES,          // Random bursts
+    MOVE_LEFT,               // Slowly move left
+    MOVE_RIGHT,              // Slowly move right
+    SIDEWAYS_FLIPPING,       // Sideways gravity (??)
+    TORNADO,                 // Entity tornado
+    SHAKING,                 // Shake the player
+    FLAG,                    // Change a random flag
+    RANDOM_SIZE,             // Randomly change player size
+    COSMIC_CLONES,           // Cosmic clones!
+    RANDOM_SPRITE,           // Make Viridian look like something else, but not in a glitchy way
+    FLIP_TELEPORT,           // Teleport a little on flip
+    BLINKING_VIRIDIAN,       // <blink></blink>
+    BLINKING_ENEMIES,        // <blink>enemy</blink>
+    INVINCIBILITY,           // invincible player & spikes arent solid like built-in invincibility
+    TRINKETS_KILL,           // trinkets kill!
+    ROOM_EXPLODE,            // Explode a part of the room
+    RANDOM_MUSIC,            // Random music
+    GOOFY_AAH,               // goofy ahh sounds
+    NOCLIP,                  // noclip
 
 
     // Mario?
