@@ -2940,6 +2940,8 @@ void gameinput(void)
     {
         game.deathseq = 30;
         Chaos::reloading = true;
+        game.advancetext = false;
+        game.hascontrol = true;
     }
 }
 
