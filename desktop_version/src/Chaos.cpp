@@ -104,9 +104,14 @@ void Chaos::ApplyEffect(ActiveEffect& effect)
 {
     switch (effect.effect)
     {
+    case INFINIFLIP:
+        graphics.createtextbox(" Infiniflip is ON ", -1, 3, 192, 100, 255);
+        graphics.textboxtimer(45);
+        break;
     case TRANSLUCENT_WINDOW:
     {
         SDL_SetWindowOpacity(gameScreen.m_window, 0.5f);
+        break;
     }
     case RANDOM_COLOR:
     {
@@ -130,8 +135,8 @@ void Chaos::ApplyEffect(ActiveEffect& effect)
         {
             obj.entities[i].colour = color;
         }
+        break;
     }
-    break;
     case FLIP_MODE:
         graphics.flipmode = true;
         break;
@@ -187,6 +192,11 @@ void Chaos::ApplyEffect(ActiveEffect& effect)
 
         // Pick a state
         game.state = validStates[(int)round(fRandom() * (validStates.size() - 1))];
+
+        std::string text = " Running gamestate " + game.state;
+
+        graphics.createtextbox(text + " ", -1, 3, 192, 100, 255);
+        graphics.textboxtimer(45);
         break;
     }
     case FAKE_TRINKET:
@@ -265,10 +275,12 @@ void Chaos::ApplyEffect(ActiveEffect& effect)
         cloneInfo.clear();
         cloneTimer = 30;
         cloneCount = 0;
+        break;
     }
     case RANDOM_SPRITE:
     {
         randomSprite = (int)round(fRandom() * 3);
+        break;
     }
     }
 }
@@ -372,6 +384,7 @@ void Chaos::UpdateEffect(ActiveEffect& effect)
                 obj.entities[i].harmful = true;
             }
         }
+        break;
     }
     case BLINKING_VIRIDIAN:
     {
@@ -552,6 +565,7 @@ void Chaos::UpdateEffect(ActiveEffect& effect)
         {
             (Chaos::IsActive(SIDEWAYS_FLIPPING) ? obj.entities[i].yp : obj.entities[i].xp) += (game.framecounter % 2 == 0) ? -1 : 1;
         }
+        break;
     }
     case COSMIC_CLONES:
     {
@@ -599,8 +613,7 @@ void Chaos::UpdateEffect(ActiveEffect& effect)
                 }
             }
         }
-
-
+        break;
     }
     }
 }
@@ -666,6 +679,7 @@ void Chaos::RemoveEffect(ActiveEffect& effect)
     case TRANSLUCENT_WINDOW:
     {
         SDL_SetWindowOpacity(gameScreen.m_window, 1.0f);
+        break;
     }
     case RANDOM_COLOR:
         game.savecolour = 0;
