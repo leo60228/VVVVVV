@@ -43,8 +43,8 @@ void Chaos::Initialize()
     cloneInfo.clear();
     lastDir = 0;
 
-    //randomEffects = false;
-    //Chaos::AddEffect(HORIZONTAL_FLIP, true);
+    randomEffects = false;
+    Chaos::AddEffect(CONVEYORS_OFF, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)
@@ -290,7 +290,24 @@ void Chaos::UpdateEffect(ActiveEffect& effect)
 {
     switch (effect.effect)
     {
-
+    case CONVEYORS_OFF:
+    {
+        for (size_t i = 0; i < obj.entities.size(); i++)
+        {
+            if (obj.entities[i].behave >= 8 && obj.entities[i].behave < 10)
+            {
+                if (obj.entities[i].para > 0)
+                {
+                    obj.entities[i].para--;
+                }
+                else if (obj.entities[i].para < 0)
+                {
+                    obj.entities[i].para++;
+                }
+            }
+        }
+        break;
+    }
     case BUS:
     {
         if ((effect.timer < 0) && (fRandom() < 0.5))

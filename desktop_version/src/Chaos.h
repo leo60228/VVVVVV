@@ -80,10 +80,10 @@ enum Effects
     DOWNSCALED,              // Downscale the screen
     ZOOMED,                  // Zoom in on Viridian
     VIGNETTE,                // Vignette around Viridian
+    CONVEYORS_OFF,           // Turn off conveyors
 
     // Portal gun?
     // Invincibility star?
-    // Flying and noclip
     // Viridian has a gun
     // Press down or die
     // Press down to die
