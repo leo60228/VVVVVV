@@ -76,6 +76,7 @@ enum Effects
     GOOFY_AAH,               // goofy ahh sounds
     NOCLIP,                  // noclip
     CANT_STOP,               // can't stop moving (pressing left makes you go left until you go right, etc)
+    HORIZONTAL_FLIP,         // Horizontally flip the screen
 
     // Portal gun?
     // Invincibility star?

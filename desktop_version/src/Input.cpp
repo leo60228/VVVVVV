@@ -2393,7 +2393,7 @@ void gameinput(void)
             Chaos::lastDir = 1;
         }
 
-        if (!game.press_left && !game.press_right)
+        if (!game.press_left && !game.press_right && Chaos::IsActive(CANT_STOP))
         {
             if (Chaos::lastDir == 0)
             {
@@ -2424,7 +2424,7 @@ void gameinput(void)
         game.advancetext = false;
     }
 
-    if (Chaos::IsActive(REVERSE_CONTROLS))
+    if (Chaos::IsActive(REVERSE_CONTROLS) || Chaos::IsActive(HORIZONTAL_FLIP))
     {
         bool temp = game.press_left;
         game.press_left = game.press_right;

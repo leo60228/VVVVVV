@@ -3361,7 +3361,17 @@ void Graphics::screenshake(void)
     set_blendmode(SDL_BLENDMODE_NONE);
     clear();
 
-    copy_texture(tempShakeTexture, NULL, NULL, 0, NULL, flipmode ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE);
+    int flag = SDL_FLIP_NONE;
+    if (Chaos::IsActive(HORIZONTAL_FLIP))
+    {
+        flag |= SDL_FLIP_HORIZONTAL;
+    }
+    if (flipmode)
+    {
+        flag |= SDL_FLIP_VERTICAL;
+    }
+
+    copy_texture(tempShakeTexture, NULL, NULL, 0, NULL, (SDL_RendererFlip) flag);
 }
 
 void Graphics::updatescreenshake(void)
@@ -3381,7 +3391,17 @@ void Graphics::render(void)
     set_blendmode(SDL_BLENDMODE_NONE);
     clear();
 
-    copy_texture(gameTexture, NULL, NULL, 0, NULL, flipmode ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE);
+    int flag = SDL_FLIP_NONE;
+    if (Chaos::IsActive(HORIZONTAL_FLIP))
+    {
+        flag |= SDL_FLIP_HORIZONTAL;
+    }
+    if (flipmode)
+    {
+        flag |= SDL_FLIP_VERTICAL;
+    }
+
+    copy_texture(gameTexture, NULL, NULL, 0, NULL, (SDL_RendererFlip) flag);
 }
 
 void Graphics::renderwithscreeneffects(void)

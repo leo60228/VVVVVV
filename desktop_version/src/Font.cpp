@@ -3,6 +3,7 @@
 #include <tinyxml2.h>
 
 #include "Alloc.h"
+#include "Chaos.h"
 #include "Constants.h"
 #include "CustomLevels.h"
 #include "FileSystemUtils.h"
@@ -1068,7 +1069,7 @@ static int print_char(
         f_glyph->glyph_w,
         f_glyph->glyph_h,
         r, g, b,
-        scale,
+        scale * (Chaos::IsActive(HORIZONTAL_FLIP) ? -1 : 1),
         scale * (graphics.flipmode ? -1 : 1)
     );
 
@@ -1196,22 +1197,47 @@ void print(
         return;
     }
 
-    if (pf.align_cen || pf.align_right)
+    int textlen = len(flags, text);
+    int orig_x = x;
+    if (Chaos::IsActive(HORIZONTAL_FLIP))
     {
-        const int textlen = len(flags, text);
-
         if (pf.align_cen)
         {
             if (x == -1)
             {
                 x = SCREEN_WIDTH_PIXELS / 2;
             }
-            x = SDL_max(x - textlen/2, 0);
+            x = SDL_min(x + textlen / 2, 320);
+        }
+        else if (pf.align_right)
+        {
+            //x -= textlen;
         }
         else
         {
-            x -= textlen;
+            x += textlen;
         }
+        orig_x = x - textlen;
+        x -= 8; // daaaaav please fix this for me idk what i did wrong
+    }
+    else
+    {
+        if (pf.align_cen || pf.align_right)
+        {
+            if (pf.align_cen)
+            {
+                if (x == -1)
+                {
+                    x = SCREEN_WIDTH_PIXELS / 2;
+                }
+                x = SDL_max(x - textlen / 2, 0);
+            }
+            else
+            {
+                x -= textlen;
+            }
+        }
+        orig_x = x;
     }
 
     if (pf.border && !graphics.notextoutline)
@@ -1222,7 +1248,7 @@ void print(
         {
             print(
                 flags & ~PR_BOR & ~PR_CEN & ~PR_RIGHT,
-                x + offsets[offset][0]*pf.scale,
+                orig_x + offsets[offset][0]*pf.scale,
                 y + offsets[offset][1]*pf.scale,
                 text,
                 0, 0, 0
@@ -1276,7 +1302,7 @@ void print(
             g,
             b,
             pf.brightness
-        );
+        ) * (Chaos::IsActive(HORIZONTAL_FLIP) ? -1 : 1);
     }
 }
 
