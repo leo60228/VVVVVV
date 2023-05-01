@@ -44,7 +44,7 @@ void Chaos::Initialize()
     lastDir = 0;
 
     randomEffects = false;
-    Chaos::AddEffect(HORIZONTAL_FLIP, true);
+    Chaos::AddEffect(VIGNETTE, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)

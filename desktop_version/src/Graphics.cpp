@@ -183,6 +183,7 @@ void Graphics::create_buffers(void)
 
     gameTexture = CREATE_TEXTURE;
     gameplayTexture = CREATE_TEXTURE;
+    gameplayScaleTexture = CREATE_TEXTURE;
     menuTexture = CREATE_TEXTURE;
     ghostTexture = CREATE_TEXTURE;
     tempShakeTexture = CREATE_TEXTURE;
@@ -211,6 +212,7 @@ void Graphics::destroy_buffers(void)
 {
     VVV_freefunc(SDL_DestroyTexture, gameTexture);
     VVV_freefunc(SDL_DestroyTexture, gameplayTexture);
+    VVV_freefunc(SDL_DestroyTexture, gameplayScaleTexture);
     VVV_freefunc(SDL_DestroyTexture, menuTexture);
     VVV_freefunc(SDL_DestroyTexture, ghostTexture);
     VVV_freefunc(SDL_DestroyTexture, tempShakeTexture);

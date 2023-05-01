@@ -2058,7 +2058,7 @@ void gamerender(void)
             if (Chaos::dashTrail[i].rx != game.roomx || Chaos::dashTrail[i].ry != game.roomy)
                 continue;
             SDL_Color ct = graphics.getRGBA(0, 255, 255, 64);
-            graphics.draw_sprite(Chaos::dashTrail[i].x, Chaos::dashTrail[i].y, Chaos::dashTrail[i].frame, ct);
+            graphics.draw_sprite(Chaos::dashTrail[i].x, Chaos::dashTrail[i].y - map.ypos, Chaos::dashTrail[i].frame, ct);
         }
 
         graphics.drawentities();
@@ -2067,6 +2067,47 @@ void gamerender(void)
             graphics.drawtowerspikes();
         }
     }
+
+    if (Chaos::IsActive(VIGNETTE))
+    {
+        int x = SCREEN_WIDTH_PIXELS / 2;
+        int y = SCREEN_HEIGHT_PIXELS / 2;
+        int i = obj.getplayer();
+        if (INBOUNDS_VEC(i, obj.entities))
+        {
+            x = obj.entities[i].xp + 10;
+            y = obj.entities[i].yp + 10 - map.ypos;
+        }
+
+        int r = 64;
+        int r2 = r * r;
+
+        SDL_SetRenderDrawColor(gameScreen.m_renderer, 0, 0, 0, 255);
+
+        for (int j = 0; j < r; j++)
+        {
+            int k = sqrt(r2 - (j * j));
+
+            SDL_RenderDrawLine(gameScreen.m_renderer, 0, y + j, x - k, y + j);
+            SDL_RenderDrawLine(gameScreen.m_renderer, 0, y - j, x - k, y - j);
+            SDL_RenderDrawLine(gameScreen.m_renderer, x + k, y + j, SCREEN_WIDTH_PIXELS, y + j);
+            SDL_RenderDrawLine(gameScreen.m_renderer, x + k, y - j, SCREEN_WIDTH_PIXELS, y - j);
+        }
+
+        for (int j = 0; j <= y - r; j++)
+        {
+            // Draw from top to the circle
+            SDL_RenderDrawLine(gameScreen.m_renderer, 0, j, SCREEN_WIDTH_PIXELS, j);
+        }
+
+        for (int j = y + r; j < SCREEN_HEIGHT_PIXELS; j++)
+        {
+            // Draw from bottom to the circle
+            SDL_RenderDrawLine(gameScreen.m_renderer, 0, j, SCREEN_WIDTH_PIXELS, j);
+        }
+    }
+
+
 
     if (graphics.fademode == FADE_NONE
     && !game.intimetrial
@@ -2137,9 +2178,37 @@ void gamerender(void)
 
     graphics.drawgui();
 
-    graphics.set_render_target(graphics.gameTexture);
+    if (Chaos::IsActive(DOWNSCALED))
+    {
+        graphics.set_render_target(graphics.gameplayScaleTexture);
+        SDL_Rect dest = { 0, 0, SCREEN_WIDTH_PIXELS / 2, SCREEN_HEIGHT_PIXELS / 2 };
+        graphics.copy_texture(graphics.gameplayTexture, NULL, &dest);
 
-    graphics.copy_texture(graphics.gameplayTexture, NULL, NULL);
+        graphics.set_render_target(graphics.gameTexture);
+        graphics.copy_texture(graphics.gameplayScaleTexture, &dest, NULL);
+
+    }
+    else if (Chaos::IsActive(ZOOMED))
+    {
+        int x = SCREEN_WIDTH_PIXELS / 4;
+        int y = SCREEN_HEIGHT_PIXELS / 4;
+        int i = obj.getplayer();
+        if (INBOUNDS_VEC(i, obj.entities))
+        {
+            x = obj.entities[i].xp - (SCREEN_WIDTH_PIXELS / 4);
+            y = obj.entities[i].yp - (SCREEN_HEIGHT_PIXELS / 4);
+        }
+
+        SDL_Rect dest = { SDL_clamp(x, 0, SCREEN_WIDTH_PIXELS / 2), SDL_clamp(y, 0, SCREEN_HEIGHT_PIXELS / 2), SCREEN_WIDTH_PIXELS / 2, SCREEN_HEIGHT_PIXELS / 2 };
+
+        graphics.set_render_target(graphics.gameTexture);
+        graphics.copy_texture(graphics.gameplayTexture, &dest, NULL);
+    }
+    else
+    {
+        graphics.set_render_target(graphics.gameTexture);
+        graphics.copy_texture(graphics.gameplayTexture, NULL, NULL);
+    }
 
     if (game.advancetext)
     {

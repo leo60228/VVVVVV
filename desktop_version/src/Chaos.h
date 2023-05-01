@@ -77,6 +77,9 @@ enum Effects
     NOCLIP,                  // noclip
     CANT_STOP,               // can't stop moving (pressing left makes you go left until you go right, etc)
     HORIZONTAL_FLIP,         // Horizontally flip the screen
+    DOWNSCALED,              // Downscale the screen
+    ZOOMED,                  // Zoom in on Viridian
+    VIGNETTE,                // Vignette around Viridian
 
     // Portal gun?
     // Invincibility star?
@@ -86,7 +89,6 @@ enum Effects
     // Press down to die
     // ddr but you gotta be off beat
     // minecraft mode
-    // vignette around the player
     // green demon (Green coin chases you)
     // you get hurt and drop coins
     // add input lag!
