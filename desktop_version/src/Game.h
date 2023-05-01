@@ -90,7 +90,6 @@ namespace Menu
         unlocktimetrials,
         unlocknodeathmode,
         unlockintermission,
-        unlockflipmode,
         newgamewarning,
         playmodes,
         intermissionmenu,

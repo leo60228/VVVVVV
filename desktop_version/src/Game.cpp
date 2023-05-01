@@ -313,11 +313,11 @@ void Game::init(void)
     saveFilePath = FILESYSTEM_getUserSaveDirectory();
 
     tinyxml2::XMLDocument doc;
-    last_quicksave = get_summary("saves/qsave.vvv", "qsave.vvv", doc);
+    last_quicksave = get_summary("saves/qsave.chaos.vvv", "qsave.chaos.vvv", doc);
 
 
     tinyxml2::XMLDocument docTele;
-    last_telesave = get_summary("saves/tsave.vvv", "tsave.vvv", doc);
+    last_telesave = get_summary("saves/tsave.chaos.vvv", "tsave.chaos.vvv", doc);
 
     screenshake = flashlight = 0 ;
 
@@ -442,9 +442,9 @@ void Game::deletecustomlevelstats(void)
 {
     customlevelstats.clear();
 
-    if (!FILESYSTEM_delete("saves/levelstats.vvv"))
+    if (!FILESYSTEM_delete("saves/levelstats.chaos.vvv"))
     {
-        vlog_error("Error deleting levelstats.vvv");
+        vlog_error("Error deleting levelstats.chaos.vvv");
     }
 }
 
@@ -476,7 +476,7 @@ void Game::loadcustomlevelstats(void)
     tinyxml2::XMLDocument doc;
     tinyxml2::XMLHandle hDoc(&doc);
 
-    if (!FILESYSTEM_loadTiXml2Document("saves/levelstats.vvv", doc))
+    if (!FILESYSTEM_loadTiXml2Document("saves/levelstats.chaos.vvv", doc))
     {
         //No levelstats file exists; start new
         customlevelstats.clear();
@@ -486,7 +486,7 @@ void Game::loadcustomlevelstats(void)
 
     if (doc.Error())
     {
-        vlog_error("Error parsing levelstats.vvv: %s", doc.ErrorStr());
+        vlog_error("Error parsing levelstats.chaos.vvv: %s", doc.ErrorStr());
         return;
     }
 
@@ -610,15 +610,15 @@ void Game::loadcustomlevelstats(void)
 void Game::savecustomlevelstats(void)
 {
     tinyxml2::XMLDocument doc;
-    bool already_exists = FILESYSTEM_loadTiXml2Document("saves/levelstats.vvv", doc);
+    bool already_exists = FILESYSTEM_loadTiXml2Document("saves/levelstats.chaos.vvv", doc);
     if (!already_exists)
     {
-        vlog_info("No levelstats.vvv found. Creating new file");
+        vlog_info("No levelstats.chaos.vvv found. Creating new file");
     }
     else if (doc.Error())
     {
-        vlog_error("Error parsing existing levelstats.vvv: %s", doc.ErrorStr());
-        vlog_info("Creating new levelstats.vvv");
+        vlog_error("Error parsing existing levelstats.chaos.vvv: %s", doc.ErrorStr());
+        vlog_info("Creating new levelstats.chaos.vvv");
     }
 
     xml::update_declaration(doc);
@@ -657,14 +657,14 @@ void Game::savecustomlevelstats(void)
         msg->LinkEndChild(stat_el);
     }
 
-    if(FILESYSTEM_saveTiXml2Document("saves/levelstats.vvv", doc))
+    if(FILESYSTEM_saveTiXml2Document("saves/levelstats.chaos.vvv", doc))
     {
         vlog_info("Level stats saved");
     }
     else
     {
         vlog_error("Could Not Save level stats!");
-        vlog_error("Failed: %s%s", saveFilePath, "levelstats.vvv");
+        vlog_error("Failed: %s%s", saveFilePath, "levelstats.chaos.vvv");
     }
 }
 
@@ -4277,9 +4277,9 @@ void Game::gethardestroom(void)
 
 void Game::deletestats(void)
 {
-    if (!FILESYSTEM_delete("saves/unlock.vvv"))
+    if (!FILESYSTEM_delete("saves/unlock.chaos.vvv"))
     {
-        vlog_error("Error deleting saves/unlock.vvv");
+        vlog_error("Error deleting saves/unlock.chaos.vvv");
     }
     else
     {
@@ -4308,9 +4308,9 @@ void Game::deletestats(void)
 
 void Game::deletesettings(void)
 {
-    if (!FILESYSTEM_delete("saves/settings.vvv"))
+    if (!FILESYSTEM_delete("saves/settings.chaos.vvv"))
     {
-        vlog_error("Error deleting saves/settings.vvv");
+        vlog_error("Error deleting saves/settings.chaos.vvv");
     }
 }
 
@@ -4341,9 +4341,9 @@ void Game::loadstats(struct ScreenSettings* screen_settings)
 
     stats_loaded = true;
 
-    if (!FILESYSTEM_loadTiXml2Document("saves/unlock.vvv", doc))
+    if (!FILESYSTEM_loadTiXml2Document("saves/unlock.chaos.vvv", doc))
     {
-        // Save unlock.vvv only. Maybe we have a settings.vvv laying around too,
+        // Save unlock.chaos.vvv only. Maybe we have a setting.chaoss.vvv laying around too,
         // and we don't want to overwrite that!
         savestats(screen_settings);
         return;
@@ -4351,7 +4351,7 @@ void Game::loadstats(struct ScreenSettings* screen_settings)
 
     if (doc.Error())
     {
-        vlog_error("Error parsing unlock.vvv: %s", doc.ErrorStr());
+        vlog_error("Error parsing unlock.chaos.vvv: %s", doc.ErrorStr());
         return;
     }
 
@@ -4471,11 +4471,6 @@ void Game::deserializesettings(tinyxml2::XMLElement* dataNode, struct ScreenSett
         if (SDL_strcmp(pKey, "colourblindmode") == 0)
         {
             colourblindmode = help.Int(pText);
-        }
-
-        if (SDL_strcmp(pKey, "setflipmode") == 0)
-        {
-            graphics.setflipmode = help.Int(pText);
         }
 
         if (SDL_strcmp(pKey, "invincibility") == 0)
@@ -4668,15 +4663,15 @@ bool Game::savestats(const struct ScreenSettings* screen_settings, bool sync /*=
         return false;
     }
 
-    already_exists = FILESYSTEM_loadTiXml2Document("saves/unlock.vvv", doc);
+    already_exists = FILESYSTEM_loadTiXml2Document("saves/unlock.chaos.vvv", doc);
     if (!already_exists)
     {
-        vlog_info("No unlock.vvv found. Creating new file");
+        vlog_info("No unlock.chaos.vvv found. Creating new file");
     }
     else if (doc.Error())
     {
-        vlog_error("Error parsing existing unlock.vvv: %s", doc.ErrorStr());
-        vlog_info("Creating new unlock.vvv");
+        vlog_error("Error parsing existing unlock.chaos.vvv: %s", doc.ErrorStr());
+        vlog_info("Creating new unlock.chaos.vvv");
     }
 
     xml::update_declaration(doc);
@@ -4746,7 +4741,7 @@ bool Game::savestats(const struct ScreenSettings* screen_settings, bool sync /*=
 
     serializesettings(dataNode, screen_settings);
 
-    return FILESYSTEM_saveTiXml2Document("saves/unlock.vvv", doc, sync);
+    return FILESYSTEM_saveTiXml2Document("saves/unlock.chaos.vvv", doc, sync);
 }
 
 bool Game::savestatsandsettings(void)
@@ -4787,8 +4782,6 @@ void Game::serializesettings(tinyxml2::XMLElement* dataNode, const struct Screen
     xml::update_tag(dataNode, "noflashingmode", noflashingmode);
 
     xml::update_tag(dataNode, "colourblindmode", colourblindmode);
-
-    xml::update_tag(dataNode, "setflipmode", graphics.setflipmode);
 
     xml::update_tag(dataNode, "invincibility", map.invincibility);
 
@@ -4913,7 +4906,7 @@ void Game::loadsettings(struct ScreenSettings* screen_settings)
 
     settings_loaded = true;
 
-    if (!FILESYSTEM_loadTiXml2Document("saves/settings.vvv", doc))
+    if (!FILESYSTEM_loadTiXml2Document("saves/settings.chaos.vvv", doc))
     {
         savesettings(screen_settings);
         return;
@@ -4921,7 +4914,7 @@ void Game::loadsettings(struct ScreenSettings* screen_settings)
 
     if (doc.Error())
     {
-        vlog_error("Error parsing settings.vvv: %s", doc.ErrorStr());
+        vlog_error("Error parsing settings.chaos.vvv: %s", doc.ErrorStr());
         return;
     }
 
@@ -4950,32 +4943,32 @@ bool Game::savesettings(const struct ScreenSettings* screen_settings)
 
     if (!settings_loaded)
     {
-        vlog_warn("Settings not loaded! Not writing settings.vvv.");
+        vlog_warn("Settings not loaded! Not writing settings.chaos.vvv.");
         return false;
     }
 
-    already_exists = FILESYSTEM_loadTiXml2Document("saves/settings.vvv", doc);
+    already_exists = FILESYSTEM_loadTiXml2Document("saves/settings.chaos.vvv", doc);
     if (!already_exists)
     {
-        vlog_info("No settings.vvv found. Creating new file");
+        vlog_info("No settings.chaos.vvv found. Creating new file");
     }
     else if (doc.Error())
     {
-        vlog_error("Error parsing existing settings.vvv: %s", doc.ErrorStr());
-        vlog_info("Creating new settings.vvv");
+        vlog_error("Error parsing existing settings.chaos.vvv: %s", doc.ErrorStr());
+        vlog_info("Creating new settings.chaos.vvv");
     }
 
     xml::update_declaration(doc);
 
     tinyxml2::XMLElement* root = xml::update_element(doc, "Settings");
 
-    xml::update_comment(root, " Settings (duplicated from unlock.vvv) ");
+    xml::update_comment(root, " Settings (duplicated from unlock.chaos.vvv) ");
 
     tinyxml2::XMLElement* dataNode = xml::update_element(root, "Data");
 
     serializesettings(dataNode, screen_settings);
 
-    return FILESYSTEM_saveTiXml2Document("saves/settings.vvv", doc);
+    return FILESYSTEM_saveTiXml2Document("saves/settings.chaos.vvv", doc);
 }
 
 void Game::customstart(void)
@@ -5218,9 +5211,9 @@ void Game::starttrial( int t )
 void Game::loadquick(void)
 {
     tinyxml2::XMLDocument doc;
-    if (!FILESYSTEM_loadTiXml2Document("saves/qsave.vvv", doc)) return;
+    if (!FILESYSTEM_loadTiXml2Document("saves/qsave.chaos.vvv", doc)) return;
 
-    readmaingamesave("qsave.vvv", doc);
+    readmaingamesave("qsave.chaos.vvv", doc);
 }
 
 void Game::readmaingamesave(const char* savename, tinyxml2::XMLDocument& doc)
@@ -5427,15 +5420,15 @@ void Game::customloadquick(const std::string& savfile)
     }
 
     levelfile = savfile.substr(7);
-    if (!FILESYSTEM_loadTiXml2Document(("saves/"+levelfile+".vvv").c_str(), doc))
+    if (!FILESYSTEM_loadTiXml2Document(("saves/"+levelfile+".chaos.vvv").c_str(), doc))
     {
-        vlog_error("%s.vvv not found", levelfile.c_str());
+        vlog_error("%s.chaos.vvv not found", levelfile.c_str());
         return;
     }
 
     if (doc.Error())
     {
-        vlog_error("Error parsing %s.vvv: %s", levelfile.c_str(), doc.ErrorStr());
+        vlog_error("Error parsing %s.chaos.vvv: %s", levelfile.c_str(), doc.ErrorStr());
         return;
     }
 
@@ -5701,14 +5694,14 @@ void Game::loadsummary(void)
     SDL_zero(last_telesave);
     SDL_zero(last_quicksave);
 
-    if (FILESYSTEM_loadTiXml2Document("saves/tsave.vvv", doc))
+    if (FILESYSTEM_loadTiXml2Document("saves/tsave.chaos.vvv", doc))
     {
-        loadthissummary("tsave.vvv", &last_telesave, doc);
+        loadthissummary("tsave.chaos.vvv", &last_telesave, doc);
     }
 
-    if (FILESYSTEM_loadTiXml2Document("saves/qsave.vvv", doc))
+    if (FILESYSTEM_loadTiXml2Document("saves/qsave.chaos.vvv", doc))
     {
-        loadthissummary("qsave.vvv", &last_quicksave, doc);
+        loadthissummary("qsave.chaos.vvv", &last_quicksave, doc);
     }
 }
 
@@ -5735,23 +5728,23 @@ bool Game::savetele(void)
     }
 
     tinyxml2::XMLDocument doc;
-    bool already_exists = FILESYSTEM_loadTiXml2Document("saves/tsave.vvv", doc);
+    bool already_exists = FILESYSTEM_loadTiXml2Document("saves/tsave.chaos.vvv", doc);
     if (!already_exists)
     {
-        vlog_info("No tsave.vvv found. Creating new file");
+        vlog_info("No tsave.chaos.vvv found. Creating new file");
     }
     else if (doc.Error())
     {
-        vlog_error("Error parsing existing tsave.vvv: %s", doc.ErrorStr());
-        vlog_info("Creating new tsave.vvv");
+        vlog_error("Error parsing existing tsave.chaos.vvv: %s", doc.ErrorStr());
+        vlog_info("Creating new tsave.chaos.vvv");
     }
 
     last_telesave = writemaingamesave(doc);
 
-    if(!FILESYSTEM_saveTiXml2Document("saves/tsave.vvv", doc))
+    if(!FILESYSTEM_saveTiXml2Document("saves/tsave.chaos.vvv", doc))
     {
         vlog_error("Could Not Save game!");
-        vlog_error("Failed: %s%s", saveFilePath, "tsave.vvv");
+        vlog_error("Failed: %s%s", saveFilePath, "tsave.chaos.vvv");
         return false;
     }
     vlog_info("Game saved");
@@ -5768,23 +5761,23 @@ bool Game::savequick(void)
     }
 
     tinyxml2::XMLDocument doc;
-    bool already_exists = FILESYSTEM_loadTiXml2Document("saves/qsave.vvv", doc);
+    bool already_exists = FILESYSTEM_loadTiXml2Document("saves/qsave.chaos.vvv", doc);
     if (!already_exists)
     {
-        vlog_info("No qsave.vvv found. Creating new file");
+        vlog_info("No qsave.chaos.vvv found. Creating new file");
     }
     else if (doc.Error())
     {
-        vlog_error("Error parsing existing qsave.vvv: %s", doc.ErrorStr());
-        vlog_info("Creating new qsave.vvv");
+        vlog_error("Error parsing existing qsave.chaos.vvv: %s", doc.ErrorStr());
+        vlog_info("Creating new qsav.chaose.vvv");
     }
 
     last_quicksave = writemaingamesave(doc);
 
-    if(!FILESYSTEM_saveTiXml2Document("saves/qsave.vvv", doc))
+    if(!FILESYSTEM_saveTiXml2Document("saves/qsave.chaos.vvv", doc))
     {
         vlog_error("Could Not Save game!");
-        vlog_error("Failed: %s%s", saveFilePath, "qsave.vvv");
+        vlog_error("Failed: %s%s", saveFilePath, "qsave.chaos.vvv");
         return false;
     }
     vlog_info("Game saved");
@@ -5928,15 +5921,15 @@ bool Game::customsavequick(const std::string& savfile)
     const std::string levelfile = savfile.substr(7);
 
     tinyxml2::XMLDocument doc;
-    bool already_exists = FILESYSTEM_loadTiXml2Document(("saves/" + levelfile + ".vvv").c_str(), doc);
+    bool already_exists = FILESYSTEM_loadTiXml2Document(("saves/" + levelfile + ".chaos.vvv").c_str(), doc);
     if (!already_exists)
     {
         vlog_info("No %s.vvv found. Creating new file", levelfile.c_str());
     }
     else if (doc.Error())
     {
-        vlog_error("Error parsing existing %s.vvv: %s", levelfile.c_str(), doc.ErrorStr());
-        vlog_info("Creating new %s.vvv", levelfile.c_str());
+        vlog_error("Error parsing existing %s.chaos.vvv: %s", levelfile.c_str(), doc.ErrorStr());
+        vlog_info("Creating new %s.chaos.vvv", levelfile.c_str());
     }
 
     xml::update_declaration(doc);
@@ -6076,10 +6069,10 @@ bool Game::customsavequick(const std::string& savfile)
     std::string legacy_summary = customleveltitle + ", " + timestring();
     xml::update_tag(msgs, "summary", legacy_summary.c_str());
 
-    if(!FILESYSTEM_saveTiXml2Document(("saves/"+levelfile+".vvv").c_str(), doc))
+    if(!FILESYSTEM_saveTiXml2Document(("saves/"+levelfile+".chaos.vvv").c_str(), doc))
     {
         vlog_error("Could Not Save game!");
-        vlog_error("Failed: %s%s%s", saveFilePath, levelfile.c_str(), ".vvv");
+        vlog_error("Failed: %s%s%s", saveFilePath, levelfile.c_str(), ".chaos.vvv");
         return false;
     }
     vlog_info("Game saved");
@@ -6090,9 +6083,9 @@ bool Game::customsavequick(const std::string& savfile)
 void Game::loadtele(void)
 {
     tinyxml2::XMLDocument doc;
-    if (!FILESYSTEM_loadTiXml2Document("saves/tsave.vvv", doc)) return;
+    if (!FILESYSTEM_loadTiXml2Document("saves/tsave.chaos.vvv", doc)) return;
 
-    readmaingamesave("tsave.vvv", doc);
+    readmaingamesave("tsave.chaos.vvv", doc);
 }
 
 std::string Game::unrescued(void)
@@ -6414,12 +6407,6 @@ void Game::createmenu( enum Menu::MenuName t, bool samemenu/*= false*/ )
         menuyoff = -20;
         break;
     case Menu::gameplayoptions:
-#if !defined(MAKEANDPLAY)
-        if (ingame_titlemode && unlock[Unlock_FLIPMODE])
-#endif
-        {
-                option(loc::gettext("flip mode"));
-        }
         option(loc::gettext("toggle fps"));
         option(loc::gettext("speedrun options"));
         option(loc::gettext("advanced options"));
@@ -6706,7 +6693,6 @@ void Game::createmenu( enum Menu::MenuName t, bool samemenu/*= false*/ )
         option(loc::gettext("unlock time trials"));
         option(loc::gettext("unlock intermissions"), !unlock[Unlock_INTERMISSION_REPLAYS]);
         option(loc::gettext("unlock no death mode"), !unlock[Unlock_NODEATHMODE]);
-        option(loc::gettext("unlock flip mode"), !unlock[Unlock_FLIPMODE]);
         option(loc::gettext("unlock ship jukebox"), (stat_trinkets<20));
         option(loc::gettext("unlock secret lab"), !unlock[Unlock_SECRETLAB]);
         option(loc::gettext("return"));
@@ -6838,15 +6824,6 @@ void Game::createmenu( enum Menu::MenuName t, bool samemenu/*= false*/ )
                 createmenu(Menu::unlocknodeathmode, true);
                 savestatsandsettings();
             }
-            //Alright then! Flip mode?
-            else if (unlock[UnlockTrophy_GAME_COMPLETE]
-                && !unlocknotify[Unlock_FLIPMODE])
-            {
-                unlock[Unlock_FLIPMODE] = true;
-                unlocknotify[Unlock_FLIPMODE] = true;
-                createmenu(Menu::unlockflipmode, true);
-                savestatsandsettings();
-            }
             //What about the intermission levels?
             else if (unlock[Unlock_INTERMISSION2_COMPLETE]
                 && !unlocknotify[Unlock_INTERMISSION_REPLAYS])
@@ -6893,7 +6870,6 @@ void Game::createmenu( enum Menu::MenuName t, bool samemenu/*= false*/ )
     case Menu::unlocktimetrials:
     case Menu::unlocknodeathmode:
     case Menu::unlockintermission:
-    case Menu::unlockflipmode:
         option(loc::gettext("proceed"));
         menuyoff = 70;
         break;
@@ -6906,7 +6882,6 @@ void Game::createmenu( enum Menu::MenuName t, bool samemenu/*= false*/ )
         option(loc::gettext("time trials"), !nocompetitive_unless_translator());
         option(loc::gettext("intermissions"), unlock[Unlock_INTERMISSION_REPLAYS]);
         option(loc::gettext("no death mode"), unlock[Unlock_NODEATHMODE] && !nocompetitive());
-        option(loc::gettext("flip mode"), unlock[Unlock_FLIPMODE]);
         option(loc::gettext("return"));
         menuyoff = 8;
         maxspacing = 20;
@@ -7050,9 +7025,9 @@ void Game::deletequick(void)
         return;
     }
 
-    if (!FILESYSTEM_delete("saves/qsave.vvv"))
+    if (!FILESYSTEM_delete("saves/qsave.chaos.vvv"))
     {
-        vlog_error("Error deleting saves/qsave.vvv");
+        vlog_error("Error deleting saves/qsave.chaos.vvv");
     }
     else
     {
@@ -7067,9 +7042,9 @@ void Game::deletetele(void)
         return;
     }
 
-    if (!FILESYSTEM_delete("saves/tsave.vvv"))
+    if (!FILESYSTEM_delete("saves/tsave.chaos.vvv"))
     {
-        vlog_error("Error deleting saves/tsave.vvv");
+        vlog_error("Error deleting saves/tsave.chaos.vvv");
     }
     else
     {
@@ -7079,7 +7054,7 @@ void Game::deletetele(void)
 
 void Game::customdeletequick(const std::string& file)
 {
-    const std::string path = "saves/" + file.substr(7) + ".vvv";
+    const std::string path = "saves/" + file.substr(7) + ".chaos.vvv";
 
     if (!FILESYSTEM_delete(path.c_str()))
     {
@@ -7217,8 +7192,7 @@ bool Game::anything_unlocked(void)
         (i == 8 // Secret Lab
         || (i >= 9 && i <= 14) // any Time Trial
         || i == 16 // Intermission replays
-        || i == 17 // No Death Mode
-        || i == 18)) // Flip Mode
+        || i == 17)) // No Death Mode
         {
             return true;
         }

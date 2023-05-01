@@ -1337,7 +1337,7 @@ bool FILESYSTEM_delete(const char *name)
 
 static void levelSaveCallback(const char* filename)
 {
-    if (endsWith(filename, ".vvvvvv.vvv"))
+    if (endsWith(filename, ".vvvvvv.chaos.vvv"))
     {
         if (!FILESYSTEM_delete(filename))
         {

@@ -295,27 +295,7 @@ static void menurender(void)
         break;
     case Menu::gameplayoptions:
     {
-        int gameplayoptionsoffset = 0;
-#if !defined(MAKEANDPLAY)
-        if (game.ingame_titlemode && game.unlock[Unlock_FLIPMODE])
-#endif
-        {
-            gameplayoptionsoffset = 1;
-            if (game.currentmenuoption == 0) {
-                font::print(PR_2X | PR_CEN, -1, 30, loc::gettext("Flip Mode"), tr, tg, tb);
-                int next_y = font::print_wrap(PR_CEN, -1, 65, loc::gettext("Flip the entire game vertically."), tr, tg, tb);
-                if (graphics.setflipmode)
-                {
-                    font::print_wrap(PR_CEN, -1, next_y, loc::gettext("Currently ENABLED!"), tr, tg, tb);
-                }
-                else
-                {
-                    font::print_wrap(PR_CEN, -1, next_y, loc::gettext("Currently Disabled."), tr/2, tg/2, tb/2);
-                }
-            }
-        }
-
-        if (game.currentmenuoption == gameplayoptionsoffset + 0)
+        if (game.currentmenuoption == 0)
         {
             //Toggle FPS
             font::print(PR_2X | PR_CEN, -1, 30, loc::gettext("Toggle 30+ FPS"), tr, tg, tb);
@@ -331,25 +311,25 @@ static void menurender(void)
             }
             break;
         }
-        else if (game.currentmenuoption == gameplayoptionsoffset + 1)
+        else if (game.currentmenuoption == 1)
         {
             //Speedrunner options
             font::print(PR_2X | PR_CEN, -1, 30, loc::gettext("Speedrunner Options"), tr, tg, tb);
             font::print_wrap(PR_CEN, -1, 65, loc::gettext("Access some advanced settings that might be of interest to speedrunners."), tr, tg, tb);
         }
-        else if (game.currentmenuoption == gameplayoptionsoffset + 2)
+        else if (game.currentmenuoption == 2)
         {
             //Advanced options
             font::print(PR_2X | PR_CEN, -1, 30, loc::gettext("Advanced Options"), tr, tg, tb);
             font::print_wrap(PR_CEN, -1, 65, loc::gettext("All other gameplay settings."), tr, tg, tb);
         }
-        else if (game.currentmenuoption == gameplayoptionsoffset + 3)
+        else if (game.currentmenuoption == 3)
         {
             //Clear Data
             font::print(PR_2X | PR_CEN, -1, 30, loc::gettext("Clear Data"), tr, tg, tb);
             font::print_wrap(PR_CEN, -1, 65, loc::gettext("Delete your main game save data and unlocked play modes."), tr, tg, tb);
         }
-        else if (game.currentmenuoption == gameplayoptionsoffset + 4)
+        else if (game.currentmenuoption == 4)
         {
             font::print(PR_2X | PR_CEN, -1, 30, loc::gettext("Clear Data"), tr, tg, tb);
             font::print_wrap(PR_CEN, -1, 65, loc::gettext("Delete your custom level save data and completion stars."), tr, tg, tb);
@@ -1239,27 +1219,6 @@ static void menurender(void)
             }
             break;
         }
-        case 3:
-            // WARNING: Partially duplicated in Menu::options
-            font::print(PR_2X | PR_CEN, -1, 30, loc::gettext("Flip Mode"), tr, tg, tb);
-            int next_y = font::print_wrap(PR_CEN, -1, 65, loc::gettext("Flip the entire game vertically. Compatible with other game modes."), tr, tg, tb);
-
-            if (game.unlock[Unlock_FLIPMODE])
-            {
-                if (graphics.setflipmode)
-                {
-                    font::print_wrap(PR_CEN, -1, next_y, loc::gettext("Currently ENABLED!"), tr, tg, tb);
-                }
-                else
-                {
-                    font::print_wrap(PR_CEN, -1, next_y, loc::gettext("Currently Disabled."), tr/2, tg/2, tb/2);
-                }
-            }
-            else
-            {
-                font::print_wrap(PR_CEN, -1, next_y, loc::gettext("TO UNLOCK: Complete the game."), tr, tg, tb);
-            }
-            break;
         }
         break;
     case Menu::youwannaquit:
@@ -1704,11 +1663,6 @@ static void menurender(void)
         font::print(PR_2X | PR_CEN, -1, 45, loc::gettext("Congratulations!"), tr, tg, tb);
 
         font::print_wrap(PR_CEN, -1, 125, loc::gettext("You have unlocked No Death Mode."), tr, tg, tb);
-        break;
-    case Menu::unlockflipmode:
-        font::print(PR_2X | PR_CEN, -1, 45, loc::gettext("Congratulations!"), tr, tg, tb);
-
-        font::print_wrap(PR_CEN, -1, 125, loc::gettext("You have unlocked Flip Mode."), tr, tg, tb);
         break;
     case Menu::unlockintermission:
         font::print(PR_2X | PR_CEN, -1, 45, loc::gettext("Congratulations!"), tr, tg, tb);

@@ -2975,13 +2975,7 @@ void scriptclass::startgamemode(const enum StartMode mode)
     }
 
     game.gravitycontrol = game.savegc;
-    graphics.flipmode = graphics.setflipmode;
-
-    if (!map.custommode && !graphics.setflipmode)
-    {
-        /* Invalidate Flip Mode trophy */
-        obj.flags[73] = true;
-    }
+    graphics.flipmode = false;
 
     obj.entities.clear();
     obj.createentity(game.savex, game.savey, 0, 0);

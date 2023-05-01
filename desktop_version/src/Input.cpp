@@ -497,7 +497,7 @@ static void menuactionpress(void)
             game.customleveltitle=cl.ListOfMetaData[game.playcustomlevel].title;
             game.customlevelfilename=cl.ListOfMetaData[game.playcustomlevel].filename;
 
-            std::string name = "saves/" + cl.ListOfMetaData[game.playcustomlevel].filename.substr(7) + ".vvv";
+            std::string name = "saves/" + cl.ListOfMetaData[game.playcustomlevel].filename.substr(7) + ".chaos.vvv";
             tinyxml2::XMLDocument doc;
             if (!FILESYSTEM_loadTiXml2Document(name.c_str(), doc)){
                 startmode(Start_CUSTOM);
@@ -939,69 +939,41 @@ static void menuactionpress(void)
     }
     case Menu::gameplayoptions:
     {
-        int gameplayoptionsoffset = 0;
-#if !defined(MAKEANDPLAY)
-        if (game.ingame_titlemode && game.unlock[Unlock_FLIPMODE])
-#endif
-        {
-            gameplayoptionsoffset = 1;
-            if (game.currentmenuoption == 0) {
-                toggleflipmode();
-                // Fix wrong area music in Tower (Positive Force vs. ecroF evitisoP)
-                if (map.custommode)
-                {
-                    break;
-                }
-                int area = map.area(game.roomx, game.roomy);
-                if (area == 3 || area == 11)
-                {
-                    if (graphics.setflipmode)
-                    {
-                        music.play(Music_POSITIVEFORCEREVERSED);
-                    }
-                    else
-                    {
-                        music.play(Music_POSITIVEFORCE);
-                    }
-                }
-            }
-        }
-
-        if (game.currentmenuoption == gameplayoptionsoffset + 0)
+        if (game.currentmenuoption == 0)
         {
             //Toggle 30+ FPS
             music.playef(Sound_VIRIDIAN);
             game.over30mode = !game.over30mode;
             game.savestatsandsettings_menu();
         }
-        else if (game.currentmenuoption == gameplayoptionsoffset + 1)
+        else if (game.currentmenuoption == 1)
         {
             //Speedrunner options
             music.playef(Sound_VIRIDIAN);
             game.createmenu(Menu::speedrunneroptions);
             map.nexttowercolour();
         }
-        else if (game.currentmenuoption == gameplayoptionsoffset + 2)
+        else if (game.currentmenuoption == 2)
         {
             //Advanced options
             music.playef(Sound_VIRIDIAN);
             game.createmenu(Menu::advancedoptions);
             map.nexttowercolour();
         }
-        else if (game.currentmenuoption == gameplayoptionsoffset + 3)
+        else if (game.currentmenuoption == 3)
         {
             //Clear Data
             music.playef(Sound_VIRIDIAN);
             game.createmenu(Menu::cleardatamenu);
             map.nexttowercolour();
         }
-        else if (game.currentmenuoption == gameplayoptionsoffset + 4)
+        else if (game.currentmenuoption == 4)
         {
             music.playef(Sound_VIRIDIAN);
             game.createmenu(Menu::clearcustomdatamenu);
             map.nexttowercolour();
         }
-        else if (game.currentmenuoption == gameplayoptionsoffset + 5) {
+        else if (game.currentmenuoption == 5) {
             //return to previous menu
             music.playef(Sound_VIRIDIAN);
             game.returnmenu();
@@ -1486,21 +1458,13 @@ static void menuactionpress(void)
             game.savestatsandsettings_menu();
             break;
         case 3:
-            //unlock flip mode
-            music.playef(Sound_VIRIDIAN);
-            game.unlock[Unlock_FLIPMODE] = true;
-            game.unlocknotify[Unlock_FLIPMODE] = true;
-            game.createmenu(Menu::unlockmenu, true);
-            game.savestatsandsettings_menu();
-            break;
-        case 4:
             //unlock jukebox
             music.playef(Sound_VIRIDIAN);
             game.stat_trinkets = 20;
             game.createmenu(Menu::unlockmenu, true);
             game.savestatsandsettings_menu();
             break;
-        case 5:
+        case 4:
             //unlock secret lab
             music.playef(Sound_VIRIDIAN);
             game.unlock[Unlock_SECRETLAB] = true;
@@ -1924,12 +1888,7 @@ static void menuactionpress(void)
             game.createmenu(Menu::startnodeathmode);
             map.nexttowercolour();
         }
-        else if (game.currentmenuoption == 3
-            && game.unlock[Unlock_FLIPMODE])    //enable/disable flip mode
-        {
-            toggleflipmode();
-        }
-        else if (game.currentmenuoption == 4)
+        else if (game.currentmenuoption == 3)
         {
             //back
             music.playef(Sound_VIRIDIAN);
@@ -2066,7 +2025,6 @@ static void menuactionpress(void)
     case Menu::unlocktimetrial:
     case Menu::unlocknodeathmode:
     case Menu::unlockintermission:
-    case Menu::unlockflipmode:
         //back
         music.playef(Sound_VIRIDIAN);
         game.createmenu(Menu::play, true);

@@ -625,8 +625,8 @@ int main(int argc, char *argv[])
     map.setbgobjlerp(graphics.titlebg);
 
     {
-        // Prioritize unlock.vvv first (2.2 and below),
-        // but settings have been migrated to settings.vvv (2.3 and up)
+        // Prioritize unlock.chaos.vvv first (2.2 and below),
+        // but settings have been migrated to settings.chaos.vvv (2.3 and up)
         struct ScreenSettings screen_settings;
         SDL_zero(screen_settings);
         ScreenSettings_default(&screen_settings);
