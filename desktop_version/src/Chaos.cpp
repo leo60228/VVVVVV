@@ -39,21 +39,14 @@ void Chaos::Initialize()
     randomEffects = true;
 
     //randomEffects = false;
-    //Chaos::AddEffect(COSMIC_CLONES, true);
+    //Chaos::AddEffect(GAMESTATE, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)
 {
     ActiveEffect newEffect;
-    if (effect == GOOFY_AAH)
-    {
-        // goofy ahh is long
-        newEffect.timeRemaining = MAX_EFFECT_TIME;
-    }
-    else
-    {
-        newEffect.timeRemaining = (int)round(fRandom() * (MAX_EFFECT_TIME - MIN_EFFECT_TIME) + MIN_EFFECT_TIME);
-    }
+    newEffect.timeRemaining = (int)round(fRandom() * (MAX_EFFECT_TIME - MIN_EFFECT_TIME) + MIN_EFFECT_TIME);
+
     if (infinite)
     {
         newEffect.timeRemaining = SDL_MAX_SINT32;
@@ -190,12 +183,15 @@ void Chaos::ApplyEffect(ActiveEffect& effect)
             validStates.push_back(i);
         }
 
+        for (int i = 4000; i <= 4069; i++)
+        {
+            validStates.push_back(i);
+        }
+
         // Pick a state
         game.state = validStates[(int)round(fRandom() * (validStates.size() - 1))];
 
-        std::string text = " Running gamestate " + game.state;
-
-        graphics.createtextbox(text + " ", -1, 3, 192, 100, 255);
+        graphics.createtextbox(" Running gamestate " + std::to_string(game.state) + " ", -1, 3, 192, 100, 255);
         graphics.textboxtimer(45);
         break;
     }

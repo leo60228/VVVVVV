@@ -251,8 +251,7 @@ static void menurender(void)
         }
 
         font::print(PR_FONT_8X8, 10, 230, "https://ally.moe/", tr / 2, tg / 2, tb / 2);
-        font::print(PR_FONT_8X8, 10, 220, "Chaos v1.1", tr / 2, tg / 2, tb / 2);
-
+        font::print(PR_FONT_8X8, 10, 220, "Chaos v1.2", tr / 2, tg / 2, tb / 2);
         break;
     }
     case Menu::levellist:
