@@ -43,8 +43,8 @@ void Chaos::Initialize()
     cloneInfo.clear();
     lastDir = 0;
 
-    randomEffects = false;
-    Chaos::AddEffect(VIGNETTE, true);
+    //randomEffects = false;
+    //Chaos::AddEffect(HORIZONTAL_FLIP, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)

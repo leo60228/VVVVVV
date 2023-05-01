@@ -1061,6 +1061,11 @@ static int print_char(
         y += (f->glyph_h - f_glyph->glyph_h) / 2;
     }
 
+    if (Chaos::IsActive(HORIZONTAL_FLIP))
+    {
+        x -= get_advance_ff(f, f_glyph, glyph) * scale;
+    }
+
     graphics.draw_grid_tile(
         f_glyph->image,
         glyph->image_idx,
@@ -1218,7 +1223,6 @@ void print(
             x += textlen;
         }
         orig_x = x - textlen;
-        x -= 8; // daaaaav please fix this for me idk what i did wrong
     }
     else
     {
