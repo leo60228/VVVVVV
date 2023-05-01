@@ -21,6 +21,7 @@ struct CloneInfo {
     int y; // .yp
     int frame; // .drawframe
     int visible;
+    int time;
 };
 
 enum Effects
@@ -114,6 +115,7 @@ namespace Chaos
     extern std::vector<ActiveEffect> activeEffects;
 
     extern std::vector<CloneInfo> cloneInfo;
+    extern std::vector<CloneInfo> dashTrail;
 
     extern int cloneTimer;
     extern int cloneCount;

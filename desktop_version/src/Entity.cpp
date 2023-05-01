@@ -4700,15 +4700,29 @@ void entityclass::applyfriction( int t, float xrate, float yrate )
         yrate = temp2;
     }
 
+    int down_limit = 10.0f;
+    int up_limit = 10.0f;
+
+    if (Chaos::IsActive(JUMPING))
+    {
+        if (game.gravitycontrol == 0)
+        {
+            up_limit = 16.0f;
+        }
+        else
+        {
+            down_limit = 16.0f;
+        }
+    }
+
     if (entities[t].vx > 0.00f) entities[t].vx -= xrate;
     if (entities[t].vx < 0.00f) entities[t].vx += xrate;
     if (entities[t].vy > 0.00f) entities[t].vy -= yrate;
     if (entities[t].vy < 0.00f) entities[t].vy += yrate;
-    int limit = Chaos::IsActive(JUMPING) ? 12.0f : 10.0f;
-    if (entities[t].vy > limit) entities[t].vy = limit;
-    if (entities[t].vy < -limit) entities[t].vy = -limit;
-    if (!(Chaos::IsActive(UNCAPPED_SPEED)) && entities[t].vx > 6.00f) entities[t].vx = 6.0f;
-    if (!(Chaos::IsActive(UNCAPPED_SPEED)) && entities[t].vx < -6.00f) entities[t].vx = -6.0f;
+    if (entities[t].vy > down_limit) entities[t].vy = down_limit;
+    if (entities[t].vy < -up_limit) entities[t].vy = -up_limit;
+    if (game.dashtimer <= 0 && !(Chaos::IsActive(UNCAPPED_SPEED)) && entities[t].vx > 6.00f) entities[t].vx = 6.0f;
+    if (game.dashtimer <= 0 && !(Chaos::IsActive(UNCAPPED_SPEED)) && entities[t].vx < -6.00f) entities[t].vx = -6.0f;
 
     if (SDL_fabsf(entities[t].vx) < xrate) entities[t].vx = 0.0f;
     if (SDL_fabsf(entities[t].vy) < yrate) entities[t].vy = 0.0f;

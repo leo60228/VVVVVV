@@ -2376,6 +2376,12 @@ void gameinput(void)
         game.press_action = false;
         game.press_interact = false;
 
+        bool updown_check = key.isDown(KEYBOARD_UP) || key.isDown(KEYBOARD_DOWN);
+        if (Chaos::IsActive(JUMPING))
+        {
+            updown_check = key.isDown(SDLK_c);
+        }
+
         if (key.isDown(KEYBOARD_LEFT) || key.isDown(KEYBOARD_a) || key.controllerWantsLeft(false))
         {
             game.press_left = true;
@@ -2385,7 +2391,7 @@ void gameinput(void)
             game.press_right = true;
         }
         if (key.isDown(KEYBOARD_z) || key.isDown(KEYBOARD_SPACE) || key.isDown(KEYBOARD_v)
-                || key.isDown(KEYBOARD_UP) || key.isDown(KEYBOARD_DOWN) || key.isDown(KEYBOARD_w) || key.isDown(KEYBOARD_s)|| key.isDown(game.controllerButton_flip))
+                || updown_check || key.isDown(KEYBOARD_w) || key.isDown(KEYBOARD_s)|| key.isDown(game.controllerButton_flip))
         {
             game.press_action = true;
         }
@@ -2732,8 +2738,58 @@ void gameinput(void)
             }
         }
 
+        if (game.dashtimer > 0)
+        {
+            for (size_t ie = 0; ie < player_entities.size(); ie++)
+            {
+                int x = cos(game.dashangle * (3.141592653589793238 / 180)) * (int)(32.0 * (((double)game.dashtimer) / 15.0));
+                int y = sin(game.dashangle * (3.141592653589793238 / 180)) * (int)(32.0 * (((double)game.dashtimer) / 15.0));
+                obj.entities[player_entities[ie]].ax = x;
+                obj.entities[player_entities[ie]].ay = y;
+                obj.entities[player_entities[ie]].vx = x;
+                obj.entities[player_entities[ie]].vy = y;
+
+                CloneInfo clone;
+                clone.rx = game.roomx;
+                clone.ry = game.roomy;
+                clone.x = obj.entities[ie].xp;
+                clone.y = obj.entities[ie].yp;
+                clone.frame = obj.entities[ie].drawframe;
+                clone.visible = !obj.entities[ie].invis;
+                clone.time = 5;
+                Chaos::dashTrail.insert(Chaos::dashTrail.begin(), clone);
+            }
+
+            game.dashtimer--;
+
+            if (game.dashtimer == 0)
+            {
+                game.dashtimer = -1;
+            }
+        }
+
         for (size_t ie = 0; ie < obj.entities.size(); ie++)
         {
+            if (obj.entities[ie].rule == 0 && game.dashtimer == -1 && ((obj.entities[ie].onground > 0 && game.gravitycontrol == 0) || (obj.entities[ie].onroof > 0 && game.gravitycontrol == 1)))
+            {
+                game.dashtimer = 0;
+            }
+
+            if (game.dashtimer == 0 && key.isDown(SDLK_x))
+            {
+                music.playef(26);
+                game.dashtimer = 6;
+                game.dashangle = obj.entities[ie].dir == 0 ? 180 : 0;
+                if (key.isDown(SDLK_UP) && key.isDown(SDLK_LEFT)) game.dashangle = 225;
+                if (key.isDown(SDLK_UP) && key.isDown(SDLK_RIGHT)) game.dashangle = 315;
+                if (key.isDown(SDLK_DOWN) && key.isDown(SDLK_LEFT)) game.dashangle = 135;
+                if (key.isDown(SDLK_DOWN) && key.isDown(SDLK_RIGHT)) game.dashangle = 45;
+                if (key.isDown(SDLK_UP) && !key.isDown(SDLK_LEFT) && !key.isDown(SDLK_RIGHT)) game.dashangle = 270;
+                if (key.isDown(SDLK_DOWN) && !key.isDown(SDLK_LEFT) && !key.isDown(SDLK_RIGHT)) game.dashangle = 90;
+                if (!key.isDown(SDLK_UP) && !key.isDown(SDLK_DOWN) && key.isDown(SDLK_LEFT)) game.dashangle = 180;
+                if (!key.isDown(SDLK_UP) && !key.isDown(SDLK_DOWN) && key.isDown(SDLK_RIGHT)) game.dashangle = 0;
+            }
+
             const bool process_flip = obj.entities[ie].rule == 0 &&
                 game.jumppressed > 0;
             if (!process_flip)
@@ -2749,7 +2805,7 @@ void gameinput(void)
                 game.gravitycontrol = 1;
                 if (Chaos::IsActive(JUMPING))
                 {
-                    game.gravitycontrol = 1;
+                    game.gravitycontrol = 0;
                 }
                 if (Chaos::IsActive(GRAVITATION_POTION))
                 {
@@ -2781,7 +2837,7 @@ void gameinput(void)
                 game.gravitycontrol = 0;
                 if (Chaos::IsActive(JUMPING))
                 {
-                    game.gravitycontrol = 0;
+                    game.gravitycontrol = 1;
                 }
                 if (Chaos::IsActive(GRAVITATION_POTION))
                 {

@@ -449,6 +449,7 @@ void scriptclass::run(void)
                     obj.entities[player].lerpoldyp = obj.entities[player].yp;
                 }
                 game.gravitycontrol = ss_toi(words[3]);
+                game.dashtimer = 0;
 
             }
             if (words[0] == "gotoroom")
@@ -1470,6 +1471,7 @@ void scriptclass::run(void)
                 game.hascontrol = true;
                 game.resetgameclock();
                 game.gravitycontrol = 0;
+                game.dashtimer = 0;
                 game.teleport = false;
                 game.companion = 0;
                 game.teleport_to_new_area = false;
@@ -1952,6 +1954,7 @@ void scriptclass::run(void)
                 game.savedir = 0; //Intermission level 2
                 game.savepoint = 0;
                 game.gravitycontrol = 0;
+                game.dashtimer = 0;
 
                 map.gotoroom(46, 54);
             }
@@ -2975,6 +2978,7 @@ void scriptclass::startgamemode(const enum StartMode mode)
     }
 
     game.gravitycontrol = game.savegc;
+    game.dashtimer = 0;
     graphics.flipmode = false;
 
     obj.entities.clear();
@@ -3047,6 +3051,7 @@ void scriptclass::teleport(void)
     }
 
     game.gravitycontrol = 0;
+    game.dashtimer = 0;
     map.gotoroom(100+game.teleport_to_x, 100+game.teleport_to_y);
     j = obj.getteleporter();
     if (INBOUNDS_VEC(j, obj.entities))
@@ -3144,6 +3149,7 @@ void scriptclass::hardreset(void)
     //Game:
     game.hascontrol = true;
     game.gravitycontrol = 0;
+    game.dashtimer = 0;
     game.teleport = false;
     game.companion = 0;
     if (!version2_2)

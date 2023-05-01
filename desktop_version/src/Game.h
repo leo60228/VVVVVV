@@ -330,6 +330,8 @@ public:
     bool hascontrol, jumpheld;
     int jumppressed;
     int gravitycontrol;
+    int dashtimer;
+    int dashangle;
     bool isingamecompletescreen(void);
 
     bool muted;

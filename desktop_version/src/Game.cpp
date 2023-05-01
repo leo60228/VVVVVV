@@ -162,6 +162,7 @@ void Game::init(void)
     advancetext = false;
     jumppressed = 0;
     gravitycontrol = 0;
+    dashtimer = 0;
     teleport = false;
     edteleportent = 0; //Added in the port!
     companion = 0;
@@ -1761,6 +1762,7 @@ void Game::updatestate(void)
             {
                 gravitycontrol = 0;
                 music.playef(Sound_UNFLIP);
+                dashtimer = 0;
             }
             if (INBOUNDS_VEC(i, obj.entities) && obj.entities[i].onground > 0)
             {
@@ -1891,6 +1893,7 @@ void Game::updatestate(void)
             {
                 gravitycontrol = 1;
                 music.playef(Sound_UNFLIP);
+                dashtimer = 0;
             }
             if (INBOUNDS_VEC(i, obj.entities) && obj.entities[i].onroof > 0)
             {
@@ -4984,6 +4987,7 @@ void Game::customstart(void)
     savedir = edsavedir; //Worldmap Start
     savepoint = 0;
     gravitycontrol = savegc;
+    dashtimer = 0;
 
     setstate(0);
     deathseq = -1;
@@ -5002,6 +5006,7 @@ void Game::start(void)
     savedir = 1; //Worldmap Start
     savepoint = 0;
     gravitycontrol = savegc;
+    dashtimer = 0;
 
     setstate(0);
     deathseq = -1;
@@ -5132,6 +5137,7 @@ void Game::startspecial( int t )
 
     savepoint = 0;
     gravitycontrol = savegc;
+    dashtimer = 0;
     setstate(0);
     deathseq = -1;
     lifeseq = 0;
@@ -5202,6 +5208,7 @@ void Game::starttrial( int t )
 
     savepoint = 0;
     gravitycontrol = savegc;
+    dashtimer = 0;
 
     setstate(0);
     deathseq = -1;
@@ -7303,6 +7310,7 @@ void Game::returntolab(void)
         obj.entities[player].yp = 137;
     }
     gravitycontrol = 0;
+    dashtimer = 0;
 
     savepoint = 0;
     saverx = 119;

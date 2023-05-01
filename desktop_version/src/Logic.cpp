@@ -501,6 +501,7 @@ void gamelogic(void)
 
 
                 game.gravitycontrol = game.savegc;
+                game.dashtimer = 0;
                 graphics.textboxremove();
                 map.resetplayer(true);
                 if (Chaos::IsActive(COSMIC_CLONES))

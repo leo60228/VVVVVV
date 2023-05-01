@@ -21,6 +21,7 @@ namespace Chaos
     int waitTime;
     std::vector<ActiveEffect> activeEffects;
     std::vector<CloneInfo> cloneInfo;
+    std::vector<CloneInfo> dashTrail;
     int cloneTimer;
     int cloneCount;
     int randomSprite;
@@ -37,9 +38,11 @@ void Chaos::Initialize()
     graphics.flipmode = false;
     reloading = false;
     randomEffects = true;
+    dashTrail.clear();
+    cloneInfo.clear();
 
-    //randomEffects = false;
-    //Chaos::AddEffect(GAMESTATE, true);
+    randomEffects = false;
+    Chaos::AddEffect(JUMPING, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)
@@ -575,6 +578,7 @@ void Chaos::UpdateEffect(ActiveEffect& effect)
             clone.y = obj.entities[i].yp;
             clone.frame = obj.entities[i].drawframe;
             clone.visible = !obj.entities[i].invis;
+            clone.time = 0;
             cloneInfo.insert(cloneInfo.begin(), clone);
         }
 

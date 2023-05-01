@@ -2047,6 +2047,19 @@ void gamerender(void)
             }
         }
 
+        for (int i = 0; i < Chaos::dashTrail.size(); i++)
+        {
+            Chaos::dashTrail[i].time--;
+            if (Chaos::dashTrail[i].time <= 0)
+            {
+                Chaos::dashTrail.erase(Chaos::dashTrail.begin() + i);
+            }
+
+            if (Chaos::dashTrail[i].rx != game.roomx || Chaos::dashTrail[i].ry != game.roomy)
+                continue;
+            SDL_Color ct = graphics.getRGBA(0, 255, 255, 64);
+            graphics.draw_sprite(Chaos::dashTrail[i].x, Chaos::dashTrail[i].y, Chaos::dashTrail[i].frame, ct);
+        }
 
         graphics.drawentities();
         if (map.towermode)

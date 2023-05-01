@@ -870,6 +870,7 @@ void mapclass::warpto(int rx, int ry , int t, int tx, int ty)
         obj.entities[t].lerpoldyp = obj.entities[t].yp;
     }
     game.gravitycontrol = 0;
+    game.dashtimer = 0;
 }
 
 void mapclass::gotoroom(int rx, int ry)
