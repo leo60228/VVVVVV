@@ -75,9 +75,8 @@ enum Effects
     RANDOM_MUSIC,            // Random music
     GOOFY_AAH,               // goofy ahh sounds
     NOCLIP,                  // noclip
+    CANT_STOP,               // can't stop moving (pressing left makes you go left until you go right, etc)
 
-
-    // Mario?
     // Portal gun?
     // Invincibility star?
     // Flying and noclip
@@ -90,10 +89,6 @@ enum Effects
     // green demon (Green coin chases you)
     // you get hurt and drop coins
     // add input lag!
-    // don't stop moving (pressing left makes you go left until you go right, etc)
-
-    // squeaks are replaced with quacks
-    
 
     EFFECT_AMOUNT
 };
@@ -121,6 +116,8 @@ namespace Chaos
     extern int cloneCount;
 
     extern bool randomEffects;
+
+    extern int lastDir;
 
     void Initialize();
 

@@ -27,6 +27,7 @@ namespace Chaos
     int randomSprite;
     bool reloading;
     bool randomEffects;
+    int lastDir;
 }
 
 void Chaos::Initialize()
@@ -40,9 +41,10 @@ void Chaos::Initialize()
     randomEffects = true;
     dashTrail.clear();
     cloneInfo.clear();
+    lastDir = 0;
 
-    randomEffects = false;
-    Chaos::AddEffect(JUMPING, true);
+    //randomEffects = false;
+    //Chaos::AddEffect(CANT_STOP, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)

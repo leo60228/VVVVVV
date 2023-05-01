@@ -2385,11 +2385,26 @@ void gameinput(void)
         if (key.isDown(KEYBOARD_LEFT) || key.isDown(KEYBOARD_a) || key.controllerWantsLeft(false))
         {
             game.press_left = true;
+            Chaos::lastDir = 0;
         }
         if (key.isDown(KEYBOARD_RIGHT) || key.isDown(KEYBOARD_d) || key.controllerWantsRight(false))
         {
             game.press_right = true;
+            Chaos::lastDir = 1;
         }
+
+        if (!game.press_left && !game.press_right)
+        {
+            if (Chaos::lastDir == 0)
+            {
+                game.press_left = true;
+            }
+            else
+            {
+                game.press_right = true;
+            }
+        }
+
         if (key.isDown(KEYBOARD_z) || key.isDown(KEYBOARD_SPACE) || key.isDown(KEYBOARD_v)
                 || updown_check || key.isDown(KEYBOARD_w) || key.isDown(KEYBOARD_s)|| key.isDown(game.controllerButton_flip))
         {
@@ -2775,7 +2790,7 @@ void gameinput(void)
                 game.dashtimer = 0;
             }
 
-            if (game.dashtimer == 0 && key.isDown(SDLK_x))
+            if (game.dashtimer == 0 && key.isDown(SDLK_x) && Chaos::IsActive(JUMPING))
             {
                 music.playef(26);
                 game.dashtimer = 6;
