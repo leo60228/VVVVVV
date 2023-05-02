@@ -81,6 +81,7 @@ enum Effects
     ZOOMED,                  // Zoom in on Viridian
     VIGNETTE,                // Vignette around Viridian
     CONVEYORS_OFF,           // Turn off conveyors
+    ASKEW,                   // Askew screen
 
     // Portal gun?
     // Invincibility star?

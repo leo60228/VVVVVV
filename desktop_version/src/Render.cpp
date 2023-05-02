@@ -2184,12 +2184,15 @@ void gamerender(void)
         SDL_Rect dest = { 0, 0, SCREEN_WIDTH_PIXELS / 2, SCREEN_HEIGHT_PIXELS / 2 };
         graphics.copy_texture(graphics.gameplayTexture, NULL, &dest);
 
-        graphics.set_render_target(graphics.gameTexture);
+        graphics.set_render_target(graphics.gameplayTexture);
         graphics.copy_texture(graphics.gameplayScaleTexture, &dest, NULL);
-
     }
-    else if (Chaos::IsActive(ZOOMED))
+
+    if (Chaos::IsActive(ZOOMED))
     {
+        graphics.set_render_target(graphics.gameplayScaleTexture);
+        graphics.copy_texture(graphics.gameplayTexture, NULL, NULL);
+
         int x = SCREEN_WIDTH_PIXELS / 4;
         int y = SCREEN_HEIGHT_PIXELS / 4;
         int i = obj.getplayer();
@@ -2201,14 +2204,21 @@ void gamerender(void)
 
         SDL_Rect dest = { SDL_clamp(x, 0, SCREEN_WIDTH_PIXELS / 2), SDL_clamp(y, 0, SCREEN_HEIGHT_PIXELS / 2), SCREEN_WIDTH_PIXELS / 2, SCREEN_HEIGHT_PIXELS / 2 };
 
-        graphics.set_render_target(graphics.gameTexture);
-        graphics.copy_texture(graphics.gameplayTexture, &dest, NULL);
+        graphics.set_render_target(graphics.gameplayTexture);
+        graphics.copy_texture(graphics.gameplayScaleTexture, &dest, NULL);
     }
-    else
+
+    if (Chaos::IsActive(ASKEW))
     {
-        graphics.set_render_target(graphics.gameTexture);
+        graphics.set_render_target(graphics.gameplayScaleTexture);
         graphics.copy_texture(graphics.gameplayTexture, NULL, NULL);
+
+        graphics.set_render_target(graphics.gameplayTexture);
+        SDL_RenderCopyEx(gameScreen.m_renderer, graphics.gameplayScaleTexture, NULL, NULL, 4, NULL, SDL_FLIP_NONE);
     }
+
+    graphics.set_render_target(graphics.gameTexture);
+    graphics.copy_texture(graphics.gameplayTexture, NULL, NULL);
 
     if (game.advancetext)
     {

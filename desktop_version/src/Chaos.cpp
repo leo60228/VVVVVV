@@ -44,7 +44,9 @@ void Chaos::Initialize()
     lastDir = 0;
 
     //randomEffects = false;
-    //Chaos::AddEffect(JUMPING, true);
+    //Chaos::AddEffect(DOWNSCALED, true);
+    //Chaos::AddEffect(ZOOMED, true);
+    //Chaos::AddEffect(ASKEW, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)
