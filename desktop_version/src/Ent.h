@@ -46,7 +46,7 @@ public:
 
     //Platforming specific
     bool gravity;
-    int onground, onroof;
+    int onground, onroof, touchinglwall, touchingrwall;
     //Animation
     int framedelay, drawframe, walkingframe, dir, actionframe;
     int collisionframedelay, collisiondrawframe, collisionwalkingframe;

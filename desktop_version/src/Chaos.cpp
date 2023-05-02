@@ -43,8 +43,8 @@ void Chaos::Initialize()
     cloneInfo.clear();
     lastDir = 0;
 
-    randomEffects = false;
-    Chaos::AddEffect(CONVEYORS_OFF, true);
+    //randomEffects = false;
+    //Chaos::AddEffect(JUMPING, true);
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)

@@ -4560,6 +4560,62 @@ bool entityclass::entitycollidefloor( int t )
     return false;
 }
 
+bool entityclass::entitycolliderwall(int t)
+{
+    if (!INBOUNDS_VEC(t, entities))
+    {
+        vlog_error("entitycolliderwall() out-of-bounds!");
+        return false;
+    }
+
+    SDL_Rect temprect;
+    if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
+    {
+        temprect.x = entities[t].xp + entities[t].cx;
+        temprect.y = entities[t].yp + entities[t].cy + 2;
+    }
+    else {
+        temprect.x = entities[t].xp + entities[t].cx + 2;
+        temprect.y = entities[t].yp + entities[t].cy;
+    }
+
+    temprect.w = entities[t].w;
+    temprect.h = entities[t].h;
+
+    const bool invincible = map.invincibility && entities[t].ishumanoid();
+
+    if (checkwall(invincible, temprect)) return true;
+    return false;
+}
+
+bool entityclass::entitycollidelwall(int t)
+{
+    if (!INBOUNDS_VEC(t, entities))
+    {
+        vlog_error("entitycollidelwall() out-of-bounds!");
+        return false;
+    }
+
+    SDL_Rect temprect;
+    if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
+    {
+        temprect.x = entities[t].xp + entities[t].cx;
+        temprect.y = entities[t].yp + entities[t].cy - 2;
+    }
+    else {
+        temprect.x = entities[t].xp + entities[t].cx - 2;
+        temprect.y = entities[t].yp + entities[t].cy;
+    }
+
+    temprect.w = entities[t].w;
+    temprect.h = entities[t].h;
+
+    const bool invincible = map.invincibility && entities[t].ishumanoid();
+
+    if (checkwall(invincible, temprect)) return true;
+    return false;
+}
+
 bool entityclass::entitycollideroof( int t )
 {
     if (!INBOUNDS_VEC(t, entities))
@@ -4571,12 +4627,12 @@ bool entityclass::entitycollideroof( int t )
     SDL_Rect temprect;
     if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
     {
-        temprect.x = entities[t].xp + entities[t].cx - 1;
+        temprect.x = entities[t].xp + entities[t].cx - 3;
         temprect.y = entities[t].yp + entities[t].cy;
     }
     else {
         temprect.x = entities[t].xp + entities[t].cx;
-        temprect.y = entities[t].yp + entities[t].cy - 1;
+        temprect.y = entities[t].yp + entities[t].cy - 3;
     }
     temprect.w = entities[t].w;
     temprect.h = entities[t].h;
@@ -4707,11 +4763,13 @@ void entityclass::applyfriction( int t, float xrate, float yrate )
     {
         if (game.gravitycontrol == 0)
         {
-            up_limit = 16.0f;
+            //up_limit = 16.0f;
+            up_limit = 32.0f;
         }
         else
         {
-            down_limit = 16.0f;
+            //down_limit = 16.0f;
+            down_limit = 32.0f;
         }
     }
 

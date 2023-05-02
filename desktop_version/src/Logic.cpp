@@ -174,6 +174,24 @@ void gamelogic(void)
                 --obj.entities[i].onroof;
             }
 
+            if (obj.entitycolliderwall(i))
+            {
+                obj.entities[i].touchingrwall = 2;
+            }
+            else
+            {
+                --obj.entities[i].touchingrwall;
+            }
+
+            if (obj.entitycollidelwall(i))
+            {
+                obj.entities[i].touchinglwall = 2;
+            }
+            else
+            {
+                --obj.entities[i].touchinglwall;
+            }
+
             obj.animatehumanoidcollision(i);
         }
     }

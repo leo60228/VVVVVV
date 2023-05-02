@@ -145,6 +145,9 @@ public:
 
     bool entitycollidefloor(int t);
 
+    bool entitycolliderwall(int t);
+    bool entitycollidelwall(int t);
+
     bool entitycollideroof(int t);
 
     bool testwallsx(int t, int tx, int ty, bool skipdirblocks);
