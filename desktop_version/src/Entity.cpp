@@ -1560,6 +1560,9 @@ void entityclass::createentity(int xp, int yp, int t, int meta1, int meta2, int 
             entity.onentity = 0;
         }
 
+        entity.real_cp_x = xp;
+        entity.real_cp_y = yp;
+
         if (game.nodeathmode)
         {
             return;
@@ -2779,16 +2782,16 @@ bool entityclass::updateentities( int i )
                 game.savepoint = entities[i].para;
                 music.playef(Sound_CHECKPOINT);
 
-                game.savex = entities[i].xp - 4;
+                game.savex = entities[i].real_cp_x - 4;
 
                 if (entities[i].tile == 20)
                 {
-                    game.savey = entities[i].yp - 2;
+                    game.savey = entities[i].real_cp_y - 2;
                     game.savegc = 1;
                 }
                 else if (entities[i].tile == 21)
                 {
-                    game.savey = entities[i].yp - 7;
+                    game.savey = entities[i].real_cp_y - 7;
                     game.savegc = 0;
                 }
 

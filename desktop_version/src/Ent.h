@@ -55,6 +55,9 @@ public:
 
     SDL_Color realcol;
     int lerpoldxp, lerpoldyp;
+
+    int real_cp_x;
+    int real_cp_y;
 };
 
 #endif /* ENT_H */

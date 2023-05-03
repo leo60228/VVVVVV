@@ -70,6 +70,9 @@ void entclass::clear(void)
     SDL_zero(realcol);
     lerpoldxp = 0;
     lerpoldyp = 0;
+
+    real_cp_x = 0;
+    real_cp_y = 0;
 }
 
 bool entclass::outside(void)

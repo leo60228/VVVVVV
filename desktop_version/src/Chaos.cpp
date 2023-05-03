@@ -43,8 +43,8 @@ void Chaos::Initialize()
     cloneInfo.clear();
     lastDir = 0;
 
-    //randomEffects = false;
-    //Chaos::AddEffect(DOWNSCALED, true);
+    randomEffects = false;
+    Chaos::AddEffect(TORNADO, true);
     //Chaos::AddEffect(ZOOMED, true);
     //Chaos::AddEffect(ASKEW, true);
 }
@@ -285,6 +285,33 @@ void Chaos::ApplyEffect(ActiveEffect& effect)
         randomSprite = (int)round(fRandom() * 3);
         break;
     }
+    case BUS:
+    {
+        waitTime = SDL_max(waitTime - 15, MIN_WAIT_TIME);
+        effect.timeRemaining = 0;
+        // Check if there's already one in the room
+        for (int i = 0; i < obj.entities.size(); i++)
+        {
+            if (obj.entities[i].behave == 16)
+            {
+                return;
+            }
+        }
+
+        obj.createentity(0, -200, 1, 16, 12, -64, -500, 320 + 64, 340);
+        for (int i = 0; i < obj.entities.size(); i++)
+        {
+            if (obj.entities[i].behave == 16)
+            {
+                obj.entities[i].colour = 6;
+                obj.entities[i].size = 9;
+                obj.entities[i].w = 64;
+                obj.entities[i].h = 44;
+                obj.entities[i].animate = 4;
+            }
+        }
+        break;
+    }
     }
 }
 
@@ -310,37 +337,6 @@ void Chaos::UpdateEffect(ActiveEffect& effect)
         }
         break;
     }
-    case BUS:
-    {
-        if ((effect.timer < 0) && (fRandom() < 0.5))
-        {
-            effect.timer = (int)round(fRandom() * 60) + 30;
-            //waitTime = SDL_max(waitTime - 15, MIN_WAIT_TIME);
-            // Check if there's already one in the room
-            for (int i = 0; i < obj.entities.size(); i++)
-            {
-                if (obj.entities[i].behave == 16)
-                {
-                    return;
-                }
-            }
-
-            obj.createentity(0, -200, 1, 16, 12, -64, -500, 320 + 64, 340);
-            for (int i = 0; i < obj.entities.size(); i++)
-            {
-                if (obj.entities[i].behave == 16)
-                {
-                    obj.entities[i].colour = 6;
-                    obj.entities[i].size = 9;
-                    obj.entities[i].w = 64;
-                    obj.entities[i].h = 44;
-                    obj.entities[i].animate = 4;
-                }
-            }
-        }
-        break;
-    }
-
     case ROOM_EXPLODE:
     {
         if ((effect.timer < 0) && (fRandom() < 0.5))
