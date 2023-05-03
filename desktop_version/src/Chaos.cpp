@@ -164,7 +164,7 @@ void Chaos::ApplyEffect(ActiveEffect& effect)
         std::vector<int> validStates;
         for (int i = 1; i < 18; i++)
         {
-            if (i == 9 || i == 10) continue;
+            if (i == 5 || i == 9 || i == 10) continue;
             validStates.push_back(i);
         }
 
