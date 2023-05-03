@@ -1146,7 +1146,7 @@ void Graphics::draw_texture(SDL_Texture* image, const int x, const int y)
     copy_texture(image, NULL, &dstrect);
 }
 
-void Graphics::draw_texture_part(SDL_Texture* image, const int x, const int y, const int x2, const int y2, const int w, const int h, const int scalex, const int scaley)
+void Graphics::draw_texture_part(SDL_Texture* image, const int x, const int y, const int x2, const int y2, const int w, const int h, const float scalex, const float scaley)
 {
     const SDL_Rect srcrect = {x2, y2, w, h};
 
@@ -1161,12 +1161,12 @@ void Graphics::draw_texture_part(SDL_Texture* image, const int x, const int y, c
         flip |= SDL_FLIP_VERTICAL;
     }
 
-    const SDL_Rect dstrect = {x, y, w * SDL_abs(scalex), h * SDL_abs(scaley)};
+    const SDL_Rect dstrect = {x, y, w * SDL_fabsf(scalex), h * SDL_fabsf(scaley)};
 
     copy_texture(image, &srcrect, &dstrect, 0, NULL, (SDL_RendererFlip) flip);
 }
 
-void Graphics::draw_grid_tile(SDL_Texture* texture, const int t, const int x, const int y, const int width, const int height, const int scalex, const int scaley)
+void Graphics::draw_grid_tile(SDL_Texture* texture, const int t, const int x, const int y, const int width, const int height, const float scalex, const float scaley)
 {
     int tex_width;
 
@@ -1191,7 +1191,7 @@ void Graphics::draw_grid_tile(
     SDL_Texture* texture, const int t,
     const int x, const int y, const int width, const int height,
     const int r, const int g, const int b, const int a,
-    const int scalex, const int scaley
+    const float scalex, const float scaley
 ) {
     set_texture_color_mod(texture, r, g, b);
     set_texture_alpha_mod(texture, a);
@@ -1212,7 +1212,7 @@ void Graphics::draw_grid_tile(
     SDL_Texture* texture, const int t,
     const int x, const int y, const int width, const int height,
     const int r, const int g, const int b,
-    const int scalex, const int scaley
+    const float scalex, const float scaley
 ) {
     draw_grid_tile(texture, t, x, y, width, height, r, g, b, 255, scalex, scaley);
 }
@@ -1229,7 +1229,7 @@ void Graphics::draw_grid_tile(
     SDL_Texture* texture, const int t,
     const int x, const int y, const int width, const int height,
     const SDL_Color color,
-    const int scalex, const int scaley
+    const float scalex, const float scaley
 ) {
     draw_grid_tile(texture, t, x, y, width, height, color.r, color.g, color.b, color.a, scalex, scaley);
 }

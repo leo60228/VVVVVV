@@ -129,6 +129,8 @@ namespace Chaos
 
     void ProcessEffects();
 
+    void OnPlayerReset();
+
     void ApplyEffect(ActiveEffect& effect);
 
     void UpdateEffect(ActiveEffect& effect);

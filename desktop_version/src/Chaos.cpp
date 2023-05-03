@@ -16,6 +16,23 @@
 #include "UtilityClass.h"
 #include "Vlogging.h"
 
+
+static void ChangePlayerSize()
+{
+    int i = obj.getplayer();
+    if (INBOUNDS_VEC(i, obj.entities))
+    {
+        obj.entities[i].colour = 0;
+        obj.entities[i].size = 14;
+        obj.entities[i].w = 21 * (fRandom() * 5);
+        obj.entities[i].h = 12 * (fRandom() * 7);
+        obj.entities[i].cx = 6 * ((float)obj.entities[i].w / 12);
+        obj.entities[i].cy = 2 * ((float)obj.entities[i].h / 21);
+        obj.entities[i].yp += 21 - obj.entities[i].h;
+        obj.entities[i].xp += 12 - obj.entities[i].w;
+    }
+}
+
 namespace Chaos
 {
     int waitTime;
@@ -43,10 +60,24 @@ void Chaos::Initialize()
     cloneInfo.clear();
     lastDir = 0;
 
-    randomEffects = false;
-    Chaos::AddEffect(TORNADO, true);
+    //randomEffects = false;
+    //Chaos::AddEffect(RANDOM_SIZE, true);
     //Chaos::AddEffect(ZOOMED, true);
     //Chaos::AddEffect(ASKEW, true);
+}
+
+void Chaos::OnPlayerReset()
+{
+    for (int i = 0; i < activeEffects.size(); i++)
+    {
+        ActiveEffect effect = activeEffects[i];
+        switch (effect.effect)
+        {
+        case RANDOM_SIZE:
+            ChangePlayerSize();
+            break;
+        }
+    }
 }
 
 void Chaos::AddEffect(Effects effect, bool infinite)
@@ -226,18 +257,7 @@ void Chaos::ApplyEffect(ActiveEffect& effect)
     }
     case RANDOM_SIZE:
     {
-        effect.timeRemaining = SDL_min(effect.timeRemaining + (30 * 30), SDL_MAX_SINT32);
-        int i = obj.getplayer();
-        if (INBOUNDS_VEC(i, obj.entities))
-        {
-            obj.entities[i].size = 14;
-            obj.entities[i].w = 21 * (fRandom() * 5);
-            obj.entities[i].h = 12 * (fRandom() * 7);
-            obj.entities[i].cx = 6 * ((float)obj.entities[i].w / 12);
-            obj.entities[i].cy = 2 * ((float)obj.entities[i].h / 21);
-            obj.entities[i].yp += 21 - obj.entities[i].h;
-            obj.entities[i].xp += 12 - obj.entities[i].w;
-        }
+        ChangePlayerSize();
         break;
     }
     case SIDEWAYS_FLIPPING:

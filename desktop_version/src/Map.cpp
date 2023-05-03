@@ -856,6 +856,8 @@ void mapclass::resetplayer(const bool player_died)
             game.scmprogress = game.roomx - 40;
         }
     }
+
+    Chaos::OnPlayerReset();
 }
 
 void mapclass::warpto(int rx, int ry , int t, int tx, int ty)

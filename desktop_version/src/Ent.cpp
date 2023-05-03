@@ -622,6 +622,7 @@ void entclass::updatecolour(void)
     case 9: // Really Big Sprite! (2x2)
     case 10: // 2x1 Sprite
     case 13: // Special for epilogue: huge hero!
+    case 14:
         realcol = graphics.getcol(colour);
         break;
     case 3: // Big chunky pixels!
