@@ -26,6 +26,7 @@ struct CloneInfo {
 
 enum Effects
 {
+    INVALID = -1,
     NO_FLIPPING = -1,        // [DISABLED] Can't flip!
     NO_LEFT = -1,            // [DISABLED] Can't walk left!
     NO_RIGHT = -1,           // [DISABLED] Can't move right!
@@ -99,33 +100,38 @@ enum Effects
 
 namespace Chaos
 {
-
     struct ActiveEffect
     {
         int timeRemaining;
         Effects effect;
         int timer;
+        bool infinite;
     };
 
     extern bool reloading;
 
-    extern int randomSprite;
+    extern int random_sprite;
 
-    extern std::vector<ActiveEffect> activeEffects;
+    extern std::vector<ActiveEffect> active_effects;
 
-    extern std::vector<CloneInfo> cloneInfo;
-    extern std::vector<CloneInfo> dashTrail;
+    extern std::vector<CloneInfo> clone_info;
+    extern std::vector<CloneInfo> dash_trail;
 
-    extern int cloneTimer;
-    extern int cloneCount;
+    extern int clone_timer;
+    extern int clone_count;
 
-    extern bool randomEffects;
+    extern bool random_effects;
 
-    extern int lastDir;
+    extern int last_dir;
+
+    extern int chaos_option;
+    extern bool in_chaos_menu;
+    extern int chaos_scroll;
 
     void Initialize();
 
     void AddEffect(Effects effect, bool infinite);
+    void AddEffect(ActiveEffect effect);
 
     void ProcessEffects();
 
@@ -135,13 +141,23 @@ namespace Chaos
 
     void UpdateEffect(ActiveEffect& effect);
 
+    void RemoveEffect(Effects effect);
     void RemoveEffect(ActiveEffect& effect);
 
     void ModifyRandomEntity();
 
     bool IsActive(Effects effect);
 
+    const char* getEffectID(Effects effect);
+    Effects getEffectFromID(const char* id);
+    const char* getEffectName(Effects effect);
+    const char* getEffectDescription(Effects effect);
+
     extern int waitTime;
+
+    extern const char* effect_ids[EFFECT_AMOUNT];
+    extern const char* effect_names[EFFECT_AMOUNT];
+    extern const char* effect_descriptions[EFFECT_AMOUNT];
 }
 
 #endif /* CHAOS_H */

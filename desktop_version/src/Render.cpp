@@ -2047,18 +2047,18 @@ void gamerender(void)
             }
         }
 
-        for (int i = 0; i < Chaos::dashTrail.size(); i++)
+        for (int i = 0; i < Chaos::dash_trail.size(); i++)
         {
-            Chaos::dashTrail[i].time--;
-            if (Chaos::dashTrail[i].time <= 0)
+            Chaos::dash_trail[i].time--;
+            if (Chaos::dash_trail[i].time <= 0)
             {
-                Chaos::dashTrail.erase(Chaos::dashTrail.begin() + i);
+                Chaos::dash_trail.erase(Chaos::dash_trail.begin() + i);
             }
 
-            if (Chaos::dashTrail[i].rx != game.roomx || Chaos::dashTrail[i].ry != game.roomy)
+            if (Chaos::dash_trail[i].rx != game.roomx || Chaos::dash_trail[i].ry != game.roomy)
                 continue;
             SDL_Color ct = graphics.getRGBA(0, 255, 255, 64);
-            graphics.draw_sprite(Chaos::dashTrail[i].x, Chaos::dashTrail[i].y - map.ypos, Chaos::dashTrail[i].frame, ct);
+            graphics.draw_sprite(Chaos::dash_trail[i].x, Chaos::dash_trail[i].y - map.ypos, Chaos::dash_trail[i].frame, ct);
         }
 
         graphics.drawentities();
@@ -2706,14 +2706,14 @@ void maprender(void)
 
     // Draw the selected page name at the bottom
     // menupage 0 - 3 is the pause screen
-    if (script.running && game.menupage == 3)
+    if (script.running && (game.menupage == 3 || game.menupage == 4))
     {
         // While in a cutscene, you can only save
         char buffer[SCREEN_WIDTH_CHARS + 1];
         vformat_buf(buffer, sizeof(buffer), loc::get_langmeta()->menu_select_tight.c_str(), "label:str", loc::gettext("SAVE"));
         font::print(PR_CEN | PR_CJK_LOW, -1, 220, buffer, 196, 196, 255 - help.glow);
     }
-    else if (game.menupage <= 3)
+    else if (game.menupage <= 4)
     {
         const char* tab1;
         if (game.insecretlab)
@@ -2733,6 +2733,7 @@ void maprender(void)
         TAB(1, tab1);
         TAB(2, loc::gettext("STATS"));
         TAB(3, loc::gettext("SAVE"));
+        TAB(4, loc::gettext("CHAOS"));
 #undef TAB
     }
 
@@ -3102,6 +3103,66 @@ void maprender(void)
             graphics.draw_sprite(34, FLIP(126, 17), 50, graphics.col_clock);
             graphics.draw_sprite(270, FLIP(126, 17), 22, graphics.col_trinket);
         }
+        break;
+    }
+    case 4:
+    {
+
+        while (Chaos::chaos_option - Chaos::chaos_scroll > 18)
+        {
+            Chaos::chaos_scroll++;
+        }
+        while (Chaos::chaos_option - Chaos::chaos_scroll < 0)
+        {
+            Chaos::chaos_scroll--;
+        }
+
+        if (Chaos::chaos_scroll == 0)
+        {
+            std::string random = "Random Effects: ";
+            random += Chaos::random_effects ? "ON" : "OFF";
+            if (Chaos::in_chaos_menu && Chaos::chaos_option == 0)
+            {
+                random = "[ " + random + " ]";
+                font::print_wrap(PR_LEFT, 8, 20, loc::gettext(random.c_str()), 196, 196, 255 - help.glow, 36);
+            }
+            else
+            {
+                font::print_wrap(PR_LEFT, 8, 20, loc::gettext(random.c_str()), 96, 96, 96, 36);
+            }
+        }
+
+        int selected = Chaos::chaos_option - 1;
+        for (int i = 0; i < EFFECT_AMOUNT; i++) {
+            if ((i - Chaos::chaos_scroll) + 1 < 0) continue;
+            if ((i - Chaos::chaos_scroll) + 1 > 18) continue;
+            std::string name = Chaos::getEffectName((Effects)i);
+            for (size_t ii = 0; ii < name.length(); ii++)
+            {
+                name[ii] = ((Chaos::in_chaos_menu && (selected == i)) ? SDL_toupper : SDL_tolower)(name[ii]);
+            }
+
+            bool is_on = Chaos::IsActive((Effects)i);
+
+            if (selected != i || !Chaos::in_chaos_menu)
+            {
+                font::print_wrap(PR_LEFT, 8, 32 + (i - Chaos::chaos_scroll) * 10, loc::gettext(name.c_str()), 96, 96, 96);
+                font::print_wrap(PR_RIGHT, 320 - 8, 32 + (i - Chaos::chaos_scroll) * 10, is_on ? "ON" : "OFF", 96, 96, 96);
+            }
+            else
+            {
+                name = "[ " + name + " ]";
+                font::print_wrap(PR_LEFT, 8, 32 + (i - Chaos::chaos_scroll) * 10, loc::gettext(name.c_str()), 196, 196, 255 - help.glow);
+                font::print_wrap(PR_RIGHT, 320 - 8, 32 + (i - Chaos::chaos_scroll) * 10, is_on ? "ON" : "OFF", 196, 196, 255 - help.glow);
+
+                // Cover roomname
+                graphics.fill_rect(0, 0, 320, 12, 0, 0, 0);
+                int length = font::print_wrap(PR_FONT_LEVEL | PR_CEN, -1, 2, loc::gettext(Chaos::getEffectDescription((Effects)i)), 196, 196, 255 - help.glow);
+                graphics.fill_rect(0, 0, 320, length - 12, 0, 0, 0);
+                font::print_wrap(PR_FONT_LEVEL | PR_CEN, -1, 2, loc::gettext(Chaos::getEffectDescription((Effects)i)), 196, 196, 255 - help.glow);
+            }
+        }
+
         break;
     }
     case 10:

@@ -246,7 +246,7 @@ void Graphics::updatetitlecolours(void)
 
 void Graphics::map_tab(int opt, const char* text, bool selected /*= false*/)
 {
-    int x = opt*80 + 40;
+    int x = opt * 60 + 40;
     if (selected)
     {
         char buffer[SCREEN_WIDTH_CHARS + 1];

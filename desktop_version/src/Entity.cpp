@@ -2230,14 +2230,16 @@ bool entityclass::updateentities( int i )
         {
         case 200: // Cosmic clone
         {
-            if (entities[i].para * CLONE_OFFSET >= Chaos::cloneInfo.size())
+            if (entities[i].para * CLONE_OFFSET >= Chaos::clone_info.size())
             {
+                entities[i].lerpoldxp = -100;
+                entities[i].lerpoldyp = -100;
                 entities[i].xp = -100;
                 entities[i].yp = -100;
                 break;
             }
 
-            CloneInfo info = Chaos::cloneInfo[entities[i].para * CLONE_OFFSET];
+            CloneInfo info = Chaos::clone_info[entities[i].para * CLONE_OFFSET];
             if (info.rx == (game.roomx - 100) && info.ry == (game.roomy - 100))
             {
                 entities[i].xp = info.x;
@@ -2246,6 +2248,8 @@ bool entityclass::updateentities( int i )
             }
             else
             {
+                entities[i].lerpoldxp = -100;
+                entities[i].lerpoldyp = -100;
                 entities[i].xp = -100;
                 entities[i].yp = -100;
             }
@@ -3506,7 +3510,7 @@ void entityclass::animateentities( int _i )
                 int floor = 0;
                 int ceil = 0;
 
-                switch (Chaos::randomSprite)
+                switch (Chaos::random_sprite)
                 {
                 case 0:
                     floor = 17;
@@ -3542,7 +3546,7 @@ void entityclass::animateentities( int _i )
                     entities[_i].drawframe = (game.gravitycontrol == 0) ? floor : ceil;
                 }
 
-                if (Chaos::randomSprite == 2 && game.deathseq > -1)
+                if (Chaos::random_sprite == 2 && game.deathseq > -1)
                 {
                     entities[_i].drawframe = (game.gravitycontrol == 0) ? 186 : 187;
                 }

@@ -2385,17 +2385,17 @@ void gameinput(void)
         if (key.isDown(KEYBOARD_LEFT) || key.isDown(KEYBOARD_a) || key.controllerWantsLeft(false))
         {
             game.press_left = true;
-            Chaos::lastDir = 0;
+            Chaos::last_dir = 0;
         }
         if (key.isDown(KEYBOARD_RIGHT) || key.isDown(KEYBOARD_d) || key.controllerWantsRight(false))
         {
             game.press_right = true;
-            Chaos::lastDir = 1;
+            Chaos::last_dir = 1;
         }
 
         if (!game.press_left && !game.press_right && Chaos::IsActive(CANT_STOP))
         {
-            if (Chaos::lastDir == 0)
+            if (Chaos::last_dir == 0)
             {
                 game.press_left = true;
             }
@@ -2772,7 +2772,7 @@ void gameinput(void)
                 clone.frame = obj.entities[ie].drawframe;
                 clone.visible = !obj.entities[ie].invis;
                 clone.time = 5;
-                Chaos::dashTrail.insert(Chaos::dashTrail.begin(), clone);
+                Chaos::dash_trail.insert(Chaos::dash_trail.begin(), clone);
             }
 
             game.dashtimer--;
@@ -2983,6 +2983,7 @@ void gameinput(void)
         map.cursorstate = 0;
         game.gamesaved = false;
         game.gamesavefailed = false;
+        Chaos::in_chaos_menu = false;
         if (script.running)
         {
             game.menupage = 3; // Only allow saving
@@ -3122,7 +3123,12 @@ void mapinput(void)
             if (key.isDown(27) && !game.mapheld)
             {
                 game.mapheld = true;
-                if (game.menupage < 9
+
+                if (game.menupage == 4 && Chaos::in_chaos_menu)
+                {
+                    Chaos::in_chaos_menu = false;
+                }
+                else if (game.menupage < 9
                 || (game.menupage >= 20 && game.menupage <= 21))
                 {
                     game.menupage = 30;
@@ -3164,7 +3170,16 @@ void mapinput(void)
         if(game.press_map && game.menupage < 10)
         {
             //Normal map screen, do transition later
-            graphics.resumegamemode = true;
+            if (game.menupage == 4 && Chaos::in_chaos_menu)
+            {
+                Chaos::in_chaos_menu = false;
+                music.playef(Sound_VIRIDIAN);
+                game.mapheld = true;
+            }
+            else
+            {
+                graphics.resumegamemode = true;
+            }
         }
     }
 
@@ -3175,9 +3190,23 @@ void mapinput(void)
             game.jumpheld = true;
         }
 
-        if (script.running && game.menupage == 3)
+        if (script.running && (game.menupage == 3 || game.menupage == 4))
         {
             // Force the player to stay in the SAVE tab while in a cutscene
+        }
+        else if (game.menupage == 4 && Chaos::in_chaos_menu)
+        {
+            if (game.press_left)
+            {
+                Chaos::chaos_option--;
+            }
+            if (game.press_right)
+            {
+                Chaos::chaos_option++;
+            }
+
+            if (Chaos::chaos_option < 0) Chaos::chaos_option = EFFECT_AMOUNT;
+            if (Chaos::chaos_option > EFFECT_AMOUNT) Chaos::chaos_option = 0;
         }
         else if (game.press_left)
         {
@@ -3193,8 +3222,8 @@ void mapinput(void)
             mapmenuactionpress(version2_2);
         }
 
-        if (game.menupage < 0) game.menupage = 3;
-        if (game.menupage > 3 && game.menupage < 9) game.menupage = 0;
+        if (game.menupage < 0) game.menupage = 4;
+        if (game.menupage > 4 && game.menupage < 9) game.menupage = 0;
 
         if (game.menupage == 9) game.menupage = 11;
         if (game.menupage == 12) game.menupage = 10;
@@ -3260,6 +3289,42 @@ static void mapmenuactionpress(const bool version2_2)
         game.gamesaved = success;
         game.gamesavefailed = !success;
     }
+        break;
+    case 4:
+        if (!Chaos::in_chaos_menu)
+        {
+            Chaos::in_chaos_menu = true;
+            Chaos::chaos_option = 0;
+            music.playef(Sound_VIRIDIAN);
+        }
+        else
+        {
+            music.playef(Sound_VIRIDIAN);
+            if (Chaos::chaos_option == 0)
+            {
+                Chaos::random_effects = !Chaos::random_effects;
+            }
+            else
+            {
+                Effects selected_effect = (Effects)(Chaos::chaos_option - 1);
+                int effect_index = 0;
+                bool effect_on = false;
+                for (int i = 0; i < Chaos::active_effects.size(); i++)
+                {
+                    if (Chaos::active_effects[i].effect == selected_effect)
+                    {
+                        effect_on = true;
+                        Chaos::RemoveEffect(Chaos::active_effects[i]);
+                        Chaos::active_effects.erase(Chaos::active_effects.begin() + i);
+                        break;
+                    }
+                }
+                if (!effect_on)
+                {
+                    Chaos::AddEffect(selected_effect, true);
+                }
+            }
+        }
         break;
 
     case 10:

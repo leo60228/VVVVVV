@@ -4346,7 +4346,7 @@ void Game::loadstats(struct ScreenSettings* screen_settings)
 
     if (!FILESYSTEM_loadTiXml2Document("saves/unlock.chaos.vvv", doc))
     {
-        // Save unlock.chaos.vvv only. Maybe we have a setting.chaoss.vvv laying around too,
+        // Save unlock.chaos.vvv only. Maybe we have a setting.chaos.vvv laying around too,
         // and we don't want to overwrite that!
         savestats(screen_settings);
         return;
@@ -5381,7 +5381,50 @@ void Game::readmaingamesave(const char* savename, tinyxml2::XMLDocument& doc)
         {
             map.showtargets = help.Int(pText);
         }
+        else if (SDL_strcmp(pKey, "effects") == 0)
+        {
+            // load all effects from save
+            Chaos::active_effects.clear();
+            // get children
+            tinyxml2::XMLElement* effect = pElem->FirstChildElement();
+            while (effect != NULL)
+            {
+                // get name
+                const char* name = effect->Value();
+                // add to active effects
+                // read "remaining" and "timer", which are not attibutes, but child elements
+                Chaos::ActiveEffect newEffect;
+                newEffect.effect = Chaos::getEffectFromID(name);
 
+                int timeRemaining = 0;
+                int timer = 0;
+                bool infinite = false;
+
+                tinyxml2::XMLElement* remaining = effect->FirstChildElement("remaining");
+                if (remaining != NULL)
+                {
+                    timeRemaining = help.Int(remaining->GetText());
+                }
+                tinyxml2::XMLElement* timerElement = effect->FirstChildElement("timer");
+                if (timerElement != NULL)
+                {
+                    timer = help.Int(timerElement->GetText());
+                }
+                tinyxml2::XMLElement* infiniteElement = effect->FirstChildElement("infinite");
+                if (infiniteElement != NULL)
+                {
+                    infinite = help.Int(infiniteElement->GetText());
+                }
+
+                newEffect.timeRemaining = timeRemaining;
+                newEffect.timer = timer;
+                newEffect.infinite = infinite;
+
+                Chaos::AddEffect(newEffect);
+                // next effect
+                effect = effect->NextSiblingElement();
+            }
+        }
     }
 
     if (map.finalmode)
@@ -5629,6 +5672,53 @@ void Game::customloadquick(const std::string& savfile)
             map.setroomname(pText);
             map.roomnameset = true;
             map.roomname_special = true;
+        }
+        else if (SDL_strcmp(pKey, "randomeffects") == 0)
+        {
+            Chaos::random_effects = help.Int(pText);
+        }
+        else if (SDL_strcmp(pKey, "effects") == 0)
+        {
+            Chaos::active_effects.clear();
+            // get children
+            tinyxml2::XMLElement* effect = pElem->FirstChildElement();
+            while (effect != NULL)
+            {
+                // get name
+                const char* name = effect->Value();
+                // add to active effects
+                // read "remaining" and "timer", which are not attibutes, but child elements
+                Chaos::ActiveEffect newEffect;
+                newEffect.effect = Chaos::getEffectFromID(name);
+
+                int timeRemaining = 0;
+                int timer = 0;
+                bool infinite = false;
+
+                tinyxml2::XMLElement* remaining = effect->FirstChildElement("remaining");
+                if (remaining != NULL)
+                {
+                    timeRemaining = help.Int(remaining->GetText());
+                }
+                tinyxml2::XMLElement* timerElement = effect->FirstChildElement("timer");
+                if (timerElement != NULL)
+                {
+                    timer = help.Int(timerElement->GetText());
+                }
+                tinyxml2::XMLElement* infiniteElement = effect->FirstChildElement("infinite");
+                if (infiniteElement != NULL)
+                {
+                    infinite = help.Int(infiniteElement->GetText());
+                }
+
+                newEffect.timeRemaining = timeRemaining;
+                newEffect.timer = timer;
+                newEffect.infinite = infinite;
+
+                Chaos::AddEffect(newEffect);
+                // next effect
+                effect = effect->NextSiblingElement();
+            }
         }
     }
 }
@@ -5919,6 +6009,20 @@ struct Game::Summary Game::writemaingamesave(tinyxml2::XMLDocument& doc)
     summary.trinkets = n_trinkets;
     SDL_memcpy(summary.crewstats, crewstats, sizeof(summary.crewstats));
 
+    xml::update_tag(msgs, "randomeffects", Chaos::random_effects);
+
+    // save all active effects
+    tinyxml2::XMLElement* effects = xml::update_element(msgs, "effects");
+    // clear current children
+    effects->DeleteChildren();
+    for (Chaos::ActiveEffect& effect : Chaos::active_effects)
+    {
+        tinyxml2::XMLElement* effectElement = xml::update_element(effects, Chaos::getEffectID(effect.effect));
+        xml::update_tag(effectElement, "remaining", effect.timeRemaining);
+        xml::update_tag(effectElement, "timer", effect.timer);
+        xml::update_tag(effectElement, "infinite", effect.infinite);
+    }
+
     return summary;
 }
 
@@ -6075,6 +6179,20 @@ bool Game::customsavequick(const std::string& savfile)
 
     std::string legacy_summary = customleveltitle + ", " + timestring();
     xml::update_tag(msgs, "summary", legacy_summary.c_str());
+
+    xml::update_tag(msgs, "randomeffects", Chaos::random_effects);
+
+    // save all active effects
+    tinyxml2::XMLElement* effects = xml::update_element(msgs, "effects");
+    // clear current children
+    effects->DeleteChildren();
+    for (Chaos::ActiveEffect& effect : Chaos::active_effects)
+    {
+        tinyxml2::XMLElement* effectElement = xml::update_element(effects, Chaos::getEffectID(effect.effect));
+        xml::update_tag(effectElement, "remaining", effect.timeRemaining);
+        xml::update_tag(effectElement, "timer", effect.timer);
+        xml::update_tag(effectElement, "infinite", effect.infinite);
+    }
 
     if(!FILESYSTEM_saveTiXml2Document(("saves/"+levelfile+".chaos.vvv").c_str(), doc))
     {

@@ -36,15 +36,107 @@ static void ChangePlayerSize()
 namespace Chaos
 {
     int waitTime;
-    std::vector<ActiveEffect> activeEffects;
-    std::vector<CloneInfo> cloneInfo;
-    std::vector<CloneInfo> dashTrail;
-    int cloneTimer;
-    int cloneCount;
-    int randomSprite;
+    std::vector<ActiveEffect> active_effects;
+    std::vector<CloneInfo> clone_info;
+    std::vector<CloneInfo> dash_trail;
+    int clone_timer;
+    int clone_count;
+    int random_sprite;
     bool reloading;
-    bool randomEffects;
-    int lastDir;
+    bool random_effects;
+    int last_dir;
+    int chaos_option;
+    int chaos_scroll;
+    bool in_chaos_menu;
+
+    const char* effect_ids[EFFECT_AMOUNT];
+    const char* effect_names[EFFECT_AMOUNT];
+    const char* effect_descriptions[EFFECT_AMOUNT];
+}
+
+static void createLookupTable(const char* ids[EFFECT_AMOUNT], const char* names[EFFECT_AMOUNT], const char* descriptions[EFFECT_AMOUNT])
+{
+#define INFO(ENUM, ID, NAME, DESC) ids[ENUM] = ID; names[ENUM] = NAME; descriptions[ENUM] = DESC;
+    INFO(NO_MAP, "no_map", "No map", "Disables the map");
+    INFO(RANDOM_COLOR, "random_color", "Random color", "Changes Viridian's color");
+    INFO(JUMPING, "jumping", "Jumping", "Enables jumping");
+    INFO(BUS, "bus", "Bus", "A bus appears to run you over");
+    INFO(FLIP_MODE, "flip_mode", "Flip mode", "Enables flip mode");
+    INFO(RANDOM_BLOCK, "random_block", "Random block", "Adds random blocks");
+    INFO(WARP_DIR, "warp_dir", "Warp direction", "Randomizes the warp background");
+    INFO(GAMESTATE, "gamestate", "Gamestate", "Runs a random (safe) gamestate");
+    INFO(PLAYER_SPRITE, "player_sprite", "Random player sprite", "Changes the player's sprites to something random");
+    INFO(REVERSE_CONTROLS, "reverse_controls", "Reverse controls", "Reverses controls");
+    INFO(INFINIFLIP, "infiniflip", "Infiniflip", "Allows flipping in the air");
+    INFO(GRAVITATION_POTION, "gravitation_potion", "Gravitation potion", "Flip mode depending on the player's gravity");
+    INFO(RANDOM_FLIPPING, "random_flipping", "Random flipping", "Randomly presses the flip button");
+    INFO(ANALOGUE, "analogue", "Analogue", "Enables analogue mode");
+    INFO(BILINEAR, "bilinear", "Bilinear", "Enables bilinear scaling");
+    INFO(HOLDING_RIGHT, "holding_right", "Holding right", "Holds down right");
+    INFO(FAKE_TRINKET, "fake_trinket", "Fake trinket", "Shows the collected trinket dialogue, without collecting a trinket");
+    INFO(PUSH_AWAY, "push_away", "Push away", "Pushes entities away from Viridian");
+    INFO(VVVVVVMAN, "vvvvvvman", "VVVVVVMAN", "Makes Viridian huge");
+    INFO(ICE, "ice", "Ice", "Adds ice physics");
+    INFO(SOLITAIRE, "solitaire", "Solitaire", "Stops drawing the background, for the solitaire effect");
+    INFO(RANDOM_ACCEL, "random_accel", "Random accel", "Changes acceleration to be random");
+    INFO(UNCAPPED_SPEED, "uncapped_speed", "Uncapped speed", "Uncaps all acceleration in the game");
+    INFO(CYCLING_SPRITES, "cycling_sprites", "Cycling sprites", "Cycles through entity sprites");
+    INFO(SHUFFLE_ENTITIES, "shuffle_entities", "Shuffle entities", "Shuffles entity sprites");
+    INFO(MODIFY_ENTITIES, "modify_entities", "Modify entities", "Do random things to an entity every frame");
+    INFO(BURST_ENTITIES, "burst_entities", "Burst entities", "Does random things to 10 entities every second");
+    INFO(MOVE_LEFT, "move_left", "Move left", "Slowly moves the player left");
+    INFO(MOVE_RIGHT, "move_right", "Move right", "Slowly moves the player right");
+    INFO(SIDEWAYS_FLIPPING, "sideways_flipping", "Sideways flipping", "Flips Viridian on their side");
+    INFO(TORNADO, "tornado", "Tornado", "Draws every entity towards Viridian");
+    INFO(SHAKING, "shaking", "Shaking", "Makes Viridian shake");
+    INFO(FLAG, "flag", "Flag", "Toggles a random flag");
+    INFO(RANDOM_SIZE, "random_size", "Random size", "Changes Viridian's size randomly");
+    INFO(COSMIC_CLONES, "cosmic_clones", "Cosmic clones", "Spawns clones of Viridian which follow you and hurt you");
+    INFO(RANDOM_SPRITE, "random_sprite", "Random sprite", "Makes Viridian look like a different object");
+    INFO(FLIP_TELEPORT, "flip_teleport", "Flip teleport", "Teleports slightly when you flip");
+    INFO(BLINKING_VIRIDIAN, "blinking_viridian", "Blinking Viridian", "Makes Viridian blink");
+    INFO(BLINKING_ENEMIES, "blinking_enemies", "Blinking enemies", "Makes enemies blink");
+    INFO(INVINCIBILITY, "invincibility", "Invincibility", "Makes Viridian invincible (without making spikes solid)");
+    INFO(TRINKETS_KILL, "trinkets_kill", "Trinkets kill", "Trinkets hurt the player");
+    INFO(ROOM_EXPLODE, "room_explode", "Room explode", "Random explosions in the room every now and then");
+    INFO(RANDOM_MUSIC, "random_music", "Random music", "Randomizes room music");
+    INFO(GOOFY_AAH, "goofy_aah", "Goofy aah", "goofy ahh vvvvvv");
+    INFO(NOCLIP, "noclip", "Noclip", "Allows Viridian to fly around and go through walls");
+    INFO(CANT_STOP, "cant_stop", "Can't stop", "You can't stop moving");
+    INFO(HORIZONTAL_FLIP, "horizontal_flip", "Horizontal flip", "Horizontally flips the screen");
+    INFO(DOWNSCALED, "downscaled", "Downscaled", "Downscales the screen");
+    INFO(ZOOMED, "zoomed", "Zoomed", "Zooms in on Viridian");
+    INFO(VIGNETTE, "vignette", "Vignette", "Draws a vignette around Viridian");
+    INFO(CONVEYORS_OFF, "conveyors_off", "Conveyors off", "Turns off conveyors");
+    INFO(ASKEW, "askew", "Askew", "Makes the screen askew");
+#undef INFO
+}
+
+const char* Chaos::getEffectID(Effects effect)
+{
+    return effect_ids[effect];
+}
+
+Effects Chaos::getEffectFromID(const char* id)
+{
+    for (int i = 0; i < EFFECT_AMOUNT; i++)
+    {
+        if (strcmp(id, effect_ids[i]) == 0)
+        {
+            return (Effects)i;
+        }
+    }
+    return INVALID;
+}
+
+const char* Chaos::getEffectName(Effects effect)
+{
+    return effect_names[effect];
+}
+
+const char* Chaos::getEffectDescription(Effects effect)
+{
+    return effect_descriptions[effect];
 }
 
 void Chaos::Initialize()
@@ -55,12 +147,17 @@ void Chaos::Initialize()
     gameScreen.toggleLinearFilter();
     graphics.flipmode = false;
     reloading = false;
-    randomEffects = true;
-    dashTrail.clear();
-    cloneInfo.clear();
-    lastDir = 0;
+    random_effects = true;
+    dash_trail.clear();
+    clone_info.clear();
+    last_dir = 0;
+    chaos_option = 0;
+    chaos_scroll = 0;
+    in_chaos_menu = false;
 
-    //randomEffects = false;
+    createLookupTable(effect_ids, effect_names, effect_descriptions);
+
+    //random_effects = false;
     //Chaos::AddEffect(RANDOM_SIZE, true);
     //Chaos::AddEffect(ZOOMED, true);
     //Chaos::AddEffect(ASKEW, true);
@@ -68,9 +165,9 @@ void Chaos::Initialize()
 
 void Chaos::OnPlayerReset()
 {
-    for (int i = 0; i < activeEffects.size(); i++)
+    for (int i = 0; i < active_effects.size(); i++)
     {
-        ActiveEffect effect = activeEffects[i];
+        ActiveEffect effect = active_effects[i];
         switch (effect.effect)
         {
         case RANDOM_SIZE:
@@ -82,17 +179,33 @@ void Chaos::OnPlayerReset()
 
 void Chaos::AddEffect(Effects effect, bool infinite)
 {
+    // check if the effect already exists
+
+    for (int i = 0; i < active_effects.size(); i++)
+    {
+        if (active_effects[i].effect == effect)
+        {
+            active_effects[i].timeRemaining = SDL_max(active_effects[i].timeRemaining, (int)round(fRandom() * (MAX_EFFECT_TIME - MIN_EFFECT_TIME) + MIN_EFFECT_TIME));
+            active_effects[i].timer = 0;
+            //active_effects[i].infinite = infinite;
+            return;
+        }
+    }
+
     ActiveEffect newEffect;
     newEffect.timeRemaining = (int)round(fRandom() * (MAX_EFFECT_TIME - MIN_EFFECT_TIME) + MIN_EFFECT_TIME);
 
-    if (infinite)
-    {
-        newEffect.timeRemaining = SDL_MAX_SINT32;
-    }
+    newEffect.infinite = infinite;
     newEffect.effect = effect;
     newEffect.timer = 0;
-    activeEffects.push_back(newEffect);
+    active_effects.push_back(newEffect);
     ApplyEffect(newEffect);
+}
+
+void Chaos::AddEffect(ActiveEffect effect)
+{
+    active_effects.push_back(effect);
+    ApplyEffect(effect);
 }
 
 void Chaos::ProcessEffects()
@@ -108,23 +221,23 @@ void Chaos::ProcessEffects()
     if (waitTime <= 0)
     {
         waitTime = (int) round(fRandom() * (MAX_WAIT_TIME - MIN_WAIT_TIME) + MIN_WAIT_TIME);
-        if (randomEffects)
+        if (random_effects)
         {
             AddEffect((Effects)(int)round(fRandom() * (EFFECT_AMOUNT - 1)), false);
         }
     }
-    for (int i = 0; i < activeEffects.size(); i++)
+    for (int i = 0; i < active_effects.size(); i++)
     {
-        UpdateEffect(activeEffects[i]);
-        activeEffects[i].timer--;
-        if (activeEffects[i].timeRemaining != SDL_MAX_SINT32)
+        UpdateEffect(active_effects[i]);
+        active_effects[i].timer--;
+        if (!active_effects[i].infinite)
         {
-            activeEffects[i].timeRemaining--;
+            active_effects[i].timeRemaining--;
         }
-        if (activeEffects[i].timeRemaining <= 0)
+        if (active_effects[i].timeRemaining <= 0)
         {
-            RemoveEffect(activeEffects[i]);
-            activeEffects.erase(activeEffects.begin() + i);
+            RemoveEffect(active_effects[i]);
+            active_effects.erase(active_effects.begin() + i);
             i--;
         }
     }
@@ -295,14 +408,14 @@ void Chaos::ApplyEffect(ActiveEffect& effect)
     }
     case COSMIC_CLONES:
     {
-        cloneInfo.clear();
-        cloneTimer = 30;
-        cloneCount = 0;
+        clone_info.clear();
+        clone_timer = 30;
+        clone_count = 0;
         break;
     }
     case RANDOM_SPRITE:
     {
-        randomSprite = (int)round(fRandom() * 3);
+        random_sprite = (int)round(fRandom() * 3);
         break;
     }
     case BUS:
@@ -616,22 +729,22 @@ void Chaos::UpdateEffect(ActiveEffect& effect)
             clone.frame = obj.entities[i].drawframe;
             clone.visible = !obj.entities[i].invis;
             clone.time = 0;
-            cloneInfo.insert(cloneInfo.begin(), clone);
+            clone_info.insert(clone_info.begin(), clone);
         }
 
-        cloneTimer--;
-        if (cloneTimer <= 0)
+        clone_timer--;
+        if (clone_timer <= 0)
         {
-            cloneTimer += 30;
-            cloneCount++;
-            if (cloneCount <= CLONE_COUNT) {
-                obj.createentity(-100, -100, 200, cloneCount);
+            clone_timer += 30;
+            clone_count++;
+            if (clone_count <= CLONE_COUNT) {
+                obj.createentity(-100, -100, 200, clone_count);
             }
         }
 
-        while (cloneInfo.size() > (CLONE_COUNT * CLONE_OFFSET) + 2) // 2 for leniency
+        while (clone_info.size() > (CLONE_COUNT * CLONE_OFFSET) + 2) // 2 for leniency
         {
-            cloneInfo.pop_back();
+            clone_info.pop_back();
         }
 
         for (int i = 0; i < obj.entities.size(); i++)
@@ -709,6 +822,19 @@ void Chaos::ModifyRandomEntity()
     }
 }
 
+void Chaos::RemoveEffect(Effects effect)
+{
+    for (int i = 0; i < active_effects.size(); i++)
+    {
+        if (active_effects[i].effect == effect)
+        {
+            RemoveEffect(active_effects[i]);
+            active_effects.erase(active_effects.begin() + i);
+            i--;
+        }
+    }
+}
+
 void Chaos::RemoveEffect(ActiveEffect& effect)
 {
     switch (effect.effect)
@@ -736,6 +862,7 @@ void Chaos::RemoveEffect(ActiveEffect& effect)
         gameScreen.toggleLinearFilter();
         break;
     }
+    case SHUFFLE_ENTITIES:
     case PLAYER_SPRITE:
     {
         int i = obj.getplayer();
@@ -784,9 +911,9 @@ void Chaos::RemoveEffect(ActiveEffect& effect)
 
 bool Chaos::IsActive(Effects effect)
 {
-    for (int i = 0; i < activeEffects.size(); i++)
+    for (int i = 0; i < active_effects.size(); i++)
     {
-        if (activeEffects[i].effect == effect)
+        if (active_effects[i].effect == effect)
         {
             return true;
         }

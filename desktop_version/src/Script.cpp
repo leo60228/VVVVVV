@@ -2534,6 +2534,33 @@ void scriptclass::run(void)
                     }
                 }
             }
+            else if (words[0] == "randomeffects")
+            {
+                if (words[1] == "on")
+                {
+                    Chaos::random_effects = true;
+                }
+                else if (words[1] == "off")
+                {
+                    Chaos::random_effects = false;
+                }
+            }
+            else if (words[0] == "seteffect")
+            {
+                Effects effect = Chaos::getEffectFromID(words[1].c_str());
+                if (words[2] == "add")
+                {
+                    Chaos::AddEffect(effect, false);
+                }
+                else if (words[2] == "infinite")
+                {
+                    Chaos::AddEffect(effect, true);
+                }
+                else if (words[2] == "remove")
+                {
+                    Chaos::RemoveEffect(effect);
+                }
+            }
 
             position++;
         }
