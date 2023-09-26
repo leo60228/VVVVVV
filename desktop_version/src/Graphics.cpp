@@ -1161,7 +1161,7 @@ void Graphics::draw_texture_part(SDL_Texture* image, const int x, const int y, c
         flip |= SDL_FLIP_VERTICAL;
     }
 
-    const SDL_Rect dstrect = {x, y, w * SDL_fabsf(scalex), h * SDL_fabsf(scaley)};
+    const SDL_Rect dstrect = {x, y, (int)(w * SDL_fabsf(scalex)), (int)(h * SDL_fabsf(scaley))};
 
     copy_texture(image, &srcrect, &dstrect, 0, NULL, (SDL_RendererFlip) flip);
 }
