@@ -1308,7 +1308,7 @@ void musicclass::goofySound(std::string sound)
     }
     else
     {
-        vlog_error("Unable to play file %s", sound);
+        vlog_error("Unable to play file %s", sound.c_str());
     }
 }
 
