@@ -245,13 +245,15 @@ static void menurender(void)
             left_msg = loc::gettext("[MMMMMM Mod Installed]");
         }
 
+        int chaos_ypos = 230;
         if (left_msg != NULL)
         {
+            chaos_ypos -= 10;
             font::print(0, 10, 230, left_msg, tr/2, tg/2, tb/2);
         }
 
-        font::print(PR_FONT_8X8, 10, 230, "https://ally.moe/", tr / 2, tg / 2, tb / 2);
-        font::print(PR_FONT_8X8, 10, 220, "Chaos v1.2", tr / 2, tg / 2, tb / 2);
+        font::print(PR_FONT_8X8, 10, chaos_ypos, "https://ally.moe/", tr / 2, tg / 2, tb / 2);
+        font::print(PR_FONT_8X8, 10, chaos_ypos - 10, "Chaos v1.3", tr / 2, tg / 2, tb / 2);
         break;
     }
     case Menu::levellist:
