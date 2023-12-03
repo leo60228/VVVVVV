@@ -2837,7 +2837,19 @@ void gameinput(void)
                         obj.entities[e].ay = Chaos::IsActive(JUMPING) ? -6 : -3;
                         if (Chaos::IsActive(FLIP_TELEPORT))
                         {
-                            obj.entities[e].yp -= 16;
+                            obj.entities[e].yp -= Chaos::IsActive(SIDEWAYS_FLIPPING) ? 0 : 16;
+                            obj.entities[e].xp -= Chaos::IsActive(SIDEWAYS_FLIPPING) ? 16 : 0;
+                        }
+                        if (Chaos::IsActive(INSTANT_FLIP))
+                        {
+                            int attempts = 0;
+                            while (!obj.entitycollideroof(e) && (attempts < (640 * 20)))
+                            {
+                                attempts++;
+                                obj.entities[e].yp -= Chaos::IsActive(SIDEWAYS_FLIPPING) ? 0 : 1;
+                                obj.entities[e].xp -= Chaos::IsActive(SIDEWAYS_FLIPPING) ? 1 : 0;
+                                obj.check_outside_map();
+                            }
                         }
                     }
                 }
@@ -2870,7 +2882,19 @@ void gameinput(void)
                         obj.entities[e].ay = Chaos::IsActive(JUMPING) ? 6 : 3;
                         if (Chaos::IsActive(FLIP_TELEPORT))
                         {
-                            obj.entities[e].yp += 16;
+                            obj.entities[e].yp += Chaos::IsActive(SIDEWAYS_FLIPPING) ? 0 : 16;
+                            obj.entities[e].xp += Chaos::IsActive(SIDEWAYS_FLIPPING) ? 16 : 0;
+                        }
+                        if (Chaos::IsActive(INSTANT_FLIP))
+                        {
+                            int attempts = 0;
+                            while (!obj.entitycollidefloor(e) && (attempts < (640 * 20)))
+                            {
+                                attempts++;
+                                obj.entities[e].yp += Chaos::IsActive(SIDEWAYS_FLIPPING) ? 0 : 1;
+                                obj.entities[e].xp += Chaos::IsActive(SIDEWAYS_FLIPPING) ? 1 : 0;
+                                obj.check_outside_map();
+                            }
                         }
                     }
                 }

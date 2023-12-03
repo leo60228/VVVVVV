@@ -4835,14 +4835,18 @@ void entityclass::updateentitylogic( int t )
         applyfriction(t, game.inertia, 0.25f);
     }
 
+    float multiplier = 1.0f;
+    if (Chaos::IsActive(SLOW_MOVEMENT)) multiplier = 0.5f;
+    if (Chaos::IsActive(FAST_MOVEMENT)) multiplier = 2.0f;
+
     if (entities[t].rule == 0 && Chaos::IsActive(SIDEWAYS_FLIPPING))
     {
-        entities[t].newxp = entities[t].xp + entities[t].vy;
-        entities[t].newyp = entities[t].yp + entities[t].vx;
+        entities[t].newxp = entities[t].xp + entities[t].vy * multiplier;
+        entities[t].newyp = entities[t].yp + entities[t].vx * multiplier;
     }
     else {
-        entities[t].newxp = entities[t].xp + entities[t].vx;
-        entities[t].newyp = entities[t].yp + entities[t].vy;
+        entities[t].newxp = entities[t].xp + entities[t].vx * multiplier;
+        entities[t].newyp = entities[t].yp + entities[t].vy * multiplier;
     }
 }
 
@@ -5202,6 +5206,274 @@ void entityclass::stuckprevention(int t)
         else
         {
             entities[t].yp += 3;
+        }
+    }
+}
+
+#define GOTOROOM(rx, ry) map.gotoroom(rx, ry)
+
+void entityclass::check_outside_map(void)
+{
+    //Using warplines?
+    if (customwarpmode) {
+        if (!GlitchrunnerMode_less_than_or_equal(Glitchrunner2_0)) {
+            //Rewritten system for mobile update: basically, the new logic is to
+            //check if the player is leaving the map, and if so do a special check against
+            //warp lines for collision
+            customwarpmodehon = false;
+            customwarpmodevon = false;
+
+            int i = getplayer();
+            if (INBOUNDS_VEC(i, entities) && (entities[i].yp >= 226 - 16 || entities[i].yp < -2 + 16 || entities[i].xp < -14 + 16 || entities[i].xp >= 308 - 16)) {
+                //Player is leaving room
+                customwarplinecheck(i);
+            }
+        }
+
+        if (customwarpmodehon) {
+            map.warpy = true;
+        }
+        else { map.warpy = false; }
+        if (customwarpmodevon) {
+            map.warpx = true;
+        }
+        else { map.warpx = false; }
+    }
+
+    //Finally: Are we changing room?
+    if (map.warpx && !map.towermode)
+    {
+        size_t i;
+        for (i = 0; i < entities.size(); ++i)
+        {
+            if ((entities[i].type >= 51
+                && entities[i].type <= 54) /* Don't warp warp lines */
+                || entities[i].size == 12) /* Don't warp gravitron squares */
+            {
+                continue;
+            }
+
+            if (game.roomx == 118 && game.roomy == 102 && entities[i].rule == 1 && !map.custommode)
+            {
+                //ascii snakes
+                if (entities[i].xp <= -80)
+                {
+                    if (entities[i].isplatform)
+                    {
+                        moveblockto(entities[i].xp, entities[i].yp, entities[i].xp + 400, entities[i].yp, entities[i].w, entities[i].h);
+                    }
+                    entities[i].xp += 400;
+                    entities[i].lerpoldxp += 400;
+                }
+                else if (entities[i].xp > 320)
+                {
+                    if (entities[i].isplatform)
+                    {
+                        moveblockto(entities[i].xp, entities[i].yp, entities[i].xp - 400, entities[i].yp, entities[i].w, entities[i].h);
+                    }
+                    entities[i].xp -= 400;
+                    entities[i].lerpoldxp -= 400;
+                }
+            }
+            else
+            {
+                if (entities[i].xp <= -10)
+                {
+                    if (entities[i].isplatform)
+                    {
+                        moveblockto(entities[i].xp, entities[i].yp, entities[i].xp + 320, entities[i].yp, entities[i].w, entities[i].h);
+                    }
+                    entities[i].xp += 320;
+                    entities[i].lerpoldxp += 320;
+                }
+                else if (entities[i].xp > 310)
+                {
+                    if (entities[i].isplatform)
+                    {
+                        moveblockto(entities[i].xp, entities[i].yp, entities[i].xp - 320, entities[i].yp, entities[i].w, entities[i].h);
+                    }
+                    entities[i].xp -= 320;
+                    entities[i].lerpoldxp -= 320;
+                }
+            }
+        }
+    }
+
+    if (map.warpy && !map.towermode)
+    {
+        size_t i;
+        for (i = 0; i < entities.size(); ++i)
+        {
+            if (entities[i].type >= 51
+                && entities[i].type <= 54) /* Don't warp warp lines */
+            {
+                continue;
+            }
+
+            if (entities[i].yp <= -12)
+            {
+                if (entities[i].isplatform)
+                {
+                    moveblockto(entities[i].xp, entities[i].yp, entities[i].xp, entities[i].yp + 232, entities[i].w, entities[i].h);
+                }
+                entities[i].yp += 232;
+                entities[i].lerpoldyp += 232;
+            }
+            else if (entities[i].yp > 226)
+            {
+                if (entities[i].isplatform)
+                {
+                    moveblockto(entities[i].xp, entities[i].yp, entities[i].xp, entities[i].yp - 232, entities[i].w, entities[i].h);
+                }
+                entities[i].yp -= 232;
+                entities[i].lerpoldyp -= 232;
+            }
+        }
+    }
+
+    if (map.warpy && !map.warpx && !map.towermode)
+    {
+        size_t i;
+        for (i = 0; i < entities.size(); ++i)
+        {
+            if ((entities[i].type >= 51
+                && entities[i].type <= 54) /* Don't warp warp lines */
+                || entities[i].rule == 0) /* Don't warp the player */
+            {
+                continue;
+            }
+
+            if (entities[i].xp <= -30)
+            {
+                if (entities[i].isplatform)
+                {
+                    moveblockto(entities[i].xp, entities[i].yp, entities[i].xp + 350, entities[i].yp, entities[i].w, entities[i].h);
+                }
+                entities[i].xp += 350;
+                entities[i].lerpoldxp += 350;
+            }
+            else if (entities[i].xp > 320)
+            {
+                if (entities[i].isplatform)
+                {
+                    moveblockto(entities[i].xp, entities[i].yp, entities[i].xp - 350, entities[i].yp, entities[i].w, entities[i].h);
+                }
+                entities[i].xp -= 350;
+                entities[i].lerpoldxp -= 350;
+            }
+        }
+    }
+
+    if (!map.warpy && !map.towermode)
+    {
+        //Normal! Just change room
+        int player = getplayer();
+        if (INBOUNDS_VEC(player, entities) && entities[player].yp >= 238)
+        {
+            entities[player].yp -= 240;
+            GOTOROOM(game.roomx, game.roomy + 1);
+        }
+        if (INBOUNDS_VEC(player, entities) && entities[player].yp < -2)
+        {
+            entities[player].yp += 240;
+            GOTOROOM(game.roomx, game.roomy - 1);
+        }
+    }
+
+    if (!map.warpx && !map.towermode)
+    {
+        //Normal! Just change room
+        int player = getplayer();
+        if (INBOUNDS_VEC(player, entities) && entities[player].xp < -14)
+        {
+            entities[player].xp += 320;
+            GOTOROOM(game.roomx - 1, game.roomy);
+        }
+        if (INBOUNDS_VEC(player, entities) && entities[player].xp >= 308)
+        {
+            entities[player].xp -= 320;
+            GOTOROOM(game.roomx + 1, game.roomy);
+        }
+    }
+
+    //Right so! Screenwraping for tower:
+    if (map.towermode && map.minitowermode)
+    {
+        if (graphics.towerbg.scrolldir == 1)
+        {
+            //This is minitower 1!
+            int player = getplayer();
+            if (INBOUNDS_VEC(player, entities) && entities[player].xp < -14)
+            {
+                entities[player].xp += 320;
+                GOTOROOM(48, 52);
+            }
+            if (INBOUNDS_VEC(player, entities) && entities[player].xp >= 308)
+            {
+                entities[player].xp -= 320;
+                entities[player].yp -= (71 * 8);
+                GOTOROOM(game.roomx + 1, game.roomy + 1);
+            }
+        }
+        else
+        {
+            //This is minitower 2!
+            int player = getplayer();
+            if (INBOUNDS_VEC(player, entities) && entities[player].xp < -14)
+            {
+                if (entities[player].yp > 300)
+                {
+                    entities[player].xp += 320;
+                    entities[player].yp -= (71 * 8);
+                    GOTOROOM(50, 54);
+                }
+                else
+                {
+                    entities[player].xp += 320;
+                    GOTOROOM(50, 53);
+                }
+            }
+            if (INBOUNDS_VEC(player, entities) && entities[player].xp >= 308)
+            {
+                entities[player].xp -= 320;
+                GOTOROOM(52, 53);
+            }
+        }
+    }
+    else if (map.towermode)
+    {
+        //Always wrap except for the very top and very bottom of the tower
+        if (map.ypos >= 500 && map.ypos <= 5000)
+        {
+            for (size_t i = 0; i < entities.size(); i++)
+            {
+                if (entities[i].xp <= -10)
+                {
+                    entities[i].xp += 320;
+                    entities[i].lerpoldxp += 320;
+                }
+                else if (entities[i].xp > 310)
+                {
+                    entities[i].xp -= 320;
+                    entities[i].lerpoldxp -= 320;
+                }
+            }
+        }
+        else
+        {
+            //Do not wrap! Instead, go to the correct room
+            int player = getplayer();
+            if (INBOUNDS_VEC(player, entities) && entities[player].xp < -14)
+            {
+                entities[player].xp += 320;
+                entities[player].yp -= (671 * 8);
+                GOTOROOM(108, 109);
+            }
+            if (INBOUNDS_VEC(player, entities) && entities[player].xp >= 308)
+            {
+                entities[player].xp -= 320;
+                GOTOROOM(110, 104);
+            }
         }
     }
 }

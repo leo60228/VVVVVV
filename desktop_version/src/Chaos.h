@@ -83,6 +83,9 @@ enum Effects
     VIGNETTE,                // Vignette around Viridian
     CONVEYORS_OFF,           // Turn off conveyors
     ASKEW,                   // Askew screen
+    SLOW_MOVEMENT,           // Slow movement
+    FAST_MOVEMENT,           // Fast movement
+    INSTANT_FLIP,            // Instant flip
 
     // Portal gun?
     // Invincibility star?

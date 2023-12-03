@@ -169,6 +169,8 @@ public:
 
     void stuckprevention(int t);
 
+    void check_outside_map(void);
+
 
     std::vector<entclass> entities;
 

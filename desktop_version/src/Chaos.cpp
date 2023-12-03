@@ -109,6 +109,9 @@ static void createLookupTable(const char* ids[EFFECT_AMOUNT], const char* names[
     INFO(VIGNETTE, "vignette", "Vignette", "Draws a vignette around Viridian");
     INFO(CONVEYORS_OFF, "conveyors_off", "Conveyors off", "Turns off conveyors");
     INFO(ASKEW, "askew", "Askew", "Makes the screen askew");
+    INFO(SLOW_MOVEMENT, "slow_movement", "Slow movement", "Slows down movement");
+    INFO(FAST_MOVEMENT, "fast_movement", "Fast movement", "Speeds up movement");
+    INFO(INSTANT_FLIP, "instant_flip", "Instant flip", "Flips instantly");
 #undef INFO
 }
 
