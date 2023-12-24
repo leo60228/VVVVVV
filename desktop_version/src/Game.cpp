@@ -244,6 +244,7 @@ void Game::init(void)
     currentmenuoption = 0;
     menutestmode = false;
     current_credits_list_index = 0;
+    translator_credits_pagenum = 0;
     menuxoff = 0;
     menuyoff = 0;
     menucountdown = 0;
@@ -388,6 +389,22 @@ void Game::setdefaultcontrollerbuttons(void)
     if (controllerButton_interact.size() < 1)
     {
         controllerButton_interact.push_back(SDL_CONTROLLER_BUTTON_X);
+    }
+
+    /* If one of the arrays was empty, and others weren't, we might now have conflicts...
+     * A crucial one is if the ACTION button is also "ESC", because then you can't
+     * fix it with just a controller anymore, which might make the game unplayable.
+     * This is similar to updatebuttonmappings() in Input.cpp, except less... complete? */
+    for (size_t f = 0; f < controllerButton_flip.size(); f++)
+    {
+        for (size_t e = 0; e < controllerButton_esc.size(); e++)
+        {
+            if (controllerButton_flip[f] == controllerButton_esc[e])
+            {
+                controllerButton_esc.erase(controllerButton_esc.begin() + e);
+                break;
+            }
+        }
     }
 }
 
@@ -2891,6 +2908,7 @@ void Game::updatestate(void)
 
             graphics.createtextboxflipme(loc::gettext("All Crew Members Rescued!"), -1, 64, TEXT_COLOUR("transparent"));
             graphics.textboxprintflags(PR_FONT_INTERFACE);
+            graphics.textboxcenterx();
             char buffer[SCREEN_WIDTH_CHARS + 1];
             timestringcenti(buffer, sizeof(buffer));
             savetime = buffer;
@@ -2966,11 +2984,13 @@ void Game::updatestate(void)
             );
             graphics.createtextboxflipme(buffer, -1, 158, TEXT_COLOUR("transparent"));
             graphics.textboxprintflags(PR_FONT_INTERFACE);
+            graphics.textboxcenterx();
             graphics.createtextboxflipme(
                 loc::gettext_roomname(map.custommode, hardestroom_x, hardestroom_y, hardestroom.c_str(), hardestroom_specialname),
                 -1, 170, TEXT_COLOUR("transparent")
             );
             graphics.textboxprintflags(PR_FONT_INTERFACE);
+            graphics.textboxcenterx();
             break;
         }
         case 3508:
@@ -6834,6 +6854,8 @@ void Game::createmenu( enum Menu::MenuName t, bool samemenu/*= false*/ )
     case Menu::credits3:
     case Menu::credits4:
     case Menu::credits5:
+    case Menu::credits_localisations_implementation:
+    case Menu::credits_localisations_translations:
         option(loc::gettext("next page"));
         option(loc::gettext("previous page"));
         option(loc::gettext("return"));
