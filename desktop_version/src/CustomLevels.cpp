@@ -1691,7 +1691,7 @@ void customlevelclass::generatecustomminimap(void)
 
     // Start drawing the minimap
 
-    SDL_Texture* target = SDL_GetRenderTarget(gameScreen.m_renderer);
+    SDL_Texture* target = graphics.get_render_target();
     graphics.set_render_target(graphics.images[IMAGE_CUSTOMMINIMAP]);
     graphics.clear();
 
