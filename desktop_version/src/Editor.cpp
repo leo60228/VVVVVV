@@ -2238,7 +2238,6 @@ void editorlogic(void)
         graphics.titlebg.colstate = 10;
         map.nexttowercolour();
         game.quittomenu();
-        music.play(Music_PRESENTINGVVVVVV); // should be before game.quittomenu()
     }
 }
 
