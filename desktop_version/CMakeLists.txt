@@ -128,13 +128,7 @@ if(GOG)
 endif()
 
 # Executable information
-if(WIN32)
-    add_executable(VVVVVV WIN32 ${VVV_SRC} icon.rc)
-elseif(ANDROID)
-    add_library(VVVVVV SHARED ${VVV_SRC})
-else()
-    add_executable(VVVVVV ${VVV_SRC})
-endif()
+add_library(VVVVVV SHARED ${VVV_SRC})
 
 # Include Directories
 if(BUNDLE_DEPENDENCIES)
@@ -290,11 +284,13 @@ if(MSVC)
 
     # Disable exceptions
     string(REGEX REPLACE "/EH[a-z]+" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /utf-8")
 
     # Disable RTTI
     string(REPLACE "/GR" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
 else()
     string(REGEX REPLACE "-std=[a-z0-9]+" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -shared -fPIC")
