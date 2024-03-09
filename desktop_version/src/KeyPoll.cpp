@@ -97,6 +97,8 @@ static int changemousestate(
     const bool show,
     const bool hide
 ) {
+    return 0;
+
     int prev;
     int new_;
 
@@ -220,20 +222,20 @@ void KeyPoll::Poll(void)
     bool altpressed = false;
     bool fullscreenkeybind = false;
     SDL_GameController *controller = NULL;
-    SDL_Event evt;
+    VVV_Event evt;
     bool should_recompute_textboxes = false;
     bool active_input_device_changed = false;
     bool keyboard_was_active = BUTTONGLYPHS_keyboard_is_active();
-    while (SDL_PollEvent(&evt))
+    while (VVV_PollEvent(&evt))
     {
         switch (evt.type)
         {
         /* Keyboard Input */
-        case SDL_KEYDOWN:
+        case VVV_EventType_KEYDOWN:
         {
-            keymap[evt.key.keysym.sym] = true;
+            keymap[evt.keysym.sym] = true;
 
-            if (evt.key.keysym.sym == SDLK_BACKSPACE)
+            if (evt.keysym.sym == SDLK_BACKSPACE)
             {
                 pressedbackspace = true;
             }
@@ -243,15 +245,15 @@ void KeyPoll::Poll(void)
 #else
             altpressed = keymap[SDLK_LALT] || keymap[SDLK_RALT];
 #endif
-            bool returnpressed = evt.key.keysym.sym == SDLK_RETURN;
-            bool fpressed = evt.key.keysym.sym == SDLK_f;
-            bool f11pressed = evt.key.keysym.sym == SDLK_F11;
+            bool returnpressed = evt.keysym.sym == SDLK_RETURN;
+            bool fpressed = evt.keysym.sym == SDLK_f;
+            bool f11pressed = evt.keysym.sym == SDLK_F11;
             if ((altpressed && (returnpressed || fpressed)) || f11pressed)
             {
                 fullscreenkeybind = true;
             }
 
-            if (loc::show_translator_menu && evt.key.keysym.sym == SDLK_F8 && !evt.key.repeat)
+            if (loc::show_translator_menu && evt.keysym.sym == SDLK_F8 && !evt.repeat)
             {
                 if (keymap[SDLK_LCTRL])
                 {
@@ -267,7 +269,7 @@ void KeyPoll::Poll(void)
                 }
             }
 
-            if (evt.key.keysym.sym == SDLK_F6 && !evt.key.repeat)
+            if (evt.keysym.sym == SDLK_F6 && !evt.repeat)
             {
                 const bool success = SaveScreenshot();
                 game.old_screenshot_border_timer = 255;
@@ -279,7 +281,7 @@ void KeyPoll::Poll(void)
 
             if (textentry())
             {
-                if (evt.key.keysym.sym == SDLK_BACKSPACE && !keybuffer.empty())
+                if (evt.keysym.sym == SDLK_BACKSPACE && !keybuffer.empty())
                 {
                     keybuffer.erase(UTF8_backspace(keybuffer.c_str(), keybuffer.length()));
                     if (keybuffer.empty())
@@ -287,7 +289,7 @@ void KeyPoll::Poll(void)
                         linealreadyemptykludge = true;
                     }
                 }
-                else if (    evt.key.keysym.sym == SDLK_v &&
+                else if (    evt.keysym.sym == SDLK_v &&
                         keymap[SDLK_LCTRL]    )
                 {
                     char* text = SDL_GetClipboardText();
@@ -297,7 +299,7 @@ void KeyPoll::Poll(void)
                         VVV_free(text);
                     }
                 }
-                else if (    evt.key.keysym.sym == SDLK_x &&
+                else if (    evt.keysym.sym == SDLK_x &&
                         keymap[SDLK_LCTRL]    )
                 {
                     if (SDL_SetClipboardText(keybuffer.c_str()) == 0)
@@ -308,67 +310,67 @@ void KeyPoll::Poll(void)
             }
             break;
         }
-        case SDL_KEYUP:
-            keymap[evt.key.keysym.sym] = false;
-            if (evt.key.keysym.sym == SDLK_BACKSPACE)
+        case VVV_EventType_KEYUP:
+            keymap[evt.keysym.sym] = false;
+            if (evt.keysym.sym == SDLK_BACKSPACE)
             {
                 pressedbackspace = false;
             }
             break;
-        case SDL_TEXTINPUT:
-            if (!altpressed)
-            {
-                keybuffer += evt.text.text;
-            }
-            break;
+        //case SDL_TEXTINPUT:
+        //    if (!altpressed)
+        //    {
+        //        keybuffer += evt.text;
+        //    }
+        //    break;
 
         /* Mouse Input */
-        case SDL_MOUSEMOTION:
-            raw_mousex = evt.motion.x;
-            raw_mousey = evt.motion.y;
+        case VVV_EventType_MOUSEMOTION:
+            raw_mousex = evt.x;
+            raw_mousey = evt.y;
             break;
-        case SDL_MOUSEBUTTONDOWN:
-            switch (evt.button.button)
+        case VVV_EventType_MOUSEBUTTONDOWN:
+            switch (evt.button)
             {
             case SDL_BUTTON_LEFT:
-                raw_mousex = evt.button.x;
-                raw_mousey = evt.button.y;
+                raw_mousex = evt.x;
+                raw_mousey = evt.y;
                 leftbutton = 1;
                 break;
             case SDL_BUTTON_RIGHT:
-                raw_mousex = evt.button.x;
-                raw_mousey = evt.button.y;
+                raw_mousex = evt.x;
+                raw_mousey = evt.y;
                 rightbutton = 1;
                 break;
             case SDL_BUTTON_MIDDLE:
-                raw_mousex = evt.button.x;
-                raw_mousey = evt.button.y;
+                raw_mousex = evt.x;
+                raw_mousey = evt.y;
                 middlebutton = 1;
                 break;
             }
             break;
-        case SDL_MOUSEBUTTONUP:
-            switch (evt.button.button)
+        case VVV_EventType_MOUSEBUTTONUP:
+            switch (evt.button)
             {
             case SDL_BUTTON_LEFT:
-                raw_mousex = evt.button.x;
-                raw_mousey = evt.button.y;
+                raw_mousex = evt.x;
+                raw_mousey = evt.y;
                 leftbutton=0;
                 break;
             case SDL_BUTTON_RIGHT:
-                raw_mousex = evt.button.x;
-                raw_mousey = evt.button.y;
+                raw_mousex = evt.x;
+                raw_mousey = evt.y;
                 rightbutton=0;
                 break;
             case SDL_BUTTON_MIDDLE:
-                raw_mousex = evt.button.x;
-                raw_mousey = evt.button.y;
+                raw_mousex = evt.x;
+                raw_mousey = evt.y;
                 middlebutton=0;
                 break;
             }
             break;
 
-        /* Controller Input */
+        /* Controller Input
         case SDL_CONTROLLERBUTTONDOWN:
             buttonmap[(SDL_GameControllerButton) evt.cbutton.button] = true;
             BUTTONGLYPHS_keyboard_set_active(false);
@@ -439,11 +441,11 @@ void KeyPoll::Poll(void)
             break;
         }
 
-        /* Window Events */
+        // Window Events
         case SDL_WINDOWEVENT:
             switch (evt.window.event)
             {
-            /* Window Resize */
+            // Window Resize
             case SDL_WINDOWEVENT_RESIZED:
                 if (SDL_GetWindowFlags(
                     SDL_GetWindowFromID(evt.window.windowID)
@@ -453,7 +455,7 @@ void KeyPoll::Poll(void)
                 }
                 break;
 
-            /* Window Focus */
+            // Window Focus
             case SDL_WINDOWEVENT_FOCUS_GAINED:
                 if (!game.disablepause)
                 {
@@ -501,7 +503,7 @@ void KeyPoll::Poll(void)
                 SDL_EnableScreenSaver();
                 break;
 
-            /* Mouse Focus */
+            // Mouse Focus
             case SDL_WINDOWEVENT_ENTER:
                 SDL_DisableScreenSaver();
                 break;
@@ -511,20 +513,21 @@ void KeyPoll::Poll(void)
             }
             break;
 
-        /* Quit Event */
+        // Quit Event
         case SDL_QUIT:
             VVV_exit(0);
-            break;
+            break;*/
         }
 
         switch (evt.type)
         {
-        case SDL_KEYDOWN:
-            if (evt.key.repeat == 0)
+        case VVV_EventType_KEYDOWN:
+            if (evt.repeat == 0)
             {
                 hidemouse = true;
             }
             break;
+        /*
         case SDL_TEXTINPUT:
         case SDL_CONTROLLERBUTTONDOWN:
         case SDL_CONTROLLERAXISMOTION:
@@ -533,7 +536,7 @@ void KeyPoll::Poll(void)
         case SDL_MOUSEMOTION:
         case SDL_MOUSEBUTTONDOWN:
             showmouse = true;
-            break;
+            break;*/
         }
     }
 
