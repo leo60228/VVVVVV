@@ -65,7 +65,7 @@ if(NOT WIN32)
 endif()
 
 # Source Lists
-set(VVV_SRC
+set(VVV_CXX_SRC
     src/BinaryBlob.cpp
     src/BlockV.cpp
     src/ButtonGlyphs.cpp
@@ -82,6 +82,7 @@ set(VVV_SRC
     src/Graphics.cpp
     src/GraphicsResources.cpp
     src/GraphicsUtil.cpp
+    src/IMERender.cpp
     src/Input.cpp
     src/KeyPoll.cpp
     src/Labclass.cpp
@@ -108,6 +109,8 @@ set(VVV_SRC
     src/WarpClass.cpp
     src/XMLUtils.cpp
     src/main.cpp
+)
+set(VVV_C_SRC
     src/DeferCallbacks.c
     src/GlitchrunnerMode.c
     src/Network.c
@@ -120,11 +123,13 @@ set(VVV_SRC
     ../third_party/physfs/extras/physfsrwops.c
 )
 if(STEAM)
-    list(APPEND VVV_SRC src/SteamNetwork.c)
+    list(APPEND VVV_C_SRC src/SteamNetwork.c)
 endif()
 if(GOG)
-    list(APPEND VVV_SRC src/GOGNetwork.c)
+    list(APPEND VVV_C_SRC src/GOGNetwork.c)
 endif()
+
+set(VVV_SRC ${VVV_CXX_SRC} ${VVV_C_SRC})
 
 # Executable information
 if(WIN32)
@@ -208,35 +213,26 @@ set(SBIDI_SRC ../third_party/SheenBidi/Source/SheenBidi.c)
 if(NOT OFFICIAL_BUILD)
     # Add interim commit hash and its date to the build
 
-    # find_package sets GIT_FOUND and GIT_EXECUTABLE
-    find_package(Git)
+    # These filenames have to be qualified, because when we run
+    # the CMake script, its work dir gets set to the build folder
+    set(VERSION_INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/InterimVersion.in.c)
+    set(VERSION_OUTPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/InterimVersion.out.c)
 
-    if(GIT_FOUND)
-        # These filenames have to be qualified, because when we run
-        # the CMake script, its work dir gets set to the build folder
-        set(VERSION_INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/InterimVersion.in.c)
-        set(VERSION_OUTPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/InterimVersion.out.c)
+    add_custom_command(
+        # This OUTPUT line is required for this to be ran every time
+        OUTPUT ${VERSION_OUTPUT_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/src/_dummy.c
+        COMMAND ${CMAKE_COMMAND}
+        # These args have to be passed through, otherwise the script can't see them
+        # Also, these args have to come BEFORE `-P`! (Otherwise it fails with an unclear error)
+        -DINPUT_FILE=${VERSION_INPUT_FILE}
+        -DOUTPUT_FILE=${VERSION_OUTPUT_FILE}
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/version.cmake
+    )
 
-        add_custom_target(
-            GenerateVersion ALL
-            # This BYPRODUCTS line is required for this to be ran every time
-            BYPRODUCTS ${VERSION_OUTPUT_FILE}
-            COMMAND ${CMAKE_COMMAND}
-            # These args have to be passed through, otherwise the script can't see them
-            # Also, these args have to come BEFORE `-P`! (Otherwise it fails with an unclear error)
-            -DGIT_EXECUTABLE=${GIT_EXECUTABLE}
-            -DINPUT_FILE=${VERSION_INPUT_FILE}
-            -DOUTPUT_FILE=${VERSION_OUTPUT_FILE}
-            -P ${CMAKE_CURRENT_SOURCE_DIR}/version.cmake
-        )
+    target_compile_definitions(VVVVVV PRIVATE -DINTERIM_VERSION_EXISTS)
 
-        add_dependencies(VVVVVV GenerateVersion)
-
-        target_compile_definitions(VVVVVV PRIVATE -DINTERIM_VERSION_EXISTS)
-
-        add_library(InterimVersion STATIC src/InterimVersion.out.c)
-        list(APPEND STATIC_LIBRARIES InterimVersion)
-    endif()
+    add_library(InterimVersion STATIC src/InterimVersion.out.c)
+    list(APPEND STATIC_LIBRARIES InterimVersion)
 endif()
 
 # Build options
@@ -290,11 +286,11 @@ if(MSVC)
     # MSVC does not officially support disabling exceptions,
     # so this is as far as we are willing to go to disable them.
     string(REGEX REPLACE "/EH[a-z]+" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+    set_source_files_properties(${VVV_CXX_SRC} PROPERTIES COMPILE_FLAGS /EHsc)
 
     # Disable RTTI
     string(REPLACE "/GR" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
+    set_source_files_properties(${VVV_CXX_SRC} PROPERTIES COMPILE_FLAGS /GR-)
 
     if(MSVC_VERSION GREATER 1900)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
@@ -302,18 +298,22 @@ if(MSVC)
     endif()
 else()
     string(REGEX REPLACE "-std=[a-z0-9]+" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
+    set_source_files_properties(${VVV_C_SRC} PROPERTIES COMPILE_FLAGS -std=c99)
 
     string(REGEX REPLACE "-std=[a-z0-9+]+" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98")
+    set_source_files_properties(${VVV_CXX_SRC} PROPERTIES COMPILE_FLAGS -std=c++98)
 
     # Disable exceptions
     string(REPLACE "-fexceptions" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+    set_source_files_properties(${VVV_CXX_SRC} PROPERTIES COMPILE_FLAGS -fno-exceptions)
 
     # Disable RTTI
     string(REPLACE "-frtti" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+    set_source_files_properties(${VVV_CXX_SRC} PROPERTIES COMPILE_FLAGS -fno-rtti)
+
+    # Dependencies (as needed)
+    set_source_files_properties(${FAUDIO_SRC} PROPERTIES COMPILE_FLAGS -std=c99)
+    set_source_files_properties(${CHM_SRC} PROPERTIES COMPILE_FLAGS -std=c99)
 endif()
 
 # Unfortunately, it doesn't seem like distros package LodePNG
