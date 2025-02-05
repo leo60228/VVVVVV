@@ -13,6 +13,7 @@
 #define VVVVVV_STEAMCLIENT "SteamClient017"
 #define VVVVVV_STEAMUSERSTATS "STEAMUSERSTATS_INTERFACE_VERSION011"
 #define VVVVVV_STEAMSCREENSHOTS "STEAMSCREENSHOTS_INTERFACE_VERSION003"
+#define VVVVVV_STEAMFRIENDS "SteamFriends017"
 
 /* Shared object file name */
 
@@ -31,6 +32,7 @@
 struct ISteamClient;
 struct ISteamUserStats;
 struct ISteamScreenshots;
+struct ISteamFriends;
 struct CallbackMsg_t
 {
     int32_t m_hSteamUser;
@@ -81,6 +83,17 @@ struct SteamAPICallCompleted_t
         int32_t, \
         int32_t \
     )) \
+    FOREACH_FUNC(struct ISteamFriends*, SteamAPI_ISteamClient_GetISteamFriends, ( \
+        struct ISteamClient*, \
+        int32_t, \
+        int32_t, \
+        const char* \
+    )) \
+    FOREACH_FUNC(uint8_t, SteamAPI_ISteamFriends_SetRichPresence, (\
+        struct ISteamFriends*, \
+        const char*, \
+        const char* \
+    )) \
     FOREACH_FUNC(void, SteamAPI_ManualDispatch_Init, (void)) \
     FOREACH_FUNC(void, SteamAPI_ManualDispatch_RunFrame, (int32_t)) \
     FOREACH_FUNC(uint8_t, SteamAPI_ManualDispatch_GetNextCallback, (int32_t, struct CallbackMsg_t*)) \
@@ -99,6 +112,7 @@ struct SteamAPICallCompleted_t
 static void* libHandle = NULL;
 static struct ISteamUserStats* steamUserStats = NULL;
 static struct ISteamScreenshots* steamScreenshots = NULL;
+static struct ISteamFriends* steamFriends = NULL;
 
 #define FOREACH_FUNC(rettype, name, params) static rettype (*name) params = NULL;
 FUNC_LIST
@@ -222,6 +236,19 @@ int32_t STEAM_init(void)
         return 0;
     }
     SteamAPI_ISteamScreenshots_HookScreenshots(steamScreenshots, 1);
+    steamFriends = SteamAPI_ISteamClient_GetISteamFriends(
+        steamClient,
+        steamUser,
+        steamPipe,
+        VVVVVV_STEAMFRIENDS
+    );
+    if (!steamFriends)
+    {
+        SteamAPI_Shutdown();
+        vlog_error(VVVVVV_STEAMFRIENDS " not created!");
+        ClearPointers();
+        return 0;
+    }
     return 1;
 }
 
@@ -269,7 +296,16 @@ void STEAM_unlockAchievement(const char* name)
 
 void STEAM_setRPC(const char* area, const char* roomname)
 {
-    // TODO: implement staem rpc :)
+    if (*roomname)
+    {
+        SteamAPI_ISteamFriends_SetRichPresence(steamFriends, "steam_display", "#NamedRoom");
+    }
+    else
+    {
+        SteamAPI_ISteamFriends_SetRichPresence(steamFriends, "steam_display", "#Default");
+    }
+    SteamAPI_ISteamFriends_SetRichPresence(steamFriends, "area", area);
+    SteamAPI_ISteamFriends_SetRichPresence(steamFriends, "roomname", roomname);
 }
 
 #endif /* MAKEANDPLAY */
